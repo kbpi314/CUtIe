@@ -2075,7 +2075,7 @@ scp -r buk02@mothra.hpc.mssm.edu:/sc/orga/scratch/buk02/data_analysis/cutie_WHO_
 
 module load python/2.7.14 && module load py_packages/2.7 
 
-cd /sc/orga/work/buk02/data_analysis
+cd /sc/orga/work/buk02/data_analysis/
 python /sc/orga/work/buk02/cutie/scripts/cutie_analysis.py 
 
 
