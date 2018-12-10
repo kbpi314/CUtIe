@@ -702,11 +702,15 @@ def plot_corr(row, df_folder_fp, f1type, f2type, var1_names, var2_names,
         var2_name = parse.read_taxa(var2_name) 
 
     # shorten var name
-    if str(var1_name):
+    try:
         var1_name = var1_name[0:25]
+    except:
+        pass
 
-    if str(var2_name):
+    try:
         var2_name = var2_name[0:25]
+    except:
+        pass
 
     # consolidate variables into pd dataframe
     # example:
