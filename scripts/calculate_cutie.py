@@ -109,7 +109,7 @@ def calculate_cutie(defaults_fp, config_fp):
 
     # subset dataframe, obtain avg and variance
     samp_var1, avg_var1, var_var1 = parse.process_df(samp_var1_df, samp_ids)
-    samp_var2, avg_var2, var_var2 = parse.process_df(samp_var1_df, samp_ids)
+    samp_var2, avg_var2, var_var2 = parse.process_df(samp_var2_df, samp_ids)
 
     # printing of samp and var names for reference
     output.write_log('There are ' + str(len(samp_ids)) + ' samples', log_fp)

@@ -120,10 +120,13 @@ def process_df(samp_var_df, samp_ids):
     # subset dataframes
     samp_var_df = samp_var_df.loc[samp_ids]
 
+    # coerce to NA
+    samp_var_df = samp_var_df.apply(pd.to_numeric, errors = 'coerce')
+
     # obtain values
     samp_var = samp_var_df.values
 
-    # obtain avergae and variance
+    # obtain average and variance
     avg_var = np.array([np.nanmean(samp_var,0)])
     
     # retrieve variances
