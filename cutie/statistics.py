@@ -275,6 +275,7 @@ def set_threshold(pvalues, alpha, mc, log_fp, paired = False):
         threshold = 1.0 - (1.0 - alpha) ** (1/(pvalues_copy.size))
     elif mc == 'fdr':
         # compute FDR cutoff
+        # https://brainder.org/2011/09/05/fdr-corrected-fdr-adjusted-p-values/
         # http://www.biostathandbook.com/multiplecomparisons.html
         cn = 1.0
         thresholds = np.array([(float(k+1))/(len(pvalues_copy))
