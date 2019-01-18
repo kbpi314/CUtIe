@@ -2076,7 +2076,7 @@ scp -r buk02@mothra.hpc.mssm.edu:/sc/orga/scratch/buk02/data_analysis/cutie_WHO_
 module load python/2.7.14 && module load py_packages/2.7 
 
 cd /sc/orga/work/buk02/data_analysis/
-python /sc/orga/work/buk02/cutie/scripts/cutie_analysis.py 
+python /sc/orga/work/buk02/CUTIE/scripts/cutie_analysis.py 
 
 
 
@@ -2450,49 +2450,56 @@ python -W ignore scripts/calculate_cutie.py -df scripts/config_defaults.ini -cf 
 ###
 
 
-module load python/2.7.14
-module load py_packages/2.7
+source activate yourenv
+export PYTHONPATH=$PYTHONPATH:/Users/KevinBu/tools/sandbox/lib/python3.5/site-packages/
+cd /Users/KevinBu/Desktop/clemente_lab/Software/imagecluster
+Python3 setup.py install  --prefix=/Users/KevinBu/tools/sandbox/
+cd /Users/KevinBu/Desktop/clemente_lab/iclust/data\
+python3
+from imagecluster import main
+main.main('hdac_kpc_plots/small/plots/', 'hdac_kpc_plots/small/', sim=2)
 
-# WHO bins pearson
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/WHO_kpc_plots/small/ -e jpeg
-
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/WHO_kpc_plots/medium/ -e jpeg
-
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/WHO_kpc_plots/large/ -e jpeg
-
-
-# WHO bins spearman
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/WHO_ksc_plots/small/ -e jpeg
-
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/WHO_ksc_plots/medium/ -e jpeg
-
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/WHO_ksc_plots/large/ -e jpeg
+###
+# Filtering test
+###
 
 
-# Anscombe's quartet
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/aq10x/pearson/ -e jpeg
+filter_otus_from_otu_table.py -i -o -n 0.01 --min_count_fraction 
 
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/aq10x/spearman/ -e jpeg
+for path in /sc/orga/work/buk02/data_analysis/*enrica*; do
+    bsub < ${path}/cutie.0
+done
 
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/aq10x/kendall/ -e jpeg
-
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/aq10x/MIC/ -e jpeg
+filter_otus_from_otu_table.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def.biom -o /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_filt0.01.biom --min_count_fraction=0.01
 
 
 
+summarize_taxa.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_filt0.01.biom -L 6 -o /sc/orga/work/buk02/enrica_data/
 
-# Datasaurus
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/TheDatasaurusDozen/pearson/ -e jpeg
+# use local ipynb to convert to correct otu tables
+# iclust/senrica_split_cutie_filt.ipynb
 
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/TheDatasaurusDozen/spearman/ -e jpeg
+mkdir /sc/orga/scratch/buk02/data_analysis/cutie_enrica_kkc1fdr0.05/
+python -W ignore /sc/orga/work/buk02/cutie/scripts/calculate_cutie.py -df /sc/orga/work/buk02/cutie/scripts/config_defaults.ini -cf /sc/orga/work/buk02/data_analysis/cutie_enrica_kkc1fdr0.05/config.ini
 
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/TheDatasaurusDozen/kendall/ -e jpeg
 
-python /sc/orga/work/buk02/imageproc/scripts/compare.py -p /sc/orga/work/buk02/imageproc/data/TheDatasaurusDozen/MIC/ -e jpeg
+
+filter_otus_from_otu_table.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def.biom -o /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons.biom -n 2
+
+summarize_taxa.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons.biom -L 6 -o /sc/orga/work/buk02/enrica_data/
+
+
 
 ###############
 # DEVELOPMENT #
 ###############
+
+
+
+
+
+
+
 
 
 

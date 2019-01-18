@@ -922,4 +922,4 @@ def write_log(message, log_fp):
         f.write(message)
 
     return message
-    
+
