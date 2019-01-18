@@ -1161,8 +1161,9 @@ def updatek_cutie(initial_corr, pvalues, samp_var1, samp_var2, threshold,
             % (str(len(samp_ids))))
     
     (true_corr, true_comb_to_rev, false_comb_to_rev,
-     extrema_p, extrema_r) = initialize_stat_dicts(1, n_var1, n_var2, statistic, 
-        forward_stats, reverse_stats)
+     extrema_p, extrema_r) = initialize_stat_dicts(resample_k, n_var1, n_var2, 
+                                                   statistic, forward_stats, 
+                                                   reverse_stats)
 
     # true sig and false insig are lists of tuples 
     # where each tuple is a pair of variable indices
@@ -1189,8 +1190,9 @@ def updatek_cutie(initial_corr, pvalues, samp_var1, samp_var2, threshold,
     # output.diag_hist(samp_counter, var1_counter, var2_counter, resample_k, 
     #                 working_dir)
 
-    return (true_corr, true_comb_to_rev, false_comb_to_rev, extrema_p, extrema_r,
-        samp_counter, var1_counter, var2_counter, exceeds_points, rev_points)
+    return (true_corr, true_comb_to_rev, false_comb_to_rev, corr_extrema_p, 
+        corr_extrema_r, samp_counter, var1_counter, var2_counter, 
+        exceeds_points, rev_points)
 
 
 def cutiek_true_corr(initial_corr, samp_var1, samp_var2, pvalues, corrs, 
@@ -1832,18 +1834,18 @@ def jackknifek_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2, pvalu
         new_var1, new_var2 = remove_nans(new_var1, new_var2)
 
         # compute new p_value and r_value depending on statistic
-        if statistic == 'jkp' or 'rjkp':
+        if statistic == 'jkp' or statistic == 'rjkp':
             p_value, r_value = compute_pc(new_var1, new_var2)
-        elif statistic == 'jks' or 'rjks':
+        elif statistic == 'jks' or statistic == 'rjks':
             p_value, r_value = compute_sc(new_var1, new_var2)
-        elif statistic == 'jkk' or 'rjkk':
+        elif statistic == 'jkk' or statistic == 'rjkk':
             p_value, r_value = compute_kc(new_var1, new_var2)
-        elif statistic == 'jkm' or 'rjkm':
+        elif statistic == 'jkm' or statistic == 'rjkm':
             p_value, r_value = compute_mine(new_var1, new_var2, pvalue_bins, 
                 mine_str, mine_bins)
 
         # update reverse, maxp, and minr
-        reverse, extrema_r, extrema_p = update_rev_extrema_rp(sign, r_value, 
+        reverse, extrema_p, extrema_r = update_rev_extrema_rp(sign, r_value, 
             p_value, indices, reverse, extrema_r, extrema_p, forward)
         p_values.append(p_value)
 
@@ -1935,13 +1937,13 @@ def bootstrap_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2, pvalue
         new_var1, new_var2 = remove_nans(new_var1, new_var2)
 
         # compute new p_value and r_value depending on statistic
-        if statistic == 'bsp' or 'rbsp':
+        if statistic == 'bsp' or statistic == 'rbsp':
             p_value, r_value = compute_pc(new_var1, new_var2)
-        elif statistic == 'bss' or 'rbss':
+        elif statistic == 'bss' or statistic == 'rbss':
             p_value, r_value = compute_sc(new_var1, new_var2)
-        elif statistic == 'bsk' or 'rbsk':
+        elif statistic == 'bsk' or statistic == 'rbsk':
             p_value, r_value = compute_kc(new_var1, new_var2)
-        elif statistic == 'bsm' or 'rbsm':
+        elif statistic == 'bsm' or statistic == 'rbsm':
             p_value, r_value = compute_mine(new_var1, new_var2, pvalue_bins, 
                 mine_str, mine_bins)
 
@@ -1962,7 +1964,7 @@ def bootstrap_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2, pvalue
 
     return reverse, exceeds, extrema_p, extrema_r
    
-def resamplek_cutie(var1, var2, n_samp, samp_var1, samp_var2, pvalues, 
+def resamplek_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2, pvalues, 
     threshold, resample_k, sign, forward, statistic, fold, fold_value, 
     pvalue_bins, mine_str, mine_bins):
     """     
@@ -1970,10 +1972,8 @@ def resamplek_cutie(var1, var2, n_samp, samp_var1, samp_var2, pvalues,
     status via confidence based interval methods.
     ----------------------------------------------------------------------------
     INPUTS
-    var1              - 1D array. Values for specified variable (from 
-                        var_index1) from file 1.
-    var2              - 1D array. Values for specified variable (from 
-                        var_index2) from file 2.
+    var1_index        - Integer. Index of variable in file 1.
+    var2_index        - Integer. Index of variable in file 2.
     n_samp            - Integer. Number of samples.
     samp_var1         - 2D array. Each value in row i col j is the level of 
                         variable j corresponding to sample i in the order that 
@@ -2017,8 +2017,8 @@ def resamplek_cutie(var1, var2, n_samp, samp_var1, samp_var2, pvalues,
                         strength values.
     """
     # initialize indicators and variables
-    exceeds, reverse, extrema_p, extrema_r, var1, var2 = init_var_indicators(var1,
-                                            var2, samp_var1, samp_var2, forward)
+    exceeds, reverse, extrema_p, extrema_r, var1, var2 = init_var_indicators(
+        var1_index, var2_index, samp_var1, samp_var2, forward)
 
     # iteratively delete k samples and recompute statistics
     combs = [list(x) for x in itertools.combinations(xrange(n_samp), resample_k)]
@@ -2030,20 +2030,20 @@ def resamplek_cutie(var1, var2, n_samp, samp_var1, samp_var2, pvalues,
         new_var1, new_var2 = remove_nans(new_var1, new_var2)
 
         # compute new p_value and r_value depending on statistic
-        if statistic == 'kpc' or 'rpc':
+        if statistic == 'kpc' or statistic == 'rpc':
             p_value, r_value = compute_pc(new_var1, new_var2)
-        elif statistic == 'ksc' or 'rsc':
+        elif statistic == 'ksc' or statistic == 'rsc':
             p_value, r_value = compute_sc(new_var1, new_var2)
-        elif statistic == 'kkc' or 'rkc':
+        elif statistic == 'kkc' or statistic == 'rkc':
             p_value, r_value = compute_kc(new_var1, new_var2)
-        elif statistic == 'mine' or 'rmine':
+        elif statistic == 'mine' or statistic == 'rmine':
             p_value, r_value = compute_mine(new_var1, new_var2, pvalue_bins, 
                 mine_str, mine_bins)
 
         # update reverse, maxp, and minr
         reverse, extrema_p, extrema_r = update_rev_extrema_rp(sign, r_value, 
             p_value, indices, reverse, extrema_p, extrema_r, forward)
-        
+
         # check sign reversal
         if np.sign(r_value) != sign:
             for i in indices:
@@ -2060,12 +2060,6 @@ def resamplek_cutie(var1, var2, n_samp, samp_var1, samp_var2, pvalues,
             elif p_value > threshold or np.isnan(p_value): 
                 for i in indices:
                     exceeds[i] += 1
-            # update extreme p and r 
-            for i in indices:
-                if p_value > extrema_p[i]:
-                    extrema_p[i] = p_value
-                if r_value < np.absolute(extrema_r[i]):
-                    extrema_r[i] = r_value
 
         elif forward is False:
             # fold change p-value restraint
@@ -2078,12 +2072,6 @@ def resamplek_cutie(var1, var2, n_samp, samp_var1, samp_var2, pvalues,
             elif p_value < threshold or np.isnan(p_value): 
                 for i in indices:
                     exceeds[i] += 1 
-            # update extreme p and r
-            for i in indices:
-                if p_value < extrema_p[i]:
-                    extrema_p[i] = p_value
-                if r_value > np.absolute(extrema_r[i]):
-                    extrema_r[i] = r_value
 
     return reverse, exceeds, extrema_p, extrema_r
     
