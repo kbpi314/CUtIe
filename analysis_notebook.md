@@ -2113,7 +2113,7 @@ done
 mkdir /sc/orga/work/buk02/cutie/data/corr_sweep/
 cp /sc/orga/scratch/buk02/real_data_analysis/corr_sweep/* /sc/orga/work/buk02/cutie/data/corr_sweep/
 
-scp buk02@mothra.hpc.mssm.edu:/sc/orga/scratch/buk02/real_data_analysis/corr_sweep/*.txt /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/corr_sweep/
+scp buk02@mothra.hpc.mssm.edu:/sc/orga/scratch/buk02/real_data_analysis/corr_sweep/*.txt /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/corr_sweep/
 
 
 # L2
@@ -2195,7 +2195,7 @@ scp -r buk02@mothra.hpc.mssm.edu:/sc/orga/scratch/buk02/data_analysis/corr_sweep
 /sc/orga/work/buk02/cutie/data/nat_cutie/reference-hit.biom
 
 
-scp /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data/nat_cutie/* buk02@mothra.hpc.mssm.edu:/sc/orga/work/buk02/cutie/data/nat_cutie/
+scp /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/nat_cutie/* buk02@mothra.hpc.mssm.edu:/sc/orga/work/buk02/cutie/data/nat_cutie/
 
 mkdir /sc/orga/scratch/buk02/data_analysis/nat_cutie
 
@@ -2294,29 +2294,29 @@ conda install pandas=0.16.2
 
 # L6
 
-python /Users/KevinBu/Desktop/Clemente\ Lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L6_del1_counts.txt -i 20 --cor_file=/Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L6_del1_counts_sparcc.out
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L6_del1_counts.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L6_del1_counts_sparcc.out
 
-python /Users/KevinBu/Desktop/Clemente\ Lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L6_del1_counts.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/pvals/
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L6_del1_counts.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/pvals/
 
 for i in {0..99};
 do 
-python /Users/KevinBu/Desktop/Clemente\ Lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/pvals/perm_cor_$i.txt; 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/pvals/perm_cor_$i.txt; 
 done
 
-python /Users/KevinBu/Desktop/Clemente\ Lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L6_del1_counts_sparcc.out /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/pvals/pvals.two_sided.txt -t two_sided
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L6_del1_counts_sparcc.out /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/pvals/pvals.two_sided.txt -t two_sided
 
 # L5 
 
-python /Users/KevinBu/Desktop/Clemente\ Lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L5_del1_counts.txt -i 20 --cor_file=/Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L5_del1_counts_sparcc.out
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L5_del1_counts.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L5_del1_counts_sparcc.out
 
-python /Users/KevinBu/Desktop/Clemente\ Lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L5_del1_counts.txt -n 500 -t permutation_#.txt -p /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/pvals/
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L5_del1_counts.txt -n 500 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/pvals/
 
 for i in {0..499};
 do 
-python /Users/KevinBu/Desktop/Clemente\ Lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/pvals/perm_cor_$i.txt; 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/pvals/perm_cor_$i.txt; 
 done
 
-python /Users/KevinBu/Desktop/Clemente\ Lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L5_del1_counts_sparcc.out /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/pvals/perm_cor_#.txt 500 -o /Users/KevinBu/Desktop/Clemente\ Lab/CUtIe/data_analysis/prism_enrica/pvals/pvals.two_sided.txt -t two_sided
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/filtered_otu_table_800_nosingletons_L5_del1_counts_sparcc.out /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/pvals/perm_cor_#.txt 500 -o /Users/KevinBu/Desktop/clemente_lab/CUTIE/data_analysis/prism_enrica/pvals/pvals.two_sided.txt -t two_sided
 
 
 source deactivate
@@ -2488,6 +2488,278 @@ filter_otus_from_otu_table.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_ta
 
 summarize_taxa.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons.biom -L 6 -o /sc/orga/work/buk02/enrica_data/
 
+
+###
+# IGAL
+###
+
+# get distribution of reads to sample
+biom summarize-table -i otu_table.run2017_only.biom -o otu_table.run2017_only.txt 
+~ 1000 
+
+# remove samples with <1000 reads to them total
+filter_samples_from_otu_table.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only.biom -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000.biom -n 1000
+
+# remove OTU that only have 1 read mapping to them AND remove chloroplasts
+scp data/chloroplasts.txt buk02@mothra.hpc.mssm.edu:/sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/
+
+# remove Blank.4
+filter_samples_from_otu_table.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000.biom -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4.biom --sample_id_fp /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/ids.txt --negate_sample_id_fp
+
+filter_otus_from_otu_table.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4.biom -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons.biom -n 2 
+
+filter_taxa_from_otu_table.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons.biom -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro.biom  -n c__Chloroplast
+
+# summarize to genus
+summarize_taxa.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro.biom -L 6 -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/
+
+scp buk02@mothra.hpc.mssm.edu:/sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_L6.txt data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_L6.txt 
+
+
+# get pre samples only
+# has all samples and .neg .pos. pre
+/sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro.biom
+
+# Map_full.20171017updated.unix.txt
+# has all samples and .neg .pos. pre
+# maps each #SampleID to group and subjectID
+# take this file and make a _uniq version with the earliest time point for each subjectID
+
+# filter samples to take only uniq obs
+filter_samples_from_otu_table.py -i otu_table.biom -o filtered_otu_table.biom --sample_id_fp ids.txt
+
+filter_samples_from_otu_table.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro.biom -o /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq.biom --sample_id_fp /sc/orga/work/buk02/igal_data/sampleids.txt
+
+
+# split into groups
+split_otu_table.py -i /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq.biom -m /sc/orga/work/buk02/igal_data/map_uniq_updated.txt -f group -o /sc/orga/work/buk02/igal_data/split_groups_uniq/
+
+# get alpha div
+alpha_diversity.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__.biom -m chao1 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/adiv_chao1_group0.txt
+alpha_diversity.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__.biom -m chao1 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/adiv_chao1_group1.txt
+
+# get beta div
+beta_diversity.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__.biom -m euclidean -o /sc/orga/work/buk02/igal_data/split_groups_uniq/bdiv_group0
+beta_diversity.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__.biom -m euclidean -o /sc/orga/work/buk02/igal_data/split_groups_uniq/bdiv_group1
+
+# summarize at L5
+summarize_taxa.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__.biom -L 5 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/
+
+summarize_taxa.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__.biom -L 5 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/
+
+
+# conda
+conda create --name SparCCEnv python=2.6.9
+source activate SparCCEnv
+conda install numpy=1.9.2
+conda install pandas=0.16.2
+
+# group 0
+# L5
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/df_otu_group0_sparcc_x100000.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group0/df_otu_group0_sparcc_x100000_cor.out
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group0/df_otu_group0_sparcc_x100000.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group0/pvals/
+
+for i in {0..99};
+do 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group0/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group0/pvals/perm_cor_$i.txt; 
+done
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group0/df_otu_group0_sparcc_x100000_cor.out /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group0/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group0/pvals/pvals.two_sided.txt -t two_sided
+
+source deactivate
+
+python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/scratch/buk02/real_data_analysis/adiv_bdiv_cutie/sparcc_group0/cov_mat_SparCC.out -p /sc/orga/scratch/buk02/real_data_analysis/adiv_bdiv_cutie/sparcc_group0/pvals/pvals.two_sided.txt -b /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__.biom -o /sc/orga/scratch/buk02/real_data_analysis/adiv_bdiv_cutie/sparcc_group0/group0_cytoscape_10e7.txt -t 0.0000001
+
+# group 1
+# L5
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/df_otu_group1_sparcc_x100000.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/df_otu_group1_sparcc_x100000_cor.out
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/df_otu_group1_sparcc_x100000.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/pvals/
+
+for i in {0..99};
+do 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/pvals/perm_cor_$i.txt; 
+done
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/df_otu_group1_sparcc_x100000_cor.out /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/pvals/pvals.two_sided.txt -t two_sided
+
+source deactivate
+
+python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/scratch/buk02/real_data_analysis/adiv_bdiv_cutie/sparcc_group1/cov_mat_SparCC.out -p /sc/orga/scratch/buk02/real_data_analysis/adiv_bdiv_cutie/sparcc_group1/pvals/pvals.two_sided.txt -b /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__.biom -o /sc/orga/scratch/buk02/real_data_analysis/adiv_bdiv_cutie/sparcc_group1/group1_cytoscape_10e7.txt -t 0.0000001
+
+
+###
+# Enrica CRC Final
+###
+
+# convert to absolute counts
+/sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons.biom
+
+# filter to get from 3368 lines to 200-300; 211 to be exact
+filter_otus_from_otu_table.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons.biom -o /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.biom --min_count_fraction=0.001
+
+# take mapping file and add column prolif_status where DIAG_NEW of 0 is nonprolif and 1,2 is prolif
+df = pd.read_csv('../CUTIE/data/enrica/mapping_file_Final_12.3.18.txt', sep = '\t')
+df['prolif_status'] = np.where(df['DIAG_NEW'] > 0.5, 'prolif', 'nonprolif')
+df = df.set_index('#SampleID')
+df.to_csv('../CUTIE/data/enrica/mapping_file_Final_12.3.18_withprolifstatus.txt', sep = '\t', index = True)
+
+
+# split otu table according to group
+split_otu_table.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.biom -m /sc/orga/work/buk02/enrica_data/mapping_file_Final_12.3.18_withprolifstatus.txt -f prolif_status -o /sc/orga/work/buk02/enrica_data/
+
+# tables below
+filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.biom
+filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__prolif_status_nonprolif__.biom
+filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__prolif_status_prolif__.biom
+
+
+# convert to abs count
+biom convert -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.biom -o /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.txt --to-tsv
+
+biom convert -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__prolif_status_nonprolif__.biom -o /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__prolif_status_nonprolif__.txt --to-tsv
+
+biom convert -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__prolif_status_prolif__.biom -o /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__prolif_status_prolif__.txt --to-tsv
+
+# txt files below
+sed -i '1d' filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.txt
+sed -i '1d' filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__prolif_status_nonprolif__.txt
+sed -i '1d' filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__prolif_status_prolif__.txt
+
+# move all files to subdirs
+filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.txt
+filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__prolif_status_nonprolif__.txt
+filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__prolif_status_prolif__.txt
+
+
+# sparcc on combined DOES NOT WORK ON HPC
+SparCC.py /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.txt -i 20 --cor_file=/sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.txt.cor_sparcc1.out
+
+
+# combined table
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001_sparcc.out
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete/pvals/
+
+for i in {0..99};
+do 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete/pvals/perm_cor_$i.txt; 
+done
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001_sparcc.out /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete/pvals/pvals.two_sided.txt -t two_sided
+
+python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/work/buk02/enrica_data/CRC_complete/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001_sparcc.out -p /sc/orga/work/buk02/enrica_data/CRC_complete/pvals/pvals.two_sided.txt -b /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.biom -o /sc/orga/work/buk02/enrica_data/CRC_complete/complete_cytoscape.txt -t 0.0000001
+
+
+# no prolif
+
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001_sparcc.out
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif/pvals/
+
+for i in {0..99};
+do 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif/pvals/perm_cor_$i.txt; 
+done
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001_sparcc.out /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif/pvals/pvals.two_sided.txt -t two_sided
+
+python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/work/buk02/enrica_data/CRC_nonprolif/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001_sparcc.out -p /sc/orga/work/buk02/enrica_data/CRC_nonprolif/pvals/pvals.two_sided.txt -b /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.biom -o /sc/orga/work/buk02/enrica_data/CRC_nonprolif/complete_cytoscape.txt -t 0.0000001
+
+
+# prolif
+
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001_sparcc.out
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif/pvals/
+
+for i in {0..99};
+do 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif/pvals/perm_cor_$i.txt; 
+done
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001_sparcc.out /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif/pvals/pvals.two_sided.txt -t two_sided
+
+python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/work/buk02/enrica_data/CRC_prolif/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001_sparcc.out -p /sc/orga/work/buk02/enrica_data/CRC_prolif/pvals/pvals.two_sided.txt -b /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.biom -o /sc/orga/work/buk02/enrica_data/CRC_prolif/complete_cytoscape.txt -t 0.0000001
+
+
+# summarized otu combined table at L5
+summarize_taxa.py -i /sc/orga/work/buk02/enrica_data/CRC_complete_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons.biom -L 5 -o /sc/orga/work/buk02/enrica_data/CRC_complete_summ5/ --absolute_abundance
+s
+# delete
+sed -i '1d' /sc/orga/work/buk02/enrica_data/CRC_complete_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_L5.txt
+
+# scp to local
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_L5.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_L5_sparcc.out
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_L5.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete_summ5/pvals/
+
+for i in {0..99};
+do 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete_summ5/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete_summ5/pvals/perm_cor_$i.txt; 
+done
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_L5_sparcc.out /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete_summ5/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_complete_summ5/pvals/pvals.two_sided.txt -t two_sided
+
+python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/work/buk02/enrica_data/CRC_complete_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_L5_sparcc.out -p /sc/orga/work/buk02/enrica_data/CRC_complete_summ5/pvals/pvals.two_sided.txt -b /sc/orga/work/buk02/enrica_data/CRC_complete_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_L5.biom -o /sc/orga/work/buk02/enrica_data/CRC_complete_summ5/complete_cytoscape.txt -t 0.0000001
+
+
+# for non prolif
+
+
+# split otu table according to group
+split_otu_table.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons.biom -m /sc/orga/work/buk02/enrica_data/mapping_file_Final_12.3.18_withprolifstatus.txt -f prolif_status -o /sc/orga/work/buk02/enrica_data/
+
+# summarized otu combined table at L5
+summarize_taxa.py -i /sc/orga/work/buk02/enrica_data/CRC_nonprolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_nonprolif__.biom -L 5 -o /sc/orga/work/buk02/enrica_data/CRC_nonprolif_summ5/ --absolute_abundance
+
+
+# delete
+sed -i '1d' /sc/orga/work/buk02/enrica_data/CRC_nonprolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_nonprolif___L5.txt
+
+# scp to local
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_nonprolif___L5.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_nonprolif___L5_sparcc.out
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_nonprolif___L5.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif_summ5/pvals/
+
+for i in {0..99};
+do 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif_summ5/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif_summ5/pvals/perm_cor_$i.txt; 
+done
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_nonprolif___L5_sparcc.out /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif_summ5/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_nonprolif_summ5/pvals/pvals.two_sided.txt -t two_sided
+
+python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/work/buk02/enrica_data/CRC_nonprolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_nonprolif___L5_sparcc.out -p /sc/orga/work/buk02/enrica_data/CRC_nonprolif_summ5/pvals/pvals.two_sided.txt -b /sc/orga/work/buk02/enrica_data/CRC_nonprolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_nonprolif___L5.biom -o /sc/orga/work/buk02/enrica_data/CRC_nonprolif_summ5/complete_cytoscape.txt -t 0.0000001
+
+
+
+# for prolif
+
+# summarized otu combined table at L5
+summarize_taxa.py -i /sc/orga/work/buk02/enrica_data/CRC_prolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_prolif__.biom -L 5 -o /sc/orga/work/buk02/enrica_data/CRC_prolif_summ5/ --absolute_abundance
+
+
+# delete
+sed -i '1d' /sc/orga/work/buk02/enrica_data/CRC_prolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_prolif___L5.txt
+
+# scp to local
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_prolif___L5.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_prolif___L5_sparcc.out
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_prolif___L5.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif_summ5/pvals/
+
+for i in {0..99};
+do 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif_summ5/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif_summ5/pvals/perm_cor_$i.txt; 
+done
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_prolif___L5_sparcc.out /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif_summ5/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif_summ5/pvals/pvals.two_sided.txt -t two_sided
+
+python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/work/buk02/enrica_data/CRC_prolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_prolif___L5_sparcc.out -p /sc/orga/work/buk02/enrica_data/CRC_prolif_summ5/pvals/pvals.two_sided.txt -b /sc/orga/work/buk02/enrica_data/CRC_prolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_prolif___L5.biom -o /sc/orga/work/buk02/enrica_data/CRC_prolif_summ5/complete_cytoscape.txt -t 0.0000001
 
 
 ###############
