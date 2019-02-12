@@ -2489,64 +2489,6 @@ filter_otus_from_otu_table.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_ta
 summarize_taxa.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons.biom -L 6 -o /sc/orga/work/buk02/enrica_data/
 
 
-###
-# IGAL
-###
-
-# get distribution of reads to sample
-biom summarize-table -i otu_table.run2017_only.biom -o otu_table.run2017_only.txt 
-~ 1000 
-
-# remove samples with <1000 reads to them total
-filter_samples_from_otu_table.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only.biom -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000.biom -n 1000
-
-# remove OTU that only have 1 read mapping to them AND remove chloroplasts
-scp data/chloroplasts.txt buk02@mothra.hpc.mssm.edu:/sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/
-
-# remove Blank.4
-filter_samples_from_otu_table.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000.biom -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4.biom --sample_id_fp /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/ids.txt --negate_sample_id_fp
-
-filter_otus_from_otu_table.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4.biom -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons.biom -n 2 
-
-filter_taxa_from_otu_table.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons.biom -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro.biom  -n c__Chloroplast
-
-# summarize to genus
-summarize_taxa.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro.biom -L 6 -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/
-
-scp buk02@mothra.hpc.mssm.edu:/sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_L6.txt data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_L6.txt 
-
-
-# get pre samples only
-# has all samples and .neg .pos. pre
-/sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro.biom
-
-# Map_full.20171017updated.unix.txt
-# has all samples and .neg .pos. pre
-# maps each #SampleID to group and subjectID
-# take this file and make a _uniq version with the earliest time point for each subjectID
-
-# filter samples to take only uniq obs
-filter_samples_from_otu_table.py -i otu_table.biom -o filtered_otu_table.biom --sample_id_fp ids.txt
-
-filter_samples_from_otu_table.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro.biom -o /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq.biom --sample_id_fp /sc/orga/work/buk02/igal_data/sampleids.txt
-
-
-# split into groups
-split_otu_table.py -i /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq.biom -m /sc/orga/work/buk02/igal_data/map_uniq_updated.txt -f group -o /sc/orga/work/buk02/igal_data/split_groups_uniq/
-
-# get alpha div
-alpha_diversity.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__.biom -m chao1 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/adiv_chao1_group0.txt
-alpha_diversity.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__.biom -m chao1 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/adiv_chao1_group1.txt
-
-# get beta div
-beta_diversity.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__.biom -m euclidean -o /sc/orga/work/buk02/igal_data/split_groups_uniq/bdiv_group0
-beta_diversity.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__.biom -m euclidean -o /sc/orga/work/buk02/igal_data/split_groups_uniq/bdiv_group1
-
-# summarize at L5
-summarize_taxa.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__.biom -L 5 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/
-
-summarize_taxa.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__.biom -L 5 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/
-
 
 # conda
 conda create --name SparCCEnv python=2.6.9
@@ -2600,6 +2542,121 @@ python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/
 
 # filter to get from 3368 lines to 200-300; 211 to be exact
 filter_otus_from_otu_table.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons.biom -o /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.biom --min_count_fraction=0.001
+
+
+# split otu table according to group
+split_otu_table.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001.biom -m /sc/orga/work/buk02/enrica_data/mapping_file_Final_02012019.txt -f New_Grouping -o /sc/orga/work/buk02/enrica_data/
+s
+
+# convert to abs count
+# borrowed complete table from previous analysis
+biom convert -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Advance_Cancer__.biom -o /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Advance_Cancer__.txt --to-tsv
+
+biom convert -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Healthy_Non_Advance__.biom -o /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Healthy_Non_Advance__.txt --to-tsv
+
+
+# txt files below
+sed -i '1d' filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Advance_Cancer__.txt
+sed -i '1d' filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Healthy_Non_Advance__.txt
+
+# make CRC_complete, CRC_nonadv and CRC_adv subdirs
+# move all files to subdirs
+# source activate SparCCEnv
+
+# non adv
+
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Healthy_Non_Advance__.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Healthy_Non_Advance__sparcc.out
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Healthy_Non_Advance__.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv/pvals/
+
+for i in {0..99};
+do 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv/pvals/perm_cor_$i.txt; 
+done
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Healthy_Non_Advance__sparcc.out /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv/pvals/pvals.two_sided.txt -t two_sided
+
+python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/work/buk02/enrica_data/CRC_nonadv/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Healthy_Non_Advance__sparcc.out -p /sc/orga/work/buk02/enrica_data/CRC_nonadv/pvals/pvals.two_sided.txt -b /sc/orga/work/buk02/enrica_data/CRC_nonadv/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Healthy_Non_Advance__.biom -o /sc/orga/work/buk02/enrica_data/CRC_nonadv/nonadv_cytoscape.txt -t 0.0000001
+
+
+# adv
+
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Advance_Cancer__.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Advance_Cancer__sparcc.out
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Advance_Cancer__.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv/pvals/
+
+for i in {0..99};
+do 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv/pvals/perm_cor_$i.txt; 
+done
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Advance_Cancer__sparcc.out /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv/pvals/pvals.two_sided.txt -t two_sided
+
+python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/work/buk02/enrica_data/CRC_adv/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Advance_Cancer__sparcc.out -p /sc/orga/work/buk02/enrica_data/CRC_adv/pvals/pvals.two_sided.txt -b /sc/orga/work/buk02/enrica_data/CRC_adv/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons_filt0001__New_Grouping_Advance_Cancer__.biom -o /sc/orga/work/buk02/enrica_data/CRC_adv/adv_cytoscape.txt -t 0.0000001
+
+
+
+# summarized at L5
+# for non adv
+
+# split otu table according to group
+split_otu_table.py -i /sc/orga/work/buk02/enrica_data/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons.biom -m /sc/orga/work/buk02/enrica_data/mapping_file_Final_02012019.txt -f New_Grouping -o /sc/orga/work/buk02/enrica_data/
+
+# summarized table at L5
+summarize_taxa.py -i /sc/orga/work/buk02/enrica_data/CRC_nonadv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Healthy_Non_Advance__.biom -L 5 -o /sc/orga/work/buk02/enrica_data/CRC_nonadv_L5/ --absolute_abundance
+
+
+# delete
+sed -i '1d' /sc/orga/work/buk02/enrica_data/CRC_nonadv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Healthy_Non_Advance___L5.txt
+
+# scp to local
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Healthy_Non_Advance___L5.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Healthy_Non_Advance___L5_sparcc.out
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Healthy_Non_Advance___L5.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv_L5/pvals/
+
+for i in {0..99};
+do 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv_L5/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv_L5/pvals/perm_cor_$i.txt; 
+done
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Healthy_Non_Advance___L5_sparcc.out /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv_L5/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_nonadv_L5/pvals/pvals.two_sided.txt -t two_sided
+
+python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/work/buk02/enrica_data/CRC_nonadv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Healthy_Non_Advance___L5_sparcc.out -p /sc/orga/work/buk02/enrica_data/CRC_nonadv_L5/pvals/pvals.two_sided.txt -b /sc/orga/work/buk02/enrica_data/CRC_nonadv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Healthy_Non_Advance___L5.biom -o /sc/orga/work/buk02/enrica_data/CRC_nonadv_L5/nonadv_cytoscape_L5.txt -t 0.0000001
+
+
+
+# for adv
+
+# summarized otu combined table at L5
+summarize_taxa.py -i /sc/orga/work/buk02/enrica_data/CRC_adv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Advance_Cancer__.biom -L 5 -o /sc/orga/work/buk02/enrica_data/CRC_adv_L5/ --absolute_abundance
+
+
+# delete
+sed -i '1d' /sc/orga/work/buk02/enrica_data/CRC_adv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Advance_Cancer___L5.txt
+
+# scp to local
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Advance_Cancer___L5.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Advance_Cancer___L5.out
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/MakeBootstraps.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Advance_Cancer___L5.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv_L5/pvals/
+
+for i in {0..99};
+do 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv_L5/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv_L5/pvals/perm_cor_$i.txt; 
+done
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Advance_Cancer___L5_sparcc.out /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv_L5/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica_data/CRC_adv_L5/pvals/pvals.two_sided.txt -t two_sided
+
+python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/work/buk02/enrica_data/CRC_adv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Advance_Cancer___L5_sparcc.out -p /sc/orga/work/buk02/enrica_data/CRC_adv_L5/pvals/pvals.two_sided.txt -b /sc/orga/work/buk02/enrica_data/CRC_adv_L5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__New_Grouping_Advance_Cancer___L5.biom -o /sc/orga/work/buk02/enrica_data/CRC_adv_L5/adv_cytoscape_L5.txt -t 0.0000001
+
+
+
+
+
+
+# OLD ANALYSIS with non prolif vs prolif
+
 
 # take mapping file and add column prolif_status where DIAG_NEW of 0 is nonprolif and 1,2 is prolif
 df = pd.read_csv('../CUTIE/data/enrica/mapping_file_Final_12.3.18.txt', sep = '\t')
@@ -2760,6 +2817,159 @@ done
 python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_prolif___L5_sparcc.out /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif_summ5/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/CUTIE/data/enrica/CRC_prolif_summ5/pvals/pvals.two_sided.txt -t two_sided
 
 python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /sc/orga/work/buk02/enrica_data/CRC_prolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_prolif___L5_sparcc.out -p /sc/orga/work/buk02/enrica_data/CRC_prolif_summ5/pvals/pvals.two_sided.txt -b /sc/orga/work/buk02/enrica_data/CRC_prolif_summ5/filtered_otu_table_800_no_contaminants_CANCER_diagnosis_def_nosingletons__prolif_status_prolif___L5.biom -o /sc/orga/work/buk02/enrica_data/CRC_prolif_summ5/complete_cytoscape.txt -t 0.0000001
+
+
+
+
+###
+# IGAL
+###
+
+# get distribution of reads to sample
+biom summarize-table -i otu_table.run2017_only.biom -o otu_table.run2017_only.txt 
+~ 1000 
+
+# remove samples with <1000 reads to them total
+filter_samples_from_otu_table.py -i /sc/orga/pfrojects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only.biom -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000.biom -n 1000
+
+# remove OTU that only have 1 read mapping to them AND remove chloroplasts
+scp data/chloroplasts.txt buk02@mothra.hpc.mssm.edu:/sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/
+
+# remove Blank.4
+filter_samples_from_otu_table.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000.biom -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4.biom --sample_id_fp /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/ids.txt --negate_sample_id_fp
+
+filter_otus_from_otu_table.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4.biom -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons.biom -n 2 
+
+filter_taxa_from_otu_table.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons.biom -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro.biom  -n c__Chloroplast
+
+# summarize to genus
+summarize_taxa.py -i /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro.biom -L 6 -o /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/
+
+scp buk02@mothra.hpc.mssm.edu:/sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_L6.txt data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_L6.txt 
+
+
+# get pre samples only
+# has all samples and .neg .pos. pre
+/sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro.biom
+
+# Map_full.20171017updated.unix.txt
+# has all samples and .neg .pos. pre
+# maps each #SampleID to group and subjectID
+# take this file and make a _uniq version with the earliest time point for each subjectID
+
+
+cp /sc/orga/projects/clemej05a/rochester/outputs/hypotheses/005/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro.biom /sc/orga/work/buk02/igal_data/
+
+# filter samples to take only uniq obs
+filter_samples_from_otu_table.py -i /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro.biom -o /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq_prefil.biom --sample_id_fp /sc/orga/work/buk02/igal_data/sampleids.txt
+
+# filter on singletons
+filter_otus_from_otu_table.py -i /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq_prefil.biom -o /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq.biom -n 2 
+
+# filter on 0.001
+filter_otus_from_otu_table.py -i /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq.biom -o /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq_filt0.001.biom --min_count_fraction=0.001
+
+# split into groups
+split_otu_table.py -i /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq_filt0.001.biom -m /sc/orga/work/buk02/igal_data/map_uniq_updated.txt -f group -o /sc/orga/work/buk02/igal_data/split_groups_uniq/
+
+
+# summarize at L5
+summarize_taxa.py -i /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq_filt0.001.biom -L 5 -o /sc/orga/work/buk02/igal_data/
+
+summarize_taxa.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq_filt0.001__group_0__.biom -L 5 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/
+
+summarize_taxa.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq_filt0.001__group_1__.biom -L 5 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/
+
+# summarize at L6
+summarize_taxa.py -i /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq_filt0.001.biom -L 6 -o /sc/orga/work/buk02/igal_data/
+
+# otu level 
+biom convert -i /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq.biom -o /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq.txt --to-tsv
+
+
+
+
+# get alpha div
+alpha_diversity.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq_filt0.001__group_0__.biom -m chao1 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/adiv_chao1_group0.txt
+alpha_diversity.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq_filt0.001__group_1__.biom -m chao1 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/adiv_chao1_group1.txt
+
+# get beta div
+beta_diversity.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__.biom -m euclidean -o /sc/orga/work/buk02/igal_data/split_groups_uniq/bdiv_group0
+beta_diversity.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__.biom -m euclidean -o /sc/orga/work/buk02/igal_data/split_groups_uniq/bdiv_group1
+
+# convert absolute counts biom
+biom convert -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__abs.biom -o /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__abs.txt --to-tsv
+biom convert -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__abs.biom -o /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__abs.txt --to-tsv
+
+
+# summarize at L5
+summarize_taxa.py -i /sc/orga/work/buk02/igal_data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq.biom -L 5 -o /sc/orga/work/buk02/igal_data/
+
+summarize_taxa.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__.biom -L 5 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/
+
+summarize_taxa.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__.biom -L 5 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/
+
+# absolute
+cp  /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__.biom  /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__abs.biom
+cp  /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__.biom  /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__abs.biom
+
+
+
+
+
+
+
+# absolute sum L5
+summarize_taxa.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__abs.biom -L 5 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/ --absolute_abundance
+
+summarize_taxa.py -i /sc/orga/work/buk02/igal_data/split_groups_uniq/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__abs.biom -L 5 -o /sc/orga/work/buk02/igal_data/split_groups_uniq/ --absolute_abundance
+
+beta_diversity_through_plots
+
+# SparCC
+sed -i '1d' otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_0__abs.txt
+
+
+# combined table
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__abs.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__abs_sparcc.out
+
+python /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__abs.txt -n 100 -t permutation_#.txt -p /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/pvals/
+
+for i in {0..99};
+do 
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/SparCC.py /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/pvals/permutation_$i.txt -i 20 --cor_file=/Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/pvals/perm_cor_$i.txt; 
+done
+
+python /Users/KevinBu/Desktop/clemente_lab/Software/SparCC/PseudoPvals.py /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__abs_sparcc.out /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/pvals/perm_cor_#.txt 100 -o /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/pvals/pvals.two_sided.txt -t two_sided
+
+python /sc/orga/projects/clemej05a/CBC/scripts/sparcc2network2.0.py -c /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__abs_sparcc.out -p /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/pvals/pvals.two_sided.txt -b /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_uniq__group_1__abs.biom -o /Users/KevinBu/Desktop/clemente_lab/IgAl/data_analysis/adiv_bdiv_cutie/sparcc_group1/complete_cytoscape.txt -t 0.0000001
+
+
+
+
+# LEFSE - needs editing
+OTU.table --> summarize_taxa.py --> summarized.OTU.table
+summarized.OTU.table --> convert_to_lefse.py --> lefse.input
+
+python /sc/orga/projects/clemej05a/lab_tools/convert_to_lefse.py -m /sc/orga/work/buk02/clemente_lab/igal/data/Map_full.20171017updated.unix.txt -i /sc/orga/work/buk02/clemente_lab/igal/data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_L6.txt -c group -s subjectID -r '' >/sc/orga/work/buk02/clemente_lab/IgAl/data_analysis/lefse.pre.group_a_b.txt
+
+python /sc/orga/work/buk02/clemente_lab/igal/scripts/convert_to_lefse_kevin.py -m /sc/orga/work/buk02/clemente_lab/igal/data/Map_full.20171017updated.unix.txt -i /sc/orga/work/buk02/clemente_lab/igal/data/otu_table.run2017_only_filter1000_noblank4_nosingletons_nochloro_L6.txt -c group -s subjectID -r '' > /sc/orga/work/buk02/clemente_lab/igal/data_analysis/lefse.pre.group_a_b.txt
+
+sed -e 's/;/|/g' /sc/orga/work/buk02/clemente_lab/igal/data_analysis/lefse.pre.group_a_b.txt > /sc/orga/work/buk02/clemente_lab/igal/data_analysis/lefse.pre.group_a_b.nosc.txt
+
+module load lefse/2015-12
+format_input.py /sc/orga/work/buk02/clemente_lab/igal/data_analysis/lefse.pre.group_a_b.nosc.txt /sc/orga/work/buk02/clemente_lab/igal/data_analysis/lefse.pre.group_a_b.in -c 1 -s -1 -u 2 -o 1000000 
+
+run_lefse.py /sc/orga/work/buk02/clemente_lab/igal/data_analysis/lefse.pre.group_a_b.in /sc/orga/work/buk02/clemente_lab/igal/data_analysis/lefse.pre.group_a_b.in.res 
+
+plot_res.py /sc/orga/work/buk02/clemente_lab/igal/data_analysis/lefse.pre.group_a_b.in.res /sc/orga/work/buk02/clemente_lab/igal/data_analysis/lefse.pre.group_a_b.in.res.svg --format svg
+
+plot_cladogram.py /sc/orga/work/buk02/clemente_lab/igal/data_analysis/lefse.pre.group_a_b.in.res /sc/orga/work/buk02/clemente_lab/igal/data_analysis/lefse.pre.group_a_b.in.cladogram.svg --format svg
+
+
+
+
+
 
 
 ###############
