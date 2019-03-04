@@ -126,7 +126,7 @@ def calculate_cutie(defaults_fp, config_fp):
         output.write_log('Variable 2 was log-transformed')
 
     ###
-    # Pearson, Spearman, and MIC
+    # Pearson, Spearman, Kendall, and MIC
     ###
     # pull mine-specific data
     if statistic in mine_stats:
