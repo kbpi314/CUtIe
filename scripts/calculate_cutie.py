@@ -59,13 +59,13 @@ def calculate_cutie(defaults_fp, config_fp):
     if os.path.exists(working_dir) is not True:
         os.makedirs(working_dir)
     elif overwrite is not True:
-        print 'Working directory already exists, exiting.'
+        print('Working directory already exists, exiting.')
         sys.exit()
 
     if os.path.exists(working_dir + 'data_processing') is not True:
         os.makedirs(working_dir + 'data_processing')
     elif overwrite is not True:
-        print 'Data_processing directory already exists, exiting.'
+        print('Data_processing directory already exists, exiting.')
         sys.exit()
 
     # initialize and write log file
@@ -187,7 +187,7 @@ def calculate_cutie(defaults_fp, config_fp):
 
     # true_corr has opposite meaning if reverse stats is being performed
     if statistic in reverse_stats:
-        for i in xrange(resample_k):
+        for i in range(resample_k):
             true_corr[str(i+1)] = set(initial_corr).difference(set(true_corr[str(i+1)]))
 
 
@@ -217,7 +217,7 @@ def calculate_cutie(defaults_fp, config_fp):
     # Report statistics
     ###
 
-    for k in xrange(resample_k):
+    for k in range(resample_k):
         resample_key = str(k+1)
 
         # for Spearman and MIC, R2 value stored is same as rho or MIC

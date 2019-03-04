@@ -189,7 +189,7 @@ def parse_minep(pvalue_fp, delimiter=',', pskip=13):
     MINE_bins = []
     pvalue_bins = []
     # skip comments
-    for i in xrange(pskip):
+    for i in range(pskip):
         pvalue_fp.readline()
     # parse file
     for line in pvalue_fp.readlines():

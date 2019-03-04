@@ -149,8 +149,8 @@ def initial_stats_SLR(samp_var1, samp_var2, functions, mapf, f_stats):
         stat_dict[f] = np.zeros((len(rel_stats), n_var1, n_var2))
 
     # subset the data matrices into the cols needed
-    for var1 in xrange(n_var1):
-        for var2 in xrange(n_var2):
+    for var1 in range(n_var1):
+        for var2 in range(n_var2):
             var1_values = samp_var1[:, var1]
             var2_values = samp_var2[:, var2]
             stacked = np.stack([var1_values, var2_values], 0)
@@ -165,7 +165,7 @@ def initial_stats_SLR(samp_var1, samp_var2, functions, mapf, f_stats):
                     values[:] = np.nan
                 else:
                     values = mapf[f](var1_values, var2_values)
-                for s in xrange(len(values)):
+                for s in range(len(values)):
                     stat_dict[f][s][var1][var2] = values[s]
 
     return stat_dict
@@ -208,8 +208,8 @@ def initial_stats_MINE(n_var, samp_var, mine_bins, pvalue_bins):
     # see MINE API docstrings for indexing
     # http://minepy.readthedocs.io/en/latest/python.html
     MIC_str = np.zeros(shape=[n_var, n_var])
-    for i in xrange(n_var):
-        for j in xrange(n_var):
+    for i in range(n_var):
+        for j in range(n_var):
             if i == j:
                 MIC_str[i][j] = 1
             elif i < j:
@@ -219,8 +219,8 @@ def initial_stats_MINE(n_var, samp_var, mine_bins, pvalue_bins):
 
     # convert MIC strength into p value
     MIC_pvalues = np.ones(shape=[n_var, n_var])
-    for i in xrange(n_var):
-        for j in xrange(n_var):
+    for i in range(n_var):
+        for j in range(n_var):
             MIC_pvalues[i][j] = str_to_pvalues(pvalue_bins, MIC_str[i][j],
                                                mine_bins)
 
@@ -268,7 +268,7 @@ def set_threshold(pvalues, alpha, mc, log_fp, paired=False):
         # http://www.biostathandbook.com/multiplecomparisons.html
         cn = 1.0
         thresholds = np.array([(float(k+1))/(len(pvalues_copy))
-                               * alpha / cn for k in xrange(len(pvalues_copy))])
+                               * alpha / cn for k in range(len(pvalues_copy))])
         compare = np.where(pvalues_copy <= thresholds)[0]
         if len(compare) is 0:
             threshold = alpha
@@ -345,7 +345,7 @@ def multi_zeros(n_samp, n_var, samp_var):
 
     # create array of geometric means for log clr correction
     samp_var_gm = np.zeros(n_samp)
-    for i in xrange(n_samp):
+    for i in range(n_samp):
         samp_var_gm[i] = math.exp(sum(np.log(samp_var_mr[i])) / float(n_var))
 
     # create log clr correction
@@ -354,7 +354,7 @@ def multi_zeros(n_samp, n_var, samp_var):
 
     # create array of variances
     samp_var_varlog = np.zeros(n_var)
-    for i in xrange(n_var):
+    for i in range(n_var):
         samp_var_varlog[i] = np.var(samp_var_lclr[:, i])
 
     return samp_var_mr, samp_var_clr, samp_var_lclr, samp_var_varlog
@@ -377,9 +377,9 @@ def multi_replacement(correction, samp_var, samp_var_mr):
     samp_var_mr[samp_var_mr == 0] = correction
 
     # correct non-zero values
-    for i in xrange(n_samp):
+    for i in range(n_samp):
         nrow_zero = len(np.where(samp_var[i] == 0)[0])
-        for j in xrange(n_var):
+        for j in range(n_var):
             if samp_var[i][j] != 0:
                 samp_var_mr[i][j] = samp_var_mr[i][j] * (1 - nrow_zero * correction)
 
@@ -458,7 +458,7 @@ def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, influence1,
     # iteratively delete one sample and recompute statistics
     s, i, r, original_p, s = stats.linregress(var1, var2)
 
-    for s in xrange(n_samp):
+    for s in range(n_samp):
         new_var1 = var1[~np.in1d(range(n_samp), s)]
         new_var2 = var2[~np.in1d(range(n_samp), s)]
 
@@ -533,7 +533,7 @@ def resample1_cutie_sc(var1_index, var2_index, samp_var1, samp_var2, influence1,
     var2_values = samp_var2[:, var2_index]
 
     # iteratively delete one sample and recompute statistics
-    for sample_index in xrange(n_samp):
+    for sample_index in range(n_samp):
         new_var1_values = var1_values[~np.in1d(range(n_samp), sample_index)]
         new_var2_values = var2_values[~np.in1d(range(n_samp), sample_index)]
         if new_var1_values.size <= 3 or new_var2_values.size <= 3:
@@ -596,7 +596,7 @@ def cookd(var1_index, var2_index, samp_var1, samp_var2,
     exceeds = np.zeros(n_samp)
     #c is the distance and p is p-value
     (c, p) = influence1.cooks_distance
-    for i in xrange(len(c)):
+    for i in range(len(c)):
         if c[i] > 1 or np.isnan(c[i]) or c[i] == 0.0:
             exceeds[i] = 1
 
@@ -642,7 +642,7 @@ def dffits(var1_index, var2_index, samp_var1, samp_var2,
     reverse = np.zeros(n_samp)
     exceeds = np.zeros(n_samp)
     dffits_, dffits_threshold = influence1.dffits
-    for i in xrange(n_samp):
+    for i in range(n_samp):
         if dffits_[i] > dffits_threshold or dffits_[i] < -dffits_threshold or \
         np.isnan(dffits_[i]) or dffits_[i] == 0.0:
             exceeds[i] = 1
@@ -690,7 +690,7 @@ def dsr(var1_index, var2_index, samp_var1, samp_var2,
     reverse = np.zeros(n_samp)
     exceeds = np.zeros(n_samp)
     dsr_ = influence1.resid_studentized_external
-    for i in xrange(n_samp):
+    for i in range(n_samp):
         if dsr_[i] < -2 or dsr_[i] > 2 or np.isnan(dsr_[i]) or dsr_[i] == 0.0:
             exceeds[i] = 1
 
@@ -887,12 +887,12 @@ def calculate_intersection(names, sets, log_fp):
     """
     # temporary mapping of name  to set
     name_to_set = {}
-    for i in xrange(len(names)):
+    for i in range(len(names)):
         name_to_set[names[i]] = sets[i]
 
     # get regions and initialize default dict of list
     region_combs = []
-    for i in xrange(1, len(names)+1):
+    for i in range(1, len(names)+1):
         els = [list(x) for x in itertools.combinations(names, i)]
         region_combs.extend(els)
     region_sets = defaultdict(list)
@@ -951,8 +951,8 @@ def generate_pair_matrix(base_regions, regions_set, n_var1, n_var2, samp_var1,
 
     # initialize the indices of the correlations of the row matrix,
     # each row is a correlation
-    for var1 in xrange(n_var1):
-        for var2 in xrange(n_var2):
+    for var1 in range(n_var1):
+        for var2 in range(n_var2):
             row_number = n_var2 * var1 + var2
             pair_matrix[row_number][0] = var1
             pair_matrix[row_number][1] = var2
@@ -988,7 +988,7 @@ def log_transform(samp_var, working_dir, var_number):
     samp_var_mr, samp_var_clr, samp_var_lclr, samp_var_varlog = \
         multi_zeros(n_samp, n_var, samp_var)
 
-    header = [str(x+1) for x in xrange(n_var)]
+    header = [str(x+1) for x in range(n_var)]
     output.print_matrix(samp_var_mr, working_dir + 'data_processing/samp_var' + \
         str(var_number) + '_mr.txt', header, '\t')
 
@@ -1036,8 +1036,8 @@ def get_initial_corr(n_var1, n_var2, pvalues, threshold, paired):
     """
     initial_corr = []
     all_pairs = []
-    for var1 in xrange(n_var1):
-        for var2 in xrange(n_var2):
+    for var1 in range(n_var1):
+        for var2 in range(n_var2):
             pair = (var1, var2)
             # if paired is true and var1 == var2,
             # then the statement is overall false
@@ -1294,7 +1294,7 @@ def cutiek_true_corr(initial_corr, samp_var1, samp_var2, pvalues, corrs,
     exceeds_points = {}
 
     # initialize counter dictionaries for tracking sample and var freq in CUtIes
-    for i in xrange(resample_k):
+    for i in range(resample_k):
         samp_counter[str(i+1)] = np.zeros(n_samp)
         var1_counter[str(i+1)] = np.zeros(np.size(samp_var1, 1))
         var2_counter[str(i+1)] = np.zeros(np.size(samp_var2, 1))
@@ -1311,7 +1311,7 @@ def cutiek_true_corr(initial_corr, samp_var1, samp_var2, pvalues, corrs,
         rev_corr = np.zeros(n_samp)
 
         # resample_k = number of points being resampled
-        for i in xrange(resample_k):
+        for i in range(resample_k):
             # corrs is MINE_str
             new_rev_corr, new_truths, extrema_p, extrema_r = evaluate_correlation_k(
                 var1, var2, n_samp, samp_var1, samp_var2, pvalues, threshold,
@@ -1730,7 +1730,7 @@ def return_indicators(n_var1, n_var2, initial_corr, true_corr, resample_k):
                    and var2 j.
     """
     indicators = {}
-    for i in xrange(resample_k):
+    for i in range(resample_k):
         indicators[str(i+1)] = indicator(n_var1, n_var2, initial_corr,
                                          true_corr[str(i+1)])
 
@@ -1822,7 +1822,7 @@ def jackknifek_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
 
     p_values = []
     # iteratively delete k samples and recompute statistics
-    combs = [list(x) for x in itertools.combinations(xrange(n_samp), resample_k)]
+    combs = [list(x) for x in itertools.combinations(range(n_samp), resample_k)]
     for indices in combs:
         new_var1 = var1[~np.in1d(range(len(var1)), indices)]
         new_var2 = var2[~np.in1d(range(len(var2)), indices)]
@@ -1922,11 +1922,11 @@ def bootstrap_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
 
     p_values = []
 
-    for k in xrange(n_replicates):
-        new_samp = np.random.choice(xrange(n_samp), size=n_samp, replace=True)
+    for k in range(n_replicates):
+        new_samp = np.random.choice(range(n_samp), size=n_samp, replace=True)
         new_var1 = []
         new_var2 = []
-        for j in xrange(n_samp):
+        for j in range(n_samp):
             new_var1.append(var1[new_samp[j]])
             new_var2.append(var2[new_samp[j]])
 
@@ -1947,7 +1947,7 @@ def bootstrap_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
 
         # update reverse, maxp, and minr
         reverse, extrema_p, extrema_r = update_rev_extrema_rp(
-            sign, r_value, p_value, xrange(n_samp), reverse, extrema_p,
+            sign, r_value, p_value, range(n_samp), reverse, extrema_p,
             extrema_r)
 
         p_values.append(p_value)
@@ -1956,10 +1956,10 @@ def bootstrap_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
 
     if forward is True:
         exceeds = test_CI(
-            CI, threshold, exceeds, xrange(n_samp), True, CI_method)
+            CI, threshold, exceeds, range(n_samp), True, CI_method)
     elif forward is False:
         exceeds = test_CI(
-            CI, threshold, exceeds, xrange(n_samp), False, CI_method)
+            CI, threshold, exceeds, range(n_samp), False, CI_method)
 
     return reverse, exceeds, extrema_p, extrema_r
 
@@ -2020,7 +2020,7 @@ def resamplek_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
         var1_index, var2_index, samp_var1, samp_var2, forward)
 
     # iteratively delete k samples and recompute statistics
-    combs = [list(x) for x in itertools.combinations(xrange(n_samp), resample_k)]
+    combs = [list(x) for x in itertools.combinations(range(n_samp), resample_k)]
     for indices in combs:
         new_var1 = var1[~np.in1d(range(len(var1)), indices)]
         new_var2 = var2[~np.in1d(range(len(var2)), indices)]
@@ -2206,7 +2206,7 @@ def initialize_stat_dicts(resample_k, n_var1, n_var2, statistic, forward_stats,
     extrema_r = {}
 
     # initialize dictionary entries as empty lists
-    for i in xrange(resample_k):
+    for i in range(resample_k):
         true_corr[str(i+1)] = []
         true_comb_to_rev[str(i+1)] = []
         false_comb_to_rev[str(i+1)] = []
