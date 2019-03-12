@@ -223,7 +223,7 @@ def parse_config(defaults_fp, config_fp):
     List of variables corresponding to arguments for calculate_cutie.py.
     """
     # Config = ConfigParser.ConfigParser()
-    config = configparser.ConfigParser()
+    Config = configparser.ConfigParser()
     Config.read(defaults_fp)
     Config.read(config_fp)
 
