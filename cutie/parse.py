@@ -8,11 +8,11 @@ import re
 import sys
 import os
 import csv
-import ConfigParser
+#import ConfigParser
+import configparser
 import numpy as np
 import pandas as pd
 import hashlib
-from itertools import izip
 from scipy import stats
 
 def md5Checksum(filePath):
@@ -229,16 +229,16 @@ def parse_config(defaults_fp, config_fp):
     # [input]
     samp_var1_fp = Config.get('input', 'samp_var1_fp')
     # https://mentaljetsam.wordpress.com/2007/04/13/unescape-a-python-escaped-string/
-    delimiter1 = Config.get('input', 'delimiter1').decode('string_escape')
+    delimiter1 = Config.get('input', 'delimiter1')#.decode('string_escape')
     samp_var2_fp = Config.get('input', 'samp_var2_fp')
-    delimiter2 = Config.get('input', 'delimiter2').decode('string_escape')
+    delimiter2 = Config.get('input', 'delimiter2')#.decode('string_escape')
     f1type = Config.get('input', 'f1type')
     f2type = Config.get('input', 'f2type')
     skip1 = Config.getint('input', 'skip1')
     skip2 = Config.getint('input', 'skip2')
     minep_fp = Config.get('input', 'minep_fp')
     pskip = Config.getint('input', 'pskip')
-    mine_delimiter = Config.get('input', 'mine_delimiter').decode('string_escape')
+    mine_delimiter = Config.get('input', 'mine_delimiter')#.decode('string_escape')
     startcol1 = Config.getint('input', 'startcol1')
     endcol1 = Config.getint('input', 'endcol1')
     startcol2 = Config.getint('input', 'startcol2')

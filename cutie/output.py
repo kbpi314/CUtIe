@@ -43,8 +43,8 @@ def print_matrix(matrix, output_fp, header, delimiter='\t'):
             f.write(h + delimiter)
         f.write('\n')
         # write rows and columns
-        for r in xrange(rows):
-            for c in xrange(cols):
+        for r in range(rows):
+            for c in range(cols):
                 f.write(str(matrix[r][c]) + delimiter)
             f.write('\n')
 
@@ -97,8 +97,8 @@ def print_Rmatrix(avg_var1, avg_var2, var_var1, var_var2, n_var1, n_var2,
     # create matrix locally in python
     R_matrix = np.zeros([n_corr, len(headers)])
     row = 0
-    for var1 in xrange(n_var1):
-        for var2 in xrange(n_var2):
+    for var1 in range(n_var1):
+        for var2 in range(n_var2):
             if not (paired and (var1 == var2)):
                 entries = [var1, var2,
                            avg_var1[0][var1],
@@ -146,7 +146,7 @@ def print_true_false_corr(initial_corr, true_corr, working_dir, statistic,
         print_matrix(matrix, output_fp, header=['var1', 'var2'], delimiter='\t')
 
     # iterates through each resampling index
-    for k in xrange(resample_k):
+    for k in range(resample_k):
         false_corr = set(initial_corr).difference(set(true_corr[str(k+1)]))
         output_fp = working_dir + 'data_processing/' + statistic + method + \
             str(k+1) + '_falsesig.txt'
@@ -186,12 +186,12 @@ def report_results(n_var1, n_var2, working_dir, label, initial_corr, true_corr,
     def dict_to_print_matrix(comb_to_rev, fp, i):
         n_pairs = len(comb_to_rev[str(i+1)])
         pairs = np.zeros([n_pairs, 2])
-        for p in xrange(n_pairs):
+        for p in range(n_pairs):
             pairs[p] = comb_to_rev[str(i+1)][p]
         print_matrix(pairs, fp, '\t')
 
     # for each resampling value of k
-    for i in xrange(int(resample_k)):
+    for i in range(int(resample_k)):
         # write to logs
         write_log('The number of false correlations for ' + str(i+1) + ' is '
                   + str(len(initial_corr)-len(true_corr[str(i+1)])), log_fp)
@@ -374,7 +374,7 @@ def generate_dfs(statistic, forward_stats, initial_corr, true_corr,
                               df_R.loc[df_R['indicators'] != 0], 0)
 
     # create df_set instances
-    for i in xrange(resample_k):
+    for i in range(resample_k):
         resample_key = str(i+1)
         # determine non true corrs
         false_corr[resample_key] = \
@@ -852,12 +852,12 @@ def diag_plots(samp_counter, var1_counter, var2_counter, resample_k,
 
     # for each diagnostic quantity
     for stats in diag_stats:
-        for i in xrange(resample_k):
+        for i in range(resample_k):
             counter = stats_mapping[stats]
             counts = np.zeros(shape=[len(counter[str(i+1)]), 2])
             # create 2D array where col 1 = sample/var index and col 2 =
             # number of times that sample/var appears in CUtIes
-            for j in xrange(len(counter[str(i+1)])):
+            for j in range(len(counter[str(i+1)])):
                 counts[j] = np.array([j, counter[str(i+1)][j]])
 
             print_matrix(counts, working_dir + 'data_processing/' + 'counter_' \
