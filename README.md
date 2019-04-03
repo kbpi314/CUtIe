@@ -9,20 +9,22 @@ python setup.py install <install-directory>
 /sc/orga/work/buk02/clemente_lab/lungpt_data/Mapping.Pneumotype.Multiomics.RL.NYU.w_metabolites.w_inflamm.txt
 /sc/orga/work/buk02/clemente_lab/cutie/data/pre_sparcc_MSQ/otu_table.MSQ34_L6.txt
 
-################
-# Unit Testing #
-################
+# minepy installation
+http://minepy.sourceforge.net/docs/0.3.5/install.html
 
-# quick unit test (local)
-python -W ignore scripts/calculate_cutie.py -df scripts/config_defaults.ini -cf scripts/test_config.ini
+# install
+cd /Users/KevinBu/Desktop/clemente_lab/CUTIE
+export PYTHONPATH=/Users/KevinBu/tools/sandbox/lib/python3.7/site-packages/
+Python3 setup.py install  --prefix=/Users/KevinBu/tools/sandbox/
 
-# quick unit test (hpc)
-mkdir /sc/orga/work/buk02/clemente_lab/data_analysis/lungpt_1pc_point_unit_test0.05/
+# navigate to dir
+cd /Users/KevinBu/Desktop/clemente_lab/CUTIE/tests/
 
-python -W ignore /sc/orga/work/buk02/clemente_lab/cutie/scripts/calculate_cutie.py -df /sc/orga/work/buk02/clemente_lab/cutie/scripts/config_defaults.ini -cf /sc/orga/work/buk02/clemente_lab/cutie/scripts/test_config_hpc.ini
+# mk test directory
+mkdir /Users/KevinBu/Desktop/clemente_lab/CUTIE/tests/lungpt_1pc_point_unit_test0.05/
 
-scp -r buk02@mothra.hpc.mssm.edu:/sc/orga/work/buk02/clemente_lab/data_analysis/lungpt_1pc_point_unit_test0.05/* data_analysis/
-
+# run cutie
+python3 /Users/KevinBu/Desktop/clemente_lab/CUTIE/scripts/calculate_cutie.py -df /Users/KevinBu/Desktop/clemente_lab/CUTIE/tests/config_defaults.ini -cf /Users/KevinBu/Desktop/clemente_lab/CUTIE/tests/lungpt_1pc_point_unit_test_kkc1fdr0.05/test_config.ini
 
 
 
