@@ -60,6 +60,7 @@ python /sc/orga/work/buk02/CUTIE/scripts/cutie_analysis.py
 http://minepy.sourceforge.net/docs/0.3.5/install.html
 
 # install
+source activate cutie
 cd /Users/KevinBu/Desktop/clemente_lab/CUTIE
 export PYTHONPATH=/Users/KevinBu/tools/sandbox/lib/python3.7/site-packages/
 Python3 setup.py install  --prefix=/Users/KevinBu/tools/sandbox/
@@ -75,7 +76,9 @@ python3 /Users/KevinBu/Desktop/clemente_lab/CUTIE/scripts/calculate_cutie.py -df
 
 
 
-
+###
+# HPC analog
+###
 
 # quick unit test (hpc)
 module load python/2.7.14 && module load py_packages/2.7
