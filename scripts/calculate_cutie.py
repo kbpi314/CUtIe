@@ -69,7 +69,7 @@ def calculate_cutie(defaults_fp, config_fp):
         sys.exit()
 
     # initialize and write log file
-    start_time = time.clock()
+    start_time = time.process_time()
     log_fp = output.init_log(log_dir, defaults_fp, config_fp)
 
     ###
@@ -307,7 +307,7 @@ def calculate_cutie(defaults_fp, config_fp):
         working_dir, paired, samp_var1, samp_var2, n_samp, lof)
 
     # write log file
-    output.write_log('The runtime was ' + str(time.clock() - start_time), log_fp)
+    output.write_log('The runtime was ' + str(time.process_time() - start_time), log_fp)
     now = datetime.datetime.now()
     output.write_log('Ended logging at ' + str(now.isoformat()), log_fp)
 
