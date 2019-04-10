@@ -35,7 +35,7 @@ def gen_cutie_copula(working_dir, seedn):
     Generation of simulated datasets via copula method. See Weiss et al. 2016.
     ----------------------------------------------------------------------------
     INPUTS
-    working_dir - String. File path in which to save simulated data. 
+    working_dir - String. File path in which to save simulated data.
                   Should end in '/'
     """
 
@@ -55,10 +55,10 @@ def gen_cutie_copula(working_dir, seedn):
 
     # create simulated data structures
     seed(seedn)
-    copula_table1_n50_lognorm_3_0 = copula(n1, dep_top, mu_mat, 
+    copula_table1_n50_lognorm_3_0 = copula(n1, dep_top, mu_mat,
         lognorm_methods)
     seed(seedn)
-    copula_table2_n50_gamma_1_0_100 = copula(n1, dep_top, mu_mat, 
+    copula_table2_n50_gamma_1_0_100 = copula(n1, dep_top, mu_mat,
         gamma_methods)
     seed(seedn)
     copula_table3_n50_norm_0_1 = copula(n1, dep_top, mu_mat, norm_methods)
@@ -69,7 +69,7 @@ def gen_cutie_copula(working_dir, seedn):
               copula_table3_n50_norm_0_1]
 
     names = ['seed' + str(seedn) + '_copula_n50_lognorm_3_0.txt',
-        'seed' + str(seedn) + '_copula_n50_gamma_1_0_100.txt', 
+        'seed' + str(seedn) + '_copula_n50_gamma_1_0_100.txt',
         'seed' + str(seedn) + '_copula_n50_norm_0_1.txt']
 
     def make_ids(data):
@@ -83,7 +83,7 @@ def gen_cutie_copula(working_dir, seedn):
     for table, name in zip(tables,names):
         sids, oids = make_ids(table)
         bt = biom.table.Table(table, oids, sids)
-        output.print_matrix(dep_top, working_dir + 'correlation_matrix_'+ 
+        output.print_matrix(dep_top, working_dir + 'correlation_matrix_'+
             name, header = oids)
 
         with open(working_dir + name, 'w') as o:
@@ -102,19 +102,19 @@ def gen_cutie_copula(working_dir, seedn):
         otu_table = otu_table/otu_table.sum(axis=0)
 
         # construct zero-inflated data based on OTU table and renormalize
-        zero_infl_otu = np.copy(otu_table) 
+        zero_infl_otu = np.copy(otu_table)
         zero_infl_otu[zero_infl_otu<0.001] = 0
         zero_infl_otu = zero_infl_otu/zero_infl_otu.sum(axis=0)
         zero_infl_otu = np.insert(zero_infl_otu, 0, [x for x in range(n_bact)],
             axis = 1)
 
         # output zero_inflated and non-zero inflated OTU simulated data
-        output.print_matrix(zero_infl_otu, working_dir + 'zero_infl_otu_' + 
+        output.print_matrix(zero_infl_otu, working_dir + 'zero_infl_otu_' +
             name, header = ["#OTU"] + sids)
 
         otu_table = np.insert(otu_table, 0, [x for x in range(n_bact)],axis = 1)
 
-        output.print_matrix(otu_table, working_dir + 'otu_' + name, 
+        output.print_matrix(otu_table, working_dir + 'otu_' + name,
             header = ["#OTU"] + sids)
     return
 
