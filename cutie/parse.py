@@ -4,47 +4,42 @@ from __future__ import division
 import matplotlib
 matplotlib.use('Agg')
 
-import re
-import sys
-import os
-import csv
 import configparser
 import numpy as np
 import pandas as pd
 import hashlib
-from scipy import stats
 
-def md5Checksum(filePath):
+def md5_checksum(fp):
     """
     Computes the md5 of a given file (for log purposes).
     https://www.joelverhagen.com/blog/2011/02/md5-hash-of-file-in-python/
     ----------------------------------------------------------------------------
     INPUTS
-    filePath - String. Directory and name of file to be evaluated.
+    fp - String. Directory and name of file to be evaluated.
 
     OUTPUTS
     Returns string of file md5
     """
-    with open(filePath, 'rb') as fh:
+    with open(fp, 'rb') as f:
         m = hashlib.md5()
         while True:
-            data = fh.read(8192)
+            data = f.read(8192)
             if not data:
                 break
             m.update(data)
     return m.hexdigest()
 
-def parse_input(ftype, fp, startcol, endcol, delimiter, skip, log_fp):
+def parse_input(ftype, fp, startcol, endcol, delimiter, skip):
     """
-    Parses data in OTU-table format (samples as cols, taxa/variables as rows) or
-    data in traditional 'mapping' format (samples as rows, variables as
+    Parses data in OTU-table format (samples as cols, taxa/variables as rows)
+    or data in traditional 'mapping' format (samples as rows, variables as
     cols). Span of columns must be continuous. Variables must be
     numeric. Returns dataframe.
     ----------------------------------------------------------------------------
     INPUTS
     ftype       - String. Must be 'map' or 'otu' which specifies parsing
                   functionality to perform on the given file
-    fp          - File object. Poiints to data file.
+    fp          - File object. Points to data file.
     startcol    - Integer. Corresponds to first column to include containing
                   variable data in mapping file.
     endcol      - Integer. Corresponds to the column AFTER the last column
@@ -52,7 +47,6 @@ def parse_input(ftype, fp, startcol, endcol, delimiter, skip, log_fp):
                   only relevant if data is in mapping format.
     skip        - Integer. Number lines to skip in parsing the file
     delimiter   - String. Character that delimites file.
-    log_fp      - File object. Points to log file.
 
     OUTPUTS
     samp_ids      - List of strings. Contains sample names in order that they
@@ -76,33 +70,29 @@ def parse_input(ftype, fp, startcol, endcol, delimiter, skip, log_fp):
     if ftype == 'otu':
         df = df.T
 
-    # -1 are the defaults; if no start and endcols are specified, read in all cols
+    # -1 are the defaults; if no start and endcols are specified, read in all
+    # cols
     if startcol != -1 or endcol != -1:
         df = df.iloc[:, (startcol-1):(endcol-1)]
 
-    # obtain list of sample ids, variable names, number of var, and number of samples
+    # obtain list of sample ids, variable names, number of var, and number of
+    # samples
     samp_ids = df.index.values
     var_names = list(df)
     n_var = len(list(df))
     n_samp = len(df)
 
-    # write to log file
-    with open(log_fp, 'a') as f:
-        f.write('\nThe length of variables is ' + str(n_var))
-        f.write('\nThe number of samples is ' + str(n_samp))
-
     return samp_ids, var_names, df, n_var, n_samp
-
 
 def process_df(samp_var_df, samp_ids):
     """
     Reads in dataframe. Returns matrix of values as well as
-    matrices for average and normalized mean and variance of each variable,
-    as well as (unnormalized) skew. Nans are ignored in all cases.
+    matrices for average and variance of each variable(unnormalized).
+    Nans are ignored in all cases.
     ----------------------------------------------------------------------------
     INPUTS
-    samp_to_var     - Dictionary. Key = sample id (from samp_ids) and entry is a
-                      list of floats containing variable/taxa levels
+    samp_var_df     - Dataframe. Index is sample id and columns are variables
+                      of metadata.
     samp_ids        - List of strings. Contains sample names in order that they
                       were read.
 
@@ -110,11 +100,10 @@ def process_df(samp_var_df, samp_ids):
     samp_var        - 2D array where each value in row i col j is the level of
                       variable j corresponding to sample i in the order that
                       the samples are presented in samp_ids
-    avg_matrix      - 1D array where k-th entry is mean value for variable k.
+    avg_var         - 1D array where k-th entry is mean value for variable k.
                       Variables are ordered as in original data file (i.e. order
                       is presered through parsing).
-    norm_avg_matrix - Normalized (values between 0 to 1) avg_matrix.
-    var_matrix      - 1D array, k-th entry is unbiased variance for variable k.
+    var_var         - 1D array, k-th entry is unbiased variance for variable k.
     """
     # subset dataframes
     samp_var_df = samp_var_df.loc[samp_ids]
@@ -126,41 +115,12 @@ def process_df(samp_var_df, samp_ids):
     samp_var = samp_var_df.values
 
     # obtain average and variance
-    avg_var = np.array([np.nanmean(samp_var, 0)])
+    avg_var = np.nanmean(samp_var, 0)
 
     # retrieve variances
-    var_var = np.array([np.nanvar(samp_var, 0)])
+    var_var = np.nanvar(samp_var, 0)
 
     return samp_var, avg_var, var_var
-
-
-def read_taxa(taxa, delim=';'):
-    """
-    Converts string of OTU names (e.g. from QIIME) to shortened form.
-    ----------------------------------------------------------------------------
-    INPUTS
-    taxa  - String. Long name of OTU e.g. 'k__Archaea;p__Crenarchaeota;
-            c__Thaumarchaeota;o__Cenarchaeales;f__Cenarchaeaceae;
-            g__Nitrosopumilus' which will become 'Cenarchaeaceae Nitrosopumilus'
-    delim - String. Separates heirarchy.
-
-    OUTPUTS
-    String. Abridged taxa name.
-    """
-    parts = taxa.split(delim) # set as param with default
-    if len(parts) > 1:
-        while parts:
-            if not parts[-1].endswith('__'):
-                t1 = parts[-2].split('__')[1]
-                t2 = parts[-1].split('__')[1]
-                return t1 + ' ' + t2
-            else:
-                parts.pop()
-    else:
-        return parts[0]
-
-    # This should not be reached: "k__;p__..."
-    return 'Uncharacterized'
 
 ###
 # MINE parsing
@@ -175,14 +135,13 @@ def parse_minep(pvalue_fp, delimiter=',', pskip=13):
     INPUTS
     pvalue_fp   - File object. Points to pvalue file.
     delimiter   - String. Default is ',' as MINE uses csv files by default.
-    pskip       - Integer. Number of rows to skip in the pvalue table (default is
-                  13, to bypass various comments)
+    pskip       - Integer. Number of rows to skip in the pvalue table (default
+                  is 13, to bypass various comments)
 
     OUTPUTS
-    MINE_bins   - 2D Array. Each row is in format [MIC_str, pvalue, stderr of
-                  pvalue]. Pvalue corresponds to probability of observing
-                  MIC_str as or more extreme as observed MIC_str.
-    pvalue_bins - List. Sorted list of pvalues from greatest to least used
+    MINE_bins   - 1D Array. Entry is MIC_str corresponding to pvalue of
+                  pvalue_bins.
+    pvalue_bins - 1D Array. Sorted list of pvalues from greatest to least used
                   by MINE to bin the MIC_str.
     """
     MINE_bins = []
@@ -194,12 +153,12 @@ def parse_minep(pvalue_fp, delimiter=',', pskip=13):
     for line in pvalue_fp.readlines():
         # example line: 1.000000,0.000000256,0.000000181
         # corresonding to [MIC_str, pvalue, stderr of pvalue]
-        split_line = line.rstrip().split(delimiter)
+        split_line = line.strip().split(delimiter)
         # make sure line is valid; last line is 'xla'
         if len(split_line) > 1:
             row = [float(x) for x in split_line]
-            MINE_bins.append(row)
-            pvalue_bins.append(row[0]) # row[0] is the pvalue
+            MINE_bins.append(row[0])
+            pvalue_bins.append(row[1])
 
     # convert list to array
     MINE_bins = np.array(MINE_bins)
@@ -229,19 +188,16 @@ def parse_config(defaults_fp, config_fp):
     # [input]
     samp_var1_fp = Config.get('input', 'samp_var1_fp')
     # https://mentaljetsam.wordpress.com/2007/04/13/unescape-a-python-escaped-string/
-    delimiter1 = Config.get('input', 'delimiter1')#.decode('string_escape')
-    #delimiter1 = Config.get('input', 'delimiter1').decode('string_escape')
+    delimiter1 = Config.get('input', 'delimiter1')
     samp_var2_fp = Config.get('input', 'samp_var2_fp')
-    delimiter2 = Config.get('input', 'delimiter2')#.decode('string_escape')
-    #delimiter2 = Config.get('input', 'delimiter2').decode('string_escape')
+    delimiter2 = Config.get('input', 'delimiter2')
     f1type = Config.get('input', 'f1type')
     f2type = Config.get('input', 'f2type')
     skip1 = Config.getint('input', 'skip1')
     skip2 = Config.getint('input', 'skip2')
     minep_fp = Config.get('input', 'minep_fp')
     pskip = Config.getint('input', 'pskip')
-    mine_delimiter = Config.get('input', 'mine_delimiter')#.decode('string_escape')
-    #mine_delimiter = Config.get('input', 'mine_delimiter').decode('string_escape')
+    mine_delimiter = Config.get('input', 'mine_delimiter')
     startcol1 = Config.getint('input', 'startcol1')
     endcol1 = Config.getint('input', 'endcol1')
     startcol2 = Config.getint('input', 'startcol2')

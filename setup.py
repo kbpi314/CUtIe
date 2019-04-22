@@ -8,7 +8,7 @@ import ast
 import re
 
 __author__ = "The Clemente Lab"
-__copyright__ = "Copyright 2017, The Clemente Lab"
+__copyright__ = "Copyright 2019, The Clemente Lab"
 __credits__ = ["Jose C. Clemente, Kevin Bu"]
 __license__ = "GPL"
 __maintainer__ = "Kevin Bu"
@@ -27,7 +27,7 @@ setup(name='cutie',
       classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
       ],
       url='http://github.com/clemente-lab/cutie',
@@ -36,6 +36,17 @@ setup(name='cutie',
       license=__license__,
       packages=['cutie'],
       scripts=glob('scripts/*py'),
-      install_requires=['click'
-        ],
+      install_requires=[
+          'click',
+          'configparser',
+          'numpy',
+          'pandas',
+          'statsmodels',
+          'scipy',
+          'matplotlib',
+          'minepy',
+          'seaborn',
+          'py',
+          'pytest'
+      ],
       zip_safe=False)

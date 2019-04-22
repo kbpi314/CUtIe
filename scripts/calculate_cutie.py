@@ -89,20 +89,25 @@ def calculate_cutie(defaults_fp, config_fp):
     mine_stats = ['mine', 'jkm', 'bsm', 'rmine', 'rjkm', 'rbsm']
     if statistic not in all_stats:
         raise ValueError('Invalid statistic: %s chosen' % statistic)
+    if corr_compare and resample_k != 1:
+        raise ValueError('Resample_k must be 1 for pointwise stats')
 
     # file handling and parsing decisions
     # file 1 is the 'dominant' file type and should always contain the OTU file
     # we let the dominant fil 'override' the sample_id list ordering
-    samp_ids2, var2_names, samp_var2_df, n_var2, n_samp = \
-        parse.parse_input(f2type, samp_var2_fp, startcol2, endcol2, delimiter2,
-                          skip2, log_fp)
+    samp_ids2, var2_names, samp_var2_df, n_var2, n_samp = parse.parse_input(
+        f2type, samp_var2_fp, startcol2, endcol2, delimiter2, skip2)
+    output.write_log('The length of variables for file 2 is ' + str(n_var2))
+    output.write_log('The number of samples for file 2 is ' + str(n_samp))
     output.write_log('The md5 of samp_var2 was ' + \
-        str(parse.md5Checksum(samp_var2_fp)), log_fp)
-    samp_ids1, var1_names, samp_var1_df, n_var1, n_samp = \
-        parse.parse_input(f1type, samp_var1_fp, startcol1, endcol1, delimiter1,
-                          skip1, log_fp)
+        str(parse.md5_checksum(samp_var2_fp)), log_fp)
+
+    samp_ids1, var1_names, samp_var1_df, n_var1, n_samp = parse.parse_input(
+        f1type, samp_var1_fp, startcol1, endcol1, delimiter1, skip1)
+    output.write_log('The length of variables for file 1 is ' + str(n_var1))
+    output.write_log('The number of samples for file 1 is ' + str(n_samp))
     output.write_log('The md5 of samp_var1 was ' + \
-        str(parse.md5Checksum(samp_var1_fp)), log_fp)
+        str(parse.md5_checksum(samp_var1_fp)), log_fp)
 
     # if the samp_ids differ, only take common elements
     samp_ids = [value for value in samp_ids1 if value in samp_ids2]
@@ -120,10 +125,10 @@ def calculate_cutie(defaults_fp, config_fp):
 
     # log transform of data (if log_transform1 or log_transform2 are true)
     if log_transform1:
-        samp_var1 = statistics.log_transform(samp_var1, working_dir, 1)
+        samp_var1 = statistics.log_transform(samp_var1)
         output.write_log('Variable 1 was log-transformed')
     if log_transform2:
-        samp_var2 = statistics.log_transform(samp_var2, working_dir, 2)
+        samp_var2 = statistics.log_transform(samp_var2)
         output.write_log('Variable 2 was log-transformed')
 
     ###
@@ -139,20 +144,19 @@ def calculate_cutie(defaults_fp, config_fp):
         mine_bins = np.nan
         pvalue_bins = np.nan
 
-    # statistic-specific initial output
-    stat_to_matrix = statistics.assign_statistics(samp_var1, samp_var2,
-        statistic, pearson_stats, spearman_stats, kendall_stats, mine_stats,
-        mine_bins, pvalue_bins, f1type, log_fp)
-
-    # unpack statistic matrices
-    pvalues = stat_to_matrix['pvalues']
-    corrs = stat_to_matrix['correlations']
-    logpvals = stat_to_matrix['logpvals']
-    r2vals = stat_to_matrix['r2vals']
+    # initial output
+    pvalues, logpvals, corrs, r2vals = statistics.assign_statistics(samp_var1,
+        samp_var2, statistic, pearson_stats, spearman_stats, kendall_stats,
+        mine_stats, mine_bins, pvalue_bins, f1type, log_fp)
 
     # determine significance threshold and number of correlations
-    threshold, n_corr = statistics.set_threshold(pvalues, alpha, mc, log_fp,
-                                                 paired)
+    output.write_log('The type of mc correction used was ' + mc, log_fp)
+    threshold, n_corr, defaulted, minp = statistics.set_threshold(pvalues,
+        alpha, mc, paired)
+    if defaulted:
+        output.write_log('Warning: no p-values below threshold, defaulted \
+            with min(p) = ' + str(minp), log_fp)
+    output.write_log('The threshold value was ' + str(threshold), log_fp)
 
     # calculate initial sig candidates
     initial_corr, all_pairs = statistics.get_initial_corr(n_var1, n_var2,
@@ -169,18 +173,41 @@ def calculate_cutie(defaults_fp, config_fp):
     # on the statistic
     (true_corr, true_comb_to_rev, false_comb_to_rev, corr_extrema_p,
     corr_extrema_r, samp_counter, var1_counter,
-    var2_counter, exceeds_points, rev_points) = statistics.updatek_cutie(
-        initial_corr, pvalues, samp_var1, samp_var2, threshold, resample_k,
-        corrs, fold, fold_value, working_dir, CI_method, forward_stats,
-        reverse_stats, pvalue_bins, mine_bins, paired, statistic, n_replicates)
+    var2_counter, exceeds_points, rev_points) = statistics.update_cutiek_true_corr(
+        initial_corr, samp_var1, samp_var2, pvalues, corrs, threshold, paired,
+        statistic, forward_stats, reverse_stats, resample_k, fold,
+        fold_value, n_replicates, CI_method, pvalue_bins, mine_bins)
 
     # if interested in evaluating dffits, dsr, etc.
     region_sets = []
     if corr_compare:
-        (infln_metrics, infln_mapping, FP_infln_sets, region_combs,
-            region_sets) = statistics.pointwise_comparison(samp_var1, samp_var2,
-            pvalues, corrs, working_dir, n_corr, initial_corr, threshold,
-            statistic, fold_value, log_fp, paired, fold)
+        infln_metrics = ['cutie_1pc', 'cookd', 'dffits', 'dsr']
+        infln_mapping = {
+            'cutie_1pc': statistics.resample1_cutie_pc,
+            'cookd': statistics.cookd,
+            'dffits': statistics.dffits,
+            'dsr': statistics.dsr
+        }
+        (FP_infln_sets, region_combs, region_sets) = statistics.pointwise_comparison(
+            infln_metrics, infln_mapping, samp_var1, samp_var2, pvalues, corrs,
+            n_corr, initial_corr, threshold, statistic, fold_value, paired, fold)
+
+        for region in region_combs:
+            output.write_log('The amount of unique elements in set ' +
+                             str(region) + ' is ' +
+                             str(len(region_sets[str(region)])), log_fp)
+
+        output.generate_pair_matrix(infln_metrics, FP_infln_sets, n_var1, n_var2,
+                                samp_var1, samp_var2, working_dir)
+
+        # report results
+        for metric in infln_metrics:
+            metric_FP = FP_infln_sets[metric]
+            output.write_log('The number of false correlations according to ' +
+                             metric + ' is ' + str(len(metric_FP)), log_fp)
+            output.write_log('The number of true correlations according to ' +
+                             metric + ' is ' + str(len(initial_corr) - len(metric_FP)),
+                             log_fp)
 
     ###
     # Determine indicator matrix of significance
@@ -257,31 +284,21 @@ def calculate_cutie(defaults_fp, config_fp):
 
         # Output results, write R matrix
         if statistic in forward_stats:
-            output.report_results(n_var1, n_var2, working_dir, label,
-                                  initial_corr, true_corr, true_comb_to_rev,
-                                  false_comb_to_rev, resample_key, log_fp)
-
             R_matrix, headers = output.print_Rmatrix(avg_var1, avg_var2,
                 var_var1, var_var2, n_var1, n_var2, variable_names, variables,
-                working_dir, resample_key, label, n_corr, statistic, paired)
-
-            # print pairs of false_sig and true_sig (for create_json.py)
-            output.print_true_false_corr(initial_corr, true_corr, working_dir,
-                statistic, resample_k, CI_method)
+                working_dir, resample_key, label, n_corr, paired)
 
         elif statistic in reverse_stats:
-            output.report_results(n_var1, n_var2, working_dir, label,
-                                  initial_corr, true_corr, true_comb_to_rev,
-                                  false_comb_to_rev, resample_key, log_fp)
-
             R_matrix, headers = output.print_Rmatrix(avg_var1, avg_var2,
                 var_var1, var_var2, n_var1, n_var2, variable_names, variables,
-                working_dir, resample_key, label + 'rev', n_corr, statistic,
-                paired)
+                working_dir, resample_key, label + 'rev', n_corr, paired)
 
-            # print pairs of false_sig and true_sig(for create_json.py)
-            output.print_true_false_corr(initial_corr, true_corr, working_dir,
-                statistic, resample_k, CI_method)
+        output.report_results(n_var1, n_var2, working_dir, label,
+                              initial_corr, true_corr, true_comb_to_rev,
+                              false_comb_to_rev, resample_key, log_fp)
+
+        output.print_true_false_corr(initial_corr, true_corr, working_dir,
+            statistic, resample_k, CI_method)
 
     ###
     # Graphing
