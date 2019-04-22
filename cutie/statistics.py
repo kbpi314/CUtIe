@@ -604,7 +604,7 @@ def calculate_FP_sets(initial_corr, corrs, samp_var1, samp_var2, infln_metrics,
     return FP_infln_sets
 
 
-def pointwise_comparison(infln_mapping, infln_metrics, samp_var1, samp_var2,
+def pointwise_comparison(infln_metrics, infln_mapping, samp_var1, samp_var2,
                          pvalues, corrs, n_corr, initial_corr,
                          threshold, statistic, fold_value, paired, fold):
     """
