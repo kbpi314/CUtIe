@@ -544,7 +544,7 @@ def plot_figure(values, fp, df_R, title):
     plt.tick_params(axis='both', which='both', top=False, right=False)
     sns.despine()
     plt.savefig(fp)
-    plt.close()
+    plt.close('all')
     return
 
 def plot_pdist(df, working_dir):
@@ -603,7 +603,7 @@ def plot_pdist(df, working_dir):
             ax.patch.set_visible(False)
             fig.set_tight_layout(True)
             plt.savefig(dist_fp)
-            plt.close()
+            plt.close('all')
 
     plot_logp_and_logpfold(df, working_dir, stacked1, 'var1')
     plot_logp_and_logpfold(df, working_dir, stacked2, 'var2')
@@ -664,11 +664,8 @@ def plot_logp_and_logpfold(df, working_dir, stacked, var_num):
                                                 vmax=max(avg_var))
         cbar = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=normalize)
 
-    #plt.legend(loc='upper left', scatterpoints=1, frameon=False,
-    #    title='cbrt norm avg ' + var_num)
-    # fig.set_tight_layout(True)
     plt.savefig(dist_fp)
-    plt.close()
+    plt.close('all')
 
 def plot_corr(row, df_folder_fp, f1type, f2type, var1_names, var2_names,
               samp_var1, samp_var2, sim, resample_k, exceeds_points, rev_points,
@@ -759,7 +756,7 @@ def plot_corr(row, df_folder_fp, f1type, f2type, var1_names, var2_names,
     plt.tick_params(axis='both', which='both', top=False, right=False)
     sns.despine()
     plt.savefig(df_folder_fp + '/' + str(var1) + '_' + str(var2) + '.png')
-    plt.close()
+    plt.close('all')
 
 def plot_corr_sets(graph_bound, df, working_dir, f1type, f2type, var1_names,
                    var2_names, samp_var1, samp_var2, sim, exceeds_points,
@@ -891,7 +888,7 @@ def diag_plots(samp_counter, var1_counter, var2_counter, resample_k,
             plt.tick_params(axis='both', which='both', top=False, right=False)
             sns.despine()
             plt.savefig(diag_fp)
-            plt.close()
+            plt.close('all')
 
 ###
 # Log file handling
