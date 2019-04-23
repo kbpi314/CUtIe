@@ -137,7 +137,7 @@ def calculate_cutie(defaults_fp, config_fp):
     # pull mine-specific data
     if statistic in mine_stats:
         # obtain p_value bins
-        with open(minep_fp, 'rU') as f:
+        with open(minep_fp, 'r') as f:
             mine_bins, pvalue_bins = parse.parse_minep(f, mine_delimiter, pskip)
     else:
         # placeholder variables
