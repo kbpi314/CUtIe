@@ -445,11 +445,11 @@ class TestStatistics(unittest.TestCase):
         influence1, influence2 = statistics.return_influence(self.var1, self.var2,
             samp_var1=self.samp_var1,samp_var2=self.samp_var1)
         for f in self.infln_mapping:
-            # -7 because numbers get large
+            # -14 because numbers get large
             assert_almost_equal(self.pointwise_results[f],
                 self.infln_mapping[f](self.var1, self.var2, self.samp_var1,
                     self.samp_var1, influence1, influence2, self.threshold,
-                    self.sign, self.fold, self.fold_value), decimal=-7)
+                                      self.sign, self.fold, self.fold_value), decimal=-14)
 
     def test_pointwise_comparison(self):
         assert self.complete_pointwise_results == statistics.pointwise_comparison(
@@ -542,8 +542,9 @@ class TestStatistics(unittest.TestCase):
     def test_get_pCI(self):
         # test generation of CI for p value
         for method in ['log', 'cbrt', 'none']:
-            assert(self.CI_results[method] == statistics.get_pCI(self.pvalues,
-                self.n_samp,method))
+            results = statistics.get_pCI(self.pvalues, self.n_samp, method)
+            for r in range(len(results)):
+                assert_almost_equal(np.array(self.CI_results[method][r]), np.array(results[r]))
 
     def test_test_CI(self):
         # test testing of confidence interval
