@@ -19,7 +19,7 @@ np.seterr(divide='ignore', invalid='ignore')
 
 def assign_statistics(samp_var1, samp_var2, statistic, pearson_stats,
                       spearman_stats, kendall_stats, mine_stats, mine_bins,
-                      pvalue_bins):
+                      pvalue_bins, paired):
     """
     Creates dictionary mapping statistics to 2D matrix containing relevant
     statistics (e.g. pvalue, correlation) for correlation between var i and j.
