@@ -44,10 +44,6 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
                 help='Queue to submit worker jobs', required=False)
 @click.option('-m', '--modules', default='qiime',
               help='Module(s) to load, comma-separated', required=False)
-@click.option('-M', '--manda',default=False,
-                help='Submit to manda (12M per core default)', required=False)
-@click.option('-V', '--versions', default='1.9.1',
-              help='Version(s) of the module(s) to load', required=False)
 @click.option('-s', '--submit', default=False,
               help='Submit jobs', required=False)
 @click.option('--submit', 'submit', is_flag=True,
@@ -56,7 +52,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 def split_commands(commands_fp, walltime, job_name, allocation,
                    num_cores, num_cores_workers, output_fp, modules,
-                   versions, queue, sec_queue, manda, submit):
+                   queue, sec_queue, submit):
     """
     """
 
@@ -82,13 +78,7 @@ def split_commands(commands_fp, walltime, job_name, allocation,
         out_fp.write('#BSUB -P ' + allocation + '\n')
         out_fp.write('#BSUB -B\n')
         out_fp.write('#BSUB -n ' + str(num_cores) + '\n')
-        if manda:
-            out_fp.write('#BSUB -R \"span[ptile=' + str(num_cores) + ']\"\n')
-            out_fp.write('#BSUB -R \"rusage[mem=12000]\"\n')
-            out_fp.write('#BSUB -m manda\n')
-        else:
-            out_fp.write('#BSUB -R \"span[hosts=1]\"\n')
-            out_fp.write('#BSUB -m mothra\n')
+        out_fp.write('#BSUB -R \"span[hosts=1]\"\n')
         out_fp.write('#BSUB -o %J.stdout\n')
         out_fp.write('#BSUB -eo %J.stderr\n')
         out_fp.write('#BSUB -L /bin/bash\n')
@@ -103,10 +93,7 @@ def split_commands(commands_fp, walltime, job_name, allocation,
         else:
             out_fp.write('module load ' + module_list[0] + '\n')
         out_fp.write('\n')
-        out_fp.write('export PYTHONPATH=$PYTHONPATH:/hpc/users/buk02/tools/sandbox/lib/python2.7/site-packages/' + '\n')
-        out_fp.write('export QIIME_BSUB_OPTIONS=\'-q ' + sec_queue + ' -P acc_clemej05a -W ' + walltime + ' -n ' + str(num_cores_workers) + '\'\n')
-        if versions:
-            out_fp.write('export QIIME_CONFIG_FP=$HOME/.qiime_config.' + version_list[0] + '\n')
+        out_fp.write('export PYTHONPATH=$PYTHONPATH:/hpc/users/buk02/tools/sandbox/lib/python3.7/site-packages/' + '\n')
         out_fp.write('\n')
         out_fp.write(line)
         i += 1
