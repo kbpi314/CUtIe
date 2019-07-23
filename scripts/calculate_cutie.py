@@ -53,8 +53,8 @@ def calculate_cutie(defaults_fp, config_fp):
     minep_fp, pskip, mine_delimiter, working_dir, skip1, skip2,
     startcol1, endcol1, startcol2, endcol2, statistic, corr_compare, resample_k,
     paired, overwrite, alpha, mc, fold, fold_value, n_replicates, log_transform1,
-    log_transform2, CI_method, sim, corr_path, graph_bound, all_pairs,
-    log_dir, fix_axis, var1, var2) = parse.parse_config(defaults_fp, config_fp)
+    log_transform2, CI_method, sim, corr_path, graph_bound,
+    log_dir, fix_axis) = parse.parse_config(defaults_fp, config_fp)
 
     # create subfolder to hold data analysis files
     if os.path.exists(working_dir) is not True:
@@ -99,9 +99,6 @@ def calculate_cutie(defaults_fp, config_fp):
     # we let the dominant fil 'override' the sample_id list ordering
     samp_ids2, var2_names, samp_var2_df, n_var2, n_samp = parse.parse_input(
         f2type, samp_var2_fp, startcol2, endcol2, delimiter2, skip2)
-    if not all_pairs:
-        var2_names, samp_var2_df, n_var2 = parse.subset_data(var2_names,
-            samp_var2_df, n_var2, var2)
     output.write_log('The length of variables for file 2 is ' + str(n_var2), log_fp)
     output.write_log('The number of samples for file 2 is ' + str(n_samp), log_fp)
     output.write_log('The md5 of samp_var2 was ' + \
@@ -109,9 +106,6 @@ def calculate_cutie(defaults_fp, config_fp):
 
     samp_ids1, var1_names, samp_var1_df, n_var1, n_samp = parse.parse_input(
         f1type, samp_var1_fp, startcol1, endcol1, delimiter1, skip1)
-    if not all_pairs:
-        var1_names, samp_var1_df, n_var1 = parse.subset_data(var1_names,
-            samp_var1_df, n_var1, var1)
     output.write_log('The length of variables for file 1 is ' + str(n_var1), log_fp)
     output.write_log('The number of samples for file 1 is ' + str(n_samp), log_fp)
     output.write_log('The md5 of samp_var1 was ' + \
@@ -128,7 +122,7 @@ def calculate_cutie(defaults_fp, config_fp):
     # printing of samp and var names for reference
     output.write_log('There are ' + str(len(samp_ids)) + ' samples', log_fp)
     output.write_log('The first 3 samples are ' + str(samp_ids[0:3]), log_fp)
-    if all_pairs:
+    if len(var1_names) >= 3 and len(var2_names) >= 3:
         output.write_log('The first 3 var1 are ' + str(var1_names[0:3]), log_fp)
         output.write_log('The first 3 var2 are ' + str(var2_names[0:3]), log_fp)
     else:
