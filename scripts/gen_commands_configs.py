@@ -112,7 +112,7 @@ def gen_commands_configs(fold_value, statistic, corr_compare, working_dir, input
             f.write('fix_axis: False')
 
         with open(out_dir + 'commands_' + fv + '_' + statistic + '_' + corr_compare + '_' + fn,'w') as f:
-            f.write('export PYTHONPATH=$PYTHONPATH:/hpc/users/buk02/tools/sandbox/lib/python3.7/site-packages/ && python /sc/hydra/work/buk02/cutie/scripts/calculate_cutie.py -df /sc/hydra/work/buk02/CUTIE/scripts/config_defaults.ini -cf ' + out_dir + 'config_' + fv + '_' + statistic + '_' + corr_compare + '_' + fn)
+            f.write('export PYTHONPATH=$PYTHONPATH:/hpc/users/buk02/tools/sandbox/lib/python3.7/site-packages/ && python /sc/hydra/work/buk02/CUTIE/scripts/calculate_cutie.py -df /sc/hydra/work/buk02/CUTIE/scripts/config_defaults.ini -cf ' + out_dir + 'config_' + fv + '_' + statistic + '_' + corr_compare + '_' + fn)
 
 if __name__ == "__main__":
     gen_commands_configs()
