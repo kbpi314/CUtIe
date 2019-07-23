@@ -21,7 +21,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('-o', '--output_dir', type=click.Path(exists=True),
               help='output dir to put config files')
 
-def gen_configs(fold_value, statistic, corr_compare, working_dir, input_dir, output_dir):
+def gen_commands_configs(fold_value, statistic, corr_compare, working_dir, input_dir, output_dir):
     fv = fold_value
     files = glob.glob(input_dir + '*.txt')
     for file in files:
@@ -115,4 +115,4 @@ def gen_configs(fold_value, statistic, corr_compare, working_dir, input_dir, out
             f.write('export PYTHONPATH=$PYTHONPATH:/hpc/users/buk02/tools/sandbox/lib/python3.7/site-packages/ && python /sc/hydra/work/buk02/cutie/scripts/calculate_cutie.py -df /sc/hydra/work/buk02/CUTIE/scripts/config_defaults.ini -cf ' + out_dir + 'config_' + fv + '_' + statistic + '_' + corr_compare + '_' + fn)
 
 if __name__ == "__main__":
-    gen_configs()
+    gen_commands_configs()
