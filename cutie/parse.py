@@ -165,6 +165,25 @@ def parse_minep(pvalue_fp, delimiter=',', pskip=13):
 
     return MINE_bins, pvalue_bins
 
+
+def subset_data(var_names, samp_var_df, n_var, var):
+    """
+    Subsets data frame and corresponding parameters if only a single pairwise
+    comparison is being made.
+    ----------------------------------------------------------------------------
+    INPUTS
+    var_names     - List of strings. Contains variable names in order that they
+                    were read.
+    df            - Dataframe. Long/tidy format.
+    n_var         - Integer. Number of variables read in.
+    var           - Integer. Index of variable of interest.
+    """
+    var_names = var_names[var]
+    samp_var_df = samp_var_df.iloc[:,var]
+    n_var = 1
+
+    return var_names, samp_var_df, n_var
+
 ###
 # Config parsing
 ###
@@ -224,6 +243,9 @@ def parse_config(defaults_fp, config_fp):
     sim = Config.getboolean('stats', 'sim')
     corr_path = Config.get('stats', 'corr_path')
     corr_compare = Config.getboolean('stats', 'corr_compare')
+    all_pairs = Config.getboolean('stats', 'all_pairs')
+    var1 = Config.getint('stats', 'var1')
+    var2 = Config.getint('stats', 'var2')
 
     # [graph]
     graph_bound = Config.getint('graph', 'graph_bound')
@@ -234,4 +256,4 @@ def parse_config(defaults_fp, config_fp):
             skip2, startcol1, endcol1, startcol2, endcol2, statistic,
             corr_compare, resample_k, paired, overwrite, alpha, mc, fold,
             fold_value, n_replicates, log_transform1, log_transform2, CI_method,
-            sim, corr_path, graph_bound, log_dir, fix_axis)
+            sim, corr_path, graph_bound, all_pairs, log_dir, fix_axis, var1, var2)
