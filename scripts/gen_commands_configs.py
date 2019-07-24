@@ -28,7 +28,10 @@ def gen_commands_configs(fold_value, statistic, corr_compare, working_dir, input
         fn = os.path.basename(file)
         out_dir = output_dir + os.path.splitext(fn)[0] + '/'
         if not os.path.isdir(out_dir):
-            os.makedirs(out_dir)
+            os.mkdir(out_dir)
+        working_outdir = working_dir + os.path.splitext(fn)[0] + '/'
+        if not os.path.isdir(working_outdir):
+            os.mkdir(working_outdir)
         with open(out_dir + 'config_' + fv + '_' + statistic + '_' + corr_compare + '_' + fn,'w') as f:
             f.write('[input]')
             f.write('\n')
@@ -71,9 +74,9 @@ def gen_commands_configs(fold_value, statistic, corr_compare, working_dir, input
             f.write('\n')
             f.write('label: L6')
             f.write('\n')
-            f.write('working_dir: ' + out_dir)
+            f.write('working_dir: ' + working_outdir)
             f.write('\n')
-            f.write('log_dir: ' + out_dir)
+            f.write('log_dir: ' + working_outdir)
             f.write('\n')
             f.write('\n')
             f.write('[stats]')
