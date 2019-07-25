@@ -12,6 +12,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
               help='fold value for criterion for p value change')
 @click.option('-s', '--statistic', type=str,
               help='string denoting type of analysis')
+@click.option('-m', '--multi_corr', type=str,
+              help='string denoting type of multiple corrections')
 @click.option('-c', '--corr_compare', type=str,
               help='boolean denoting whether performing cooksd or not')
 @click.option('-w', '--working_dir', type=click.Path(exists=True),
@@ -21,7 +23,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('-o', '--output_dir', type=click.Path(exists=True),
               help='output dir to put config files')
 
-def gen_commands_configs(fold_value, statistic, corr_compare, working_dir, input_dir, output_dir):
+def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
+                         working_dir, input_dir, output_dir):
     fv = fold_value
     files = glob.glob(input_dir + '*.txt')
     for file in files:
@@ -87,7 +90,7 @@ def gen_commands_configs(fold_value, statistic, corr_compare, working_dir, input
             f.write('\n')
             f.write('alpha: 0.05')
             f.write('\n')
-            f.write('mc: nomc')
+            f.write('mc: ' + multi_corr)
             f.write('\n')
             f.write('fold: True')
             f.write('\n')
