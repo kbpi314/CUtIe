@@ -29,13 +29,13 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
     files = glob.glob(input_dir + '*.txt')
     for file in files:
         fn = os.path.basename(file)
-        out_dir = output_dir + os.path.splitext(fn)[0] + '/'
+        f_id = multi_corr + '_' + fv + '_' + statistic + '_' + corr_compare + '_' + fn
+        out_dir = output_dir + f_id + '/'
         if not os.path.isdir(out_dir):
             os.mkdir(out_dir)
-        working_outdir = working_dir + os.path.splitext(fn)[0] + '/'
+        working_outdir = working_dir + f_id + '/'
         if not os.path.isdir(working_outdir):
             os.mkdir(working_outdir)
-        f_id = multi_corr + '_' + fv + '_' + statistic + '_' + corr_compare + '_' + fn
         with open(out_dir + 'config_' + f_id,'w') as f:
             f.write('[input]')
             f.write('\n')
