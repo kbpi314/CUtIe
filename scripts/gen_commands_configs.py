@@ -35,7 +35,8 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
         working_outdir = working_dir + os.path.splitext(fn)[0] + '/'
         if not os.path.isdir(working_outdir):
             os.mkdir(working_outdir)
-        with open(out_dir + 'config_' + fv + '_' + statistic + '_' + corr_compare + '_' + fn,'w') as f:
+        f_id = multi_corr + '_' + fv + '_' + statistic + '_' + corr_compare + '_' + fn
+        with open(out_dir + 'config_' + f_id,'w') as f:
             f.write('[input]')
             f.write('\n')
             f.write('samp_var1_fp: ' + file)
@@ -117,7 +118,7 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
             f.write('\n')
             f.write('fix_axis: False')
 
-        with open(out_dir + 'commands_' + fv + '_' + statistic + '_' + corr_compare + '_' + fn,'w') as f:
+        with open(out_dir + 'commands_' + f_id,'w') as f:
             f.write('export PYTHONPATH=$PYTHONPATH:/hpc/users/buk02/tools/sandbox/lib/python3.7/site-packages/ && python /sc/hydra/work/buk02/CUTIE/scripts/calculate_cutie.py -df /sc/hydra/work/buk02/CUTIE/scripts/config_defaults.ini -cf ' + out_dir + 'config_' + fv + '_' + statistic + '_' + corr_compare + '_' + fn)
 
 if __name__ == "__main__":
