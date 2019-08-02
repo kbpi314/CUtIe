@@ -16,7 +16,6 @@ matplotlib.use('Agg')
 # silences divide by 0 warnings and NaN division with correlations
 np.seterr(divide='ignore', invalid='ignore')
 
-
 def assign_statistics(samp_var1, samp_var2, statistic, pearson_stats,
                       spearman_stats, kendall_stats, mine_stats, mine_bins,
                       pvalue_bins, paired):
@@ -1479,7 +1478,7 @@ def resamplek_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
             # fold change p-value restraint
             if fold:
                 if (p_value < threshold and
-                    p_value < pvalues[var1_index][var2_index] * fold_value) or \
+                    p_value < pvalues[var1_index][var2_index] / fold_value) or \
                         np.isnan(p_value):
                     for i in indices:
                         exceeds[i] += 1
