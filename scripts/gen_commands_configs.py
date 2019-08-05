@@ -18,13 +18,15 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
               help='boolean denoting whether performing cooksd or not')
 @click.option('-w', '--working_dir', type=click.Path(exists=True),
               help='working dir to save results')
+@click.option('-mpfp', '--minepfp', type=click.Path(exists=True),
+              help='file of p value stat to use')
 @click.option('-i', '--input_dir', type=click.Path(exists=True),
               help='input dir with .txt files of data')
 @click.option('-o', '--output_dir', type=click.Path(exists=True),
               help='output dir to put config files')
 
 def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
-                         working_dir, input_dir, output_dir):
+                         working_dir, input_dir, output_dir, minepfp):
     fv = fold_value
     files = glob.glob(input_dir + '*.txt')
     for file in files:
@@ -55,7 +57,7 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
             f.write('\n')
             f.write('skip2: 0')
             f.write('\n')
-            f.write('minep_fp: NA')
+            f.write('minep_fp: ' + minepfp)
             f.write('\n')
             f.write('pskip: 13')
             f.write('\n')
