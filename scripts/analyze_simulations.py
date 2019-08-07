@@ -203,9 +203,11 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                     title = 'True_corr as a function of corr in ' + c
                                     plt.figure(figsize=(4,4))
                                     sns.set_style("white")
-                                    ax = sns.pointplot(x="cors", y="results", data=df, ci='sd',
+                                    ax = sns.lineplot(x="cors", y="results", data=df, ci='sd',
                                         plot_kws=dict(alpha=0.3))
                                     ax.set_title(title, fontsize=15)
+                                    ax.set(xlim=(0-step, 1+step))
+                                    ax.set(ylim=(-0.2, 1.2))
                                     plt.tick_params(axis='both', which='both', top=False, right=False)
                                     sns.despine()
                                     plt.savefig(output_dir + mc + '_' + fv + '_' + stat + '_' + cc + '_' + c + '_' + samp + '.pdf')
