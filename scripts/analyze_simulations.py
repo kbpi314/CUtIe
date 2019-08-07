@@ -163,7 +163,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                     for samp in n_samp.split(','):
                         for cor in [str(int(x*1000)/1000) for x in np.arange(start, stop+step, step)]:
                             df = results_df[results_df['mc'] == mc]
-                            df = df[df['fv'] == fv
+                            df = df[df['fv'] == fv]
                             df = df[df['cc'] == cc]
                             df = df[df['class'] == c]
                             df = df[df['samps'] == samp]
