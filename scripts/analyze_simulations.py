@@ -185,7 +185,6 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
     print(results_df.head())
     results_df.to_csv(output_dir + 'results_df.txt', sep='\t')
 
-
 if __name__ == "__main__":
     analyze_simulations()
 

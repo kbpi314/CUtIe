@@ -16,7 +16,6 @@ matplotlib.use('Agg')
 # silences divide by 0 warnings and NaN division with correlations
 np.seterr(divide='ignore', invalid='ignore')
 
-
 def assign_statistics(samp_var1, samp_var2, statistic, pearson_stats,
                       spearman_stats, kendall_stats, mine_stats, mine_bins,
                       pvalue_bins, paired):
