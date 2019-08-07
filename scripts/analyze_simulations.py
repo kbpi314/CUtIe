@@ -131,7 +131,6 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
     nsamps = []
     cors = []
     results = []
-    truth = []
     for mc in multi_corr.split(','):
         for fv in fold_value.split(','):
             for stat in statistic.split(','):
@@ -142,44 +141,49 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                 for cor in [str(int(x*1000)/1000) for x in np.arange(start, stop+step, step)]:
                                     d = df_dict[mc][fv][stat][cc][seed][c][samp][cor]
                                     if not np.isnan(d[0]):
-                                        mcs.append(mc)
-                                        fvs.append(fv)
-                                        stats.append(stat)
-                                        ccs.append(cc)
-                                        seeds.append(seed)
-                                        class_labs.append(c)
-                                        cors.append(cor)
-                                        results.append(d[0])
-                                        truth.append(d[1])
+                                        if d[1] == 1:
+                                            mcs.append(mc)
+                                            fvs.append(fv)
+                                            stats.append(stat)
+                                            ccs.append(cc)
+                                            seeds.append(seed)
+                                            class_labs.append(c)
+                                            nsamps.append(samp)
+                                            cors.append(cor)
+                                            results.append(d[0])
 
     results_df = pd.DataFrame({'mc': mcs, 'fv': fvs, 'stat': stats, 'cc': ccs,
-        'seeds': seeds, 'class': class_labs, 'cors': cors, 'results': results, 'truth': truth})
+        'seeds': seeds, 'class': class_labs, 'samps': nsamps, 'cors': cors,
+        'results': results})
 
     for mc in multi_corr.split(','):
         for fv in fold_value.split(','):
-            for stat in statistic.split(','):
-                for cc in corr_compare.split(','):
-                    for seed in [str(x) for x in range(int(n_seed))]:
-                        for c in classes.split(','):
-                            for samp in n_samp.split(','):
-                                for cor in [str(int(x*1000)/1000) for x in np.arange(start, stop+step, step)]:
-                                    df = results_df[results_df['class'] == c]
-                                    try:
-                                        #cmap = sns.cubehelix_palette(as_cmap=True)
-                                        title = 'True_corr as a function of corr in ' + c
-                                        plt.figure(figsize=(4,4))
-                                        sns.set_style("white")
-                                        ax = sns.pointplot(x="cors", y="results", hue="truth",data=df, ci='sd')
-                                        ax.set_title(title, fontsize=15)
-                                        plt.tick_params(axis='both', which='both', top=False, right=False)
-                                        sns.despine()
-                                        plt.savefig(output_dir + mc + '_' + fv + '_' + stat + '_' + cc + '_' + c + '_' + samp + '.pdf')
-                                        plt.close()
-                                    except:
-                                        print(mc, fv, stat, cc, seed, c, samp, cor)
+            for cc in corr_compare.split(','):
+                for c in classes.split(','):
+                    for samp in n_samp.split(','):
+                        for cor in [str(int(x*1000)/1000) for x in np.arange(start, stop+step, step)]:
+                            df = results_df[results_df['mc'] == mc]
+                            df = df[df['fv'] == fv]
+                            df = df[df['cc'] == cc]
+                            df = df[df['class'] == c]
+                            df = df[df['samps'] == samp]
+                            try:
+                                #cmap = sns.cubehelix_palette(as_cmap=True)
+                                title = 'True_corr as a function of corr in ' + c
+                                plt.figure(figsize=(4,4))
+                                sns.set_style("white")
+                                ax = sns.pointplot(x="cors", y="results", hue="stat",data=df, ci='sd')
+                                ax.set_title(title, fontsize=15)
+                                plt.tick_params(axis='both', which='both', top=False, right=False)
+                                sns.despine()
+                                plt.savefig(output_dir + mc + '_' + fv + '_' + cc + '_' + c + '_' + samp + '.pdf')
+                                plt.close()
+                            except:
+                                print(mc, fv, cc, c, samp, cor)
 
     print(len(missing),len(done),len(failed))
     print(results_df.head())
+    results_df.to_csv(output_dir + 'results_df.txt', sep='\t')
 
 
 if __name__ == "__main__":
