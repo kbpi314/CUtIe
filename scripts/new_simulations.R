@@ -30,7 +30,11 @@ opt = parse_args(opt_parser)
 print(opt)
 
 attach(opt)
+print(n_sampvec)
 for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
+  print(n_samp)
+  n_samp = as.integer(n_samp)
+  print(n_samp)
   for (nseed in seq(from=0, to=max_seed, by=1)){
     # FP/FN/P
     # 'nseed_class_corr_nsamp'
