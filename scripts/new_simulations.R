@@ -10,7 +10,7 @@ library("optparse")
 library('MASS')
 
 option_list = list(
-  make_option(c("--n_sampvec"), default=NULL,type="integer",
+  make_option(c("--n_sampvec"), default=NULL,type="string",
               help="vector of n_samps to use"),
   make_option(c("--max_seed"), default=NULL,type="integer",
               help="max seed value (inclusive)"),
@@ -30,11 +30,8 @@ opt = parse_args(opt_parser)
 print(opt)
 
 attach(opt)
-print(n_sampvec)
 for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
-  print(n_samp)
   n_samp = as.integer(n_samp)
-  print(n_samp)
   for (nseed in seq(from=0, to=max_seed, by=1)){
     # FP/FN/P
     # 'nseed_class_corr_nsamp'
