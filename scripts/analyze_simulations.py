@@ -205,7 +205,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                 sns.set_style("white")
                                 ax = sns.lineplot(x="cors", y="results", data=df, ci='sd')
                                 ax.set_title(title, fontsize=15)
-                                plt.xlim(-0.1,1.1
+                                plt.xlim(-0.1,1.1)
                                 plt.ylim(-0.2,1.2)
                                 plt.tick_params(axis='both', which='both', top=False, right=False)
                                 sns.despine()
