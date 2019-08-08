@@ -10,7 +10,7 @@ library("optparse")
 library('MASS')
 
 option_list = list(
-  make_option(c("--n_sampvec"), default=NULL,type="string",
+  make_option(c("--n_sampvec"), default=NULL,type="character",
               help="vector of n_samps to use"),
   make_option(c("--max_seed"), default=NULL,type="integer",
               help="max seed value (inclusive)"),
