@@ -210,7 +210,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                 plt.ylim(-0.2,1.2)
                                 plt.tick_params(axis='both', which='both', top=False, right=False)
                                 sns.despine()
-                                plt.savefig(output_dir + mc + '_' + fv + '_' + stat + '_' + cc + '_' + c + '_' + samp + '.pdf')
+                                plt.savefig(output_dir + mc + '_' + fv + '_' + str(stat) + '_' + cc + '_' + c + '_' + samp + '.pdf')
                                 plt.close()
                                 #
 
