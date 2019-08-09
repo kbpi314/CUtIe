@@ -75,49 +75,21 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
       data = mvrnorm(n=n_samp-1, mu=c(0, 0), Sigma=matrix(c(1, 0, 0, 1), nrow=2), empirical=TRUE)
       X = data[, 1]  # standard normal (mu=0, sd=1)
       Y = data[, 2]  # standard normal (mu=0, sd=1)
-      x1 <- c(X, 20)
-      x2 <- c(Y, 20)
-      
-      # put all into 1 matrix for simplicity
-      x12 <- cbind(scale(x1),x2)
-      
-      # find the current correlation matrix
-      c1 <- var(x12)
-      
-      # cholesky decomposition to get independence
-      chol1 <- solve(chol(c1))
-      
-      newx <-  x12 %*% chol1 
-      
-      # check that we have independence and x1 unchanged
-      zapsmall(cor(newx))
-      all.equal( x12[,1], newx[,1] )
-      
-      # create new correlation structure (zeros can be replaced with other rvals)
-      newc <- matrix( 
-        c(1  , cv,
-          cv, 1  ), ncol=2 )
-      
-      # check that it is positive definite
-      eigen(newc)
-      
-      chol2 <- chol(newc)
-      
-      finalx <- newx %*% chol2 * sd(x1) + mean(x1)
-      
-      # verify success
-      apply(finalx, 2, sd)
-      
-      zapsmall(cor(finalx))
-      
-      #png(filename=paste("Desktop/clemente_lab/CUTIE/plots/FP_", cv,"_plot.png", sep=''))
-      #pairs(finalx)
-      #dev.off()
-      # 'nseed_class_corr_nsamp_nvar'
+      # empirically determine correlation within error
+      eps = 0.01
+      for (i in exp(seq(from=-4,to=10,by=0.01))){
+        x1 <- c(X, i)
+        x2 <- c(Y, 20)
+        corr <- cor(x1,x2)
+        if (abs(corr-cv) < eps) {
+          print(cv)
+          print(cor(x1,x2))
+          break
+        }
+      }
       S = seq(1:n_samp)
-      finalx = cbind(S,finalx)
-      write.table(finalx, file=paste(output, nseed,'_FP_',n_samp,'_',cv,'.txt',sep=''), row.names=sprintf("s%s",seq(1:n_samp)), col.names=c('S','X','Y'), sep='\t')
-  
+      mat = cbind(S,X,Y)
+      write.table(mat, file=paste(output, nseed,'_FP_',n_samp,'_',cv,'.txt',sep=''), row.names=sprintf("s%s",seq(1:n_samp)), col.names=TRUE, sep='\t')
     }
   }
 }
