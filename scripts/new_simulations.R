@@ -82,8 +82,6 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
         x2 <- c(Y, 20)
         corr <- cor(x1,x2)
         if (abs(corr-cv) < eps) {
-          print(cv)
-          print(cor(x1,x2))
           break
         }
       }
