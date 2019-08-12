@@ -86,7 +86,7 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
         }
       }
       S = seq(1:n_samp)
-      mat = cbind(S,X,Y)
+      mat = cbind(S,x1,x2)
       write.table(mat, file=paste(output, nseed,'_FP_',n_samp,'_',cv,'.txt',sep=''), row.names=sprintf("s%s",seq(1:n_samp)), col.names=TRUE, sep='\t')
     }
   }
