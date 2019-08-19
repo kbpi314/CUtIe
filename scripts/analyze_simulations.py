@@ -94,7 +94,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                             df_dict[mc][fv][stat][cc][seed][c] = {}
                             for samp in n_samp.split(','):
                                 df_dict[mc][fv][stat][cc][seed][c][samp] = {}
-                                for cor in [str(int(x*1000)/1000) for x in np.arange(start, stop+step, step)]:
+                                for cor in ['{0:g}'.format(float(str(x))) for x in np.arange(start, stop+step, step)]:
                                     df_dict[mc][fv][stat][cc][seed][c][samp][cor] = (np.nan, np.nan)
 
 
@@ -138,7 +138,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                     for seed in [str(x) for x in range(int(n_seed))]:
                         for c in classes.split(','):
                             for samp in n_samp.split(','):
-                                for cor in [str(int(x*1000)/1000) for x in np.arange(start, stop+step, step)]:
+                                for cor in ['{0:g}'.format(float(str(x))) for x in np.arange(start, stop+step, step)]:
                                     d = df_dict[mc][fv][stat][cc][seed][c][samp][cor]
                                     if not np.isnan(d[0]):
                                         if d[1] == 1:
@@ -162,7 +162,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
             for cc in corr_compare.split(','):
                 for c in classes.split(','):
                     for samp in n_samp.split(','):
-                        for cor in [str(int(x*1000)/1000) for x in np.arange(start, stop+step, step)]:
+                        for cor in ['{0:g}'.format(float(str(x))) for x in np.arange(start, stop+step, step)]:
                             df = results_df[results_df['mc'] == mc]
                             df = df[df['fv'] == fv]
                             df = df[df['cc'] == cc]
@@ -192,7 +192,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                 for cc in corr_compare.split(','):
                     for c in classes.split(','):
                         for samp in n_samp.split(','):
-                            for cor in [str(int(x*1000)/1000) for x in np.arange(start, stop+step, step)]:
+                            for cor in ['{0:g}'.format(float(str(x))) for x in np.arange(start, stop+step, step)]:
                                 try:
                                     df = results_df[results_df['mc'] == mc]
                                     df = df[df['fv'] == fv]
