@@ -174,7 +174,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                 plt.figure(figsize=(4,4))
                                 sns.set_style("white")
                                 ax = sns.pointplot(x="cors", y="results",
-                                    hue="stat",data=df, ci='sd')
+                                    hue="stat",data=df, ci=95)
                                 plt.setp(ax.collections, alpha=.3) #for the markers
                                 plt.setp(ax.lines, alpha=.3)
                                 ax.set_title(title, fontsize=15)
@@ -205,7 +205,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                     title = 'True_corr as a function of corr in ' + c
                                     plt.figure(figsize=(4,4))
                                     sns.set_style("white")
-                                    ax = sns.pointplot(x="cors", y="results", hue='stat',data=df, ci='sd')
+                                    ax = sns.pointplot(x="cors", y="results", hue='stat',data=df, ci=95)
                                     ax.set_title(title, fontsize=15)
                                     plt.setp(ax.collections, alpha=.3) #for the markers
                                     plt.setp(ax.lines, alpha=.3)
