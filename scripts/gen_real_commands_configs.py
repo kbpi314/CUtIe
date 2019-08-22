@@ -85,10 +85,16 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
         f_id = multi_corr + '_' + fv + '_' + statistic + '_' + corr_compare + '_' + data
         # output_dir = '/sc/hydra/work/buk02/real_data_analysis/'
         out_dir = output_dir + f_id + '/'
-        os.makedirs(out_dir)
+        try:
+            os.makedirs(out_dir)
+        except:
+            pass
         # working_dir = '/sc/hydra/scratch/buk02/real_data_analysis/'
         working_outdir = working_dir + f_id + '/'
-        os.makedirs(working_outdir)
+        try:
+            os.makedirs(working_outdir)
+        except:
+            pass
         with open(out_dir + 'config_' + f_id + '.txt','w') as f:
             f.write('[input]')
             f.write('\n')
