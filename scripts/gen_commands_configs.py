@@ -29,8 +29,8 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
                          working_dir, input_dir, output_dir, minepfp):
     fv = fold_value
     files = glob.glob(input_dir + '*.txt')
-    for file in files:
-        fn = os.path.basename(file)
+    for fp in files:
+        fn = os.path.basename(fp)
         f_id = multi_corr + '_' + fv + '_' + statistic + '_' + corr_compare + '_' + os.path.splitext(fn)[0]
         out_dir = output_dir + f_id + '/'
         if not os.path.isdir(out_dir):
@@ -41,11 +41,11 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
         with open(out_dir + 'config_' + f_id + '.txt','w') as f:
             f.write('[input]')
             f.write('\n')
-            f.write('samp_var1_fp: ' + file)
+            f.write('samp_var1_fp: ' + fp)
             f.write('\n')
             f.write('delimiter1: \\t')
             f.write('\n')
-            f.write('samp_var2_fp: ' + file)
+            f.write('samp_var2_fp: ' + fp)
             f.write('\n')
             f.write('delimiter2: \\t')
             f.write('\n')
