@@ -47,9 +47,13 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
       #pairs(cbind(X,Y))
       write.table(mat, file=paste(output, nseed,'_NP_',n_samp,'_',cv,'.txt',sep=''), row.names=sprintf("s%s",seq(1:n_samp)), col.names=TRUE, sep='\t')
       #dev.off()
+      #mat = cbind(S,log(X),log(Y))
+      #png(filename=paste("Desktop/clemente_lab/CUTIE/plots/P_", cv,'_', cor(X,Y),"_plot.png", sep=''))
+      #pairs(cbind(X,Y))
+      #write.table(mat, file=paste(output, nseed,'_NP_',n_samp,'_',cv,'.txt',sep=''), row.names=sprintf("s%s",seq(1:n_samp)), col.names=TRUE, sep='\t')
+      
     }
-    
-    
+  
     
     # AQ FN case
     for (cv in seq(from = start, to = stop, by = step)) { 
@@ -89,5 +93,25 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
       mat = cbind(S,x1,x2)
       write.table(mat, file=paste(output, nseed,'_FP_',n_samp,'_',cv,'.txt',sep=''), row.names=sprintf("s%s",seq(1:n_samp)), col.names=TRUE, sep='\t')
     }
+    
+    # CD examples
+    for (cv in seq(from = start, to = stop, by = step)) { 
+      set.seed(nseed)
+      data = mvrnorm(n=(n_samp-1), mu=c(0, 0), Sigma=matrix(c(1, cv, cv, 1), nrow=2), empirical=TRUE)
+      X = data[, 1]  # standard normal (mu=0, sd=1)
+      Y = data[, 2]  # standard normal (mu=0, sd=1)
+      theta = atan(cv) + atan(1/2)
+      X <- c(X,7*cos(theta))
+      Y <- c(Y,7*sin(theta))
+      S = seq(1:n_samp)
+      mat = cbind(S,X,Y)
+      # pairs(cbind(X,Y))
+      write.table(mat, file=paste(output, nseed,'_CD_',n_samp,'_',cv,'.txt',sep=''), row.names=sprintf("s%s",seq(1:n_samp)), col.names=TRUE, sep='\t')
+      # dev.off()
+      #model = lm(Y~X)
+      #print(paste(cv, cooks.distance(model)[n_samp], unname(cor.test(X,Y, method='pearson')$estimate), cor.test(X,Y, method='pearson')$p.value))
+    }
+    
+    
   }
 }
