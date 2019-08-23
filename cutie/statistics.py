@@ -538,10 +538,10 @@ def return_influence(var1, var2, samp_var1, samp_var2):
     x = sm.add_constant(x_old)
     y = sm.add_constant(y_old)
     # compute models with x and y as independent vars, respectively
-    model1 = sm.OLS(y_old, x)
+    model1 = sm.OLS(y_old, x, missing='drop')
     fitted1 = model1.fit()
     influence1 = fitted1.get_influence()
-    model2 = sm.OLS(x_old, y)
+    model2 = sm.OLS(x_old, y, missing='drop')
     fitted2 = model2.fit()
     influence2 = fitted2.get_influence()
     return influence1, influence2
