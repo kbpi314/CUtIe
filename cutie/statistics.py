@@ -345,13 +345,16 @@ def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, influence1,
     p_values = np.zeros(n_samp)
 
     # iteratively delete one sample and recompute statistics
-    original_p, original_r = compute_pc(var1, var2)
+
+    clean_var1, clean_var2 = utils.remove_nans(var1, var2)
+    original_p, original_r = compute_pc(clean_var1, clean_var2)
 
     for s in range(n_samp):
         new_var1 = var1[~np.in1d(range(n_samp), s)]
         new_var2 = var2[~np.in1d(range(n_samp), s)]
 
         # compute new p_value and r_value
+        new_var1, new_var1 = utils.remove_nans(new_var1, new_var1)
         p_value, r_value = compute_pc(new_var1, new_var2)
 
         # update reverse, maxp, and minr
