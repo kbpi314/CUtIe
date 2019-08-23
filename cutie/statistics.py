@@ -984,11 +984,11 @@ def evaluate_correlation_k(var1, var2, n_samp, samp_var1, samp_var2, pvalues,
 
     # obtain most extreme p and R-sq values
     if forward:
-        extrema_p = np.max(extrema_p)
-        extrema_r = np.min(extrema_r)
+        extrema_p = np.nanmax(extrema_p)
+        extrema_r = np.nanmin(extrema_r)
     elif not forward:
-        extrema_p = np.min(extrema_p)
-        extrema_r = np.max(extrema_r)
+        extrema_p = np.nanmin(extrema_p)
+        extrema_r = np.nanmax(extrema_r)
 
     return new_rev_corr, new_truths, extrema_p, extrema_r
 
@@ -1002,11 +1002,10 @@ def compute_pc(new_var1, new_var2):
                variable from file 1.
     new_var2 - Array. Same as new_var1 but for file 2.
     """
-    r_value, p_value = stats.pearsonr(new_var1, new_var2)
-
-    # if r_value is nan (p_value is still 1.0)
-    if np.isnan(r_value):
-        r_value = 0
+    try:
+        r_value, p_value = stats.pearsonr(new_var1, new_var2)
+    except ValueError:
+        r_value, p_value = np.nan, np.nan
 
     return p_value, r_value
 
@@ -1020,12 +1019,10 @@ def compute_sc(new_var1, new_var2):
                variable from file 1.
     new_var2 - Array. Same as new_var1 but for file 2.
     """
-    r_value, p_value = stats.spearmanr(new_var1, new_var2)
-
-    # if p_value is nan
-    if np.isnan(p_value):
-        p_value = 1
-        r_value = 0
+    try:
+        r_value, p_value = stats.spearmanr(new_var1, new_var2)
+    except ValueError:
+        r_value, p_value = np.nan, np.nan
 
     return p_value, r_value
 
@@ -1041,17 +1038,10 @@ def compute_kc(new_var1, new_var2):
     """
 
     # if resulting variables do not contain enough points
-    if new_var1.size < 2 or new_var2.size < 2:
-        p_value = 1
-        r_value = 0
-
-    else:
+    try:
         r_value, p_value = stats.kendalltau(new_var1, new_var2)
-
-    # if p_value is nan
-    if np.isnan(p_value):
-        p_value = 1
-        r_value = 0
+    except ValueError:
+        r_value, p_value = np.nan, np.nan
 
     return p_value, r_value
 
