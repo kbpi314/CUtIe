@@ -538,6 +538,9 @@ def dsr(var1_index, var2_index, samp_var1, samp_var2,
     exceeds = np.zeros(n_samp)
     dsr_ = influence1.resid_studentized_external
 
+    var1 = samp_var1[:, var1_index]
+    var2 = samp_var2[:, var2_index]
+
     nonnan_indices_var1 = [list(x)[0] for x in list(np.argwhere(~np.isnan(var1)))]
     nonnan_indices_var2 = [list(x)[0] for x in list(np.argwhere(~np.isnan(var2)))]
 
