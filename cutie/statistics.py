@@ -415,11 +415,26 @@ def cookd(var1_index, var2_index, samp_var1, samp_var2,
     exceeds = np.zeros(n_samp)
     # c is the distance and p is p-value
     (c, p) = influence1.cooks_distance
+
+    var1 = samp_var1[:, var1_index]
+    var2 = samp_var2[:, var2_index]
+
+    nonnan_indices_var1 = [list(x)[0] for x in list(np.argwhere(~np.isnan(var1)))]
+    nonnan_indices_var2 = [list(x)[0] for x in list(np.argwhere(~np.isnan(var2)))]
+
+    non_nan_indices = list(set(nonnan_indices_var1).intersection(set(nonnan_indices_var2)))
+
+    new_cooksd = np.zeros(n_samp)
+    new_cooksp = np.zeros(n_samp)
     for i in range(len(c)):
-        if c[i] > 1 or np.isnan(c[i]) or c[i] == 0.0:
+        new_cooksd[non_nan_indices[i]] = c[i]
+        new_cooksp[non_nan_indices[i]] = p[i]
+
+    for i in range(len(new_cooksd)):
+        if new_cooksd[i] > 1 or np.isnan(new_cooksd[i]) or new_cooksd[i] == 0.0:
             exceeds[i] = 1
 
-    return reverse, exceeds, c, p
+    return reverse, exceeds, new_cooksd, new_cooksp
 
 
 def dffits(var1_index, var2_index, samp_var1, samp_var2,
@@ -461,12 +476,25 @@ def dffits(var1_index, var2_index, samp_var1, samp_var2,
     reverse = np.zeros(n_samp)
     exceeds = np.zeros(n_samp)
     dffits_, dffits_threshold = influence1.dffits
+
+    var1 = samp_var1[:, var1_index]
+    var2 = samp_var2[:, var2_index]
+
+    nonnan_indices_var1 = [list(x)[0] for x in list(np.argwhere(~np.isnan(var1)))]
+    nonnan_indices_var2 = [list(x)[0] for x in list(np.argwhere(~np.isnan(var2)))]
+
+    non_nan_indices = list(set(nonnan_indices_var1).intersection(set(nonnan_indices_var2)))
+
+    new_dffits = np.zeros(n_samp)
+    for i in range(len(dffits_)):
+        new_dffits[non_nan_indices[i]] = dffits_[i]
+
     for i in range(n_samp):
-        if dffits_[i] > dffits_threshold or dffits_[i] < -dffits_threshold or \
-                np.isnan(dffits_[i]) or dffits_[i] == 0.0:
+        if new_dffits[i] > dffits_threshold or new_dffits[i] < -dffits_threshold or \
+                np.isnan(new_dffits[i]) or new_dffits[i] == 0.0:
             exceeds[i] = 1
 
-    return reverse, exceeds, np.array(dffits_), np.array([dffits_threshold] * n_samp)
+    return reverse, exceeds, np.array(new_dffits), np.array([dffits_threshold] * n_samp)
 
 
 def dsr(var1_index, var2_index, samp_var1, samp_var2,
@@ -509,12 +537,22 @@ def dsr(var1_index, var2_index, samp_var1, samp_var2,
     reverse = np.zeros(n_samp)
     exceeds = np.zeros(n_samp)
     dsr_ = influence1.resid_studentized_external
+
+    nonnan_indices_var1 = [list(x)[0] for x in list(np.argwhere(~np.isnan(var1)))]
+    nonnan_indices_var2 = [list(x)[0] for x in list(np.argwhere(~np.isnan(var2)))]
+
+    non_nan_indices = list(set(nonnan_indices_var1).intersection(set(nonnan_indices_var2)))
+
+    new_dsr = np.zeros(n_samp)
+    for i in range(len(c)):
+        new_dsr[non_nan_indices[i]] = dsr_[i]
+
     for i in range(n_samp):
         # threshold useed by DSR to signify outlier status
-        if dsr_[i] < -2 or dsr_[i] > 2 or np.isnan(dsr_[i]) or dsr_[i] == 0.0:
+        if new_dsr[i] < -2 or new_dsr[i] > 2 or np.isnan(new_dsr[i]) or new_dsr[i] == 0.0:
             exceeds[i] = 1
 
-    return reverse, exceeds, np.array(dsr_), np.array(dsr_)
+    return reverse, exceeds, np.array(new_dsr), np.array(new_dsr)
 
 
 def return_influence(var1, var2, samp_var1, samp_var2):
