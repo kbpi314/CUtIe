@@ -547,7 +547,7 @@ def dsr(var1_index, var2_index, samp_var1, samp_var2,
     non_nan_indices = list(set(nonnan_indices_var1).intersection(set(nonnan_indices_var2)))
 
     new_dsr = np.zeros(n_samp)
-    for i in range(len(c)):
+    for i in range(len(dsr_)):
         new_dsr[non_nan_indices[i]] = dsr_[i]
 
     for i in range(n_samp):
