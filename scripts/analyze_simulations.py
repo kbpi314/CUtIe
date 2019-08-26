@@ -109,13 +109,13 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
         fn = subset_files[-1]
         with open(fn,'r') as rf:
             label = f.split('/')[-1]
-            # try:
-            mc, fv, stat, cc, seed, c, samp, cor = label.split('_')
-            defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime = parse_log(rf, cookd=cc)
-            df_dict[mc][fv][stat][cc][seed][c][samp][cor] = (true_corr, initial_corr)
-            # except:
-            # failed.append(label)
-
+            try:
+                mc, fv, stat, cc, seed, c, samp, cor = label.split('_')
+                defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime = parse_log(rf, cookd=cc)
+                df_dict[mc][fv][stat][cc][seed][c][samp][cor] = (true_corr, initial_corr)
+            except:
+                failed.append(label)
+            print(failed)
         if not subset_files:
             missing.append(f)
         else:
