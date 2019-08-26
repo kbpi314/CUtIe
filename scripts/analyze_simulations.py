@@ -55,6 +55,8 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                     true_corr = float(l.split(' ')[-1])
                 elif "runtime" in l:
                     runtime = float(l.split(' ')[-1])
+            if cookd == 'False':
+                print(defaulted, initial_corr, false_corr, true_corr)
             rs_false = np.nan
             rs_true = np.nan
 
@@ -76,7 +78,6 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                 elif "runtime" in l:
                     runtime = float(l.split(' ')[-1])
 
-        print(defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime)
         return defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime
 
     start, stop, step = [float(x) for x in rangestr.split(',')]
