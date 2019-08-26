@@ -43,7 +43,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
     def parse_log(f, cookd):
         lines = [l.strip() for l in f.readlines()]
         defaulted = False
-        if cookd:
+        if cookd == 'True':
             for l in lines:
                 if "defaulted" in l:
                     defaulted = True
@@ -113,13 +113,11 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                 mc, fv, stat, cc, seed, c, samp, cor = label.split('_')
                 defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime = parse_log(rf, cookd=cc)
                 df_dict[mc][fv][stat][cc][seed][c][samp][cor] = (true_corr, initial_corr)
+                done.append(f)
             except:
                 failed.append(label)
-            print(failed)
         if not subset_files:
             missing.append(f)
-        else:
-            done.append(f)
 
     missing.sort()
     # print([os.path.basename(x) for x in missing])
