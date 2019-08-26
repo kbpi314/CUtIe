@@ -44,7 +44,6 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
         lines = [l.strip() for l in f.readlines()]
         defaulted = False
         if cookd:
-            print('hi')
             for l in lines:
                 if "defaulted" in l:
                     defaulted = True
@@ -60,7 +59,6 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
             rs_true = np.nan
 
         else:
-            print('hey')
             # check if FDR correction defaulted
             for l in lines:
                 if "defaulted" in l:
@@ -78,6 +76,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                 elif "runtime" in l:
                     runtime = float(l.split(' ')[-1])
 
+        print(defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime)
         return defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime
 
     start, stop, step = [float(x) for x in rangestr.split(',')]
