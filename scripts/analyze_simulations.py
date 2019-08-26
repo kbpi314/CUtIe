@@ -105,13 +105,16 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
     for f in file_dirs:
         subset_files = glob.glob(f + '/*.txt')
         subset_files.sort()
+        # grab the most recent txt (log) file
         fn = subset_files[-1]
         with open(fn,'r') as rf:
             label = f.split('/')[-1]
             try:
-                defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime = parse_log(rf, cookd=False)
                 mc, fv, stat, cc, seed, c, samp, cor = label.split('_')
+                print(mc, fv, stat, cc, seed, c, samp, cor)
+                defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime = parse_log(rf, cookd=cc)
                 df_dict[mc][fv][stat][cc][seed][c][samp][cor] = (true_corr, initial_corr)
+                print(defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime)
             except:
                 failed.append(label)
 
@@ -188,7 +191,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
     # indiv plots
     for mc in multi_corr.split(','):
         for fv in fold_value.split(','):
-            for stat in [ ['kpc','rpc'], ['ksc','rsc'], ['kkc', 'rkc'], ['mine','rmine'] ]:
+            for stat in [ ['kpc','rpc'], ['ksc','rsc'], ['kkc', 'rkc'] ]: #, ['mine','rmine'] ]:
                 for cc in corr_compare.split(','):
                     for c in classes.split(','):
                         for samp in n_samp.split(','):
