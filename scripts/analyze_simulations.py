@@ -115,7 +115,6 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                 print(mc, fv, stat, cc, seed, c, samp, cor)
                 defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime = parse_log(rf, cookd=cc)
                 df_dict[mc][fv][stat][cc][seed][c][samp][cor] = (true_corr, initial_corr)
-                print(defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime)
             except:
                 failed.append(label)
 
