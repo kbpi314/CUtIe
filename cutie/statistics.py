@@ -693,9 +693,7 @@ def update_cutiek_true_corr(initial_corr, samp_var1, samp_var2, pvalues, corrs,
                      resample_k, fold, fold_value):
 
     """
-    Determine true correlations via resampling of k points. Defaults for
-    pvalue_bins and mine_bins are to handle cases where statistic is not MINE
-    based.
+    Determine true correlations via resampling of k points.
     ----------------------------------------------------------------------------
     INPUTS
     initial_corr      - Set of integer tuples. Contains variable pairs initially
@@ -1037,7 +1035,7 @@ def update_rev_extrema_rp(sign, r_value, p_value, indices, reverse, extrema_p,
 
 def resamplek_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
                     pvalues, threshold, resample_k, sign, forward, statistic,
-                    fold, fold_value, pvalue_bins, mine_bins):
+                    fold, fold_value):
     """
     Perform CUTIE resampling on a given pair of variables and test CUTIE status.
     ----------------------------------------------------------------------------
