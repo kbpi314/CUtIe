@@ -565,6 +565,7 @@ def calculate_FP_sets(initial_corr, corrs, samp_var1, samp_var2, infln_metrics,
     # determine if each initial_corr correlation belongs in each metric FP set
     for pair in initial_corr:
         var1, var2 = pair
+        print(pair)
         influence = return_influence(var1, var2, samp_var1, samp_var2)
         for metric in infln_metrics:
             reverse, exceeds, corr_values, pvalues_thresholds = infln_mapping[metric](
