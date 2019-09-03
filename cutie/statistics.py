@@ -943,7 +943,7 @@ def compute_pc(new_var1, new_var2):
     """
     var1, var2 = utils.remove_nans(new_var1, new_var2)
     try:
-        r_value, p_value = stats.pearsonr(var1, var2)
+        r_value, p_value = scipy.stats.pearsonr(var1, var2)
     except ValueError:
         r_value, p_value = np.nan, np.nan
 
@@ -961,7 +961,7 @@ def compute_sc(new_var1, new_var2):
     """
     var1, var2 = utils.remove_nans(new_var1, new_var2)
     try:
-        r_value, p_value = stats.spearmanr(var1, var2)
+        r_value, p_value = scipy.stats.spearmanr(var1, var2)
     except ValueError:
         r_value, p_value = np.nan, np.nan
 
@@ -979,7 +979,7 @@ def compute_kc(new_var1, new_var2):
     """
     var1, var2 = utils.remove_nans(new_var1, new_var2)
     try:
-        r_value, p_value = stats.kendalltau(var1, var2)
+        r_value, p_value = scipy.stats.kendalltau(var1, var2)
     except ValueError:
         r_value, p_value = np.nan, np.nan
 
