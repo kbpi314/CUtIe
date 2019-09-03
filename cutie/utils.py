@@ -211,7 +211,7 @@ def calculate_intersection(names, sets):
         out_set = set(names).difference(in_set)
 
         # for each in_set,
-        final_set = union_set
+        final_set = union_set.copy()
         for in_s in in_set:
             final_set = final_set.intersection(name_to_set[in_s])
 
