@@ -578,14 +578,20 @@ def return_influence(var1, var2, samp_var1, samp_var2):
     """
     x_old = samp_var1[:, var1]
     y_old = samp_var2[:, var2]
+
+    # remove nan for influence calculation
+    new_x, new_y = utils.remove_nans(x_old, y_old)
+
     # add constant for constant term in regression
-    x = sm.add_constant(x_old)
-    y = sm.add_constant(y_old)
+    x = sm.add_constant(new_x)
+    y = sm.add_constant(new_y)
     # compute models with x and y as independent vars, respectively
-    model1 = sm.OLS(y_old, x, missing='drop')
+    model1 = sm.OLS(new_y, x, missing='drop')
     fitted1 = model1.fit()
     influence1 = fitted1.get_influence()
-    model2 = sm.OLS(x_old, y, missing='drop')
+    # only influence1 is used in subsequent calculations but one can theorize
+    # about using influence2 as a criterion as well
+    model2 = sm.OLS(new_x, y, missing='drop')
     fitted2 = model2.fit()
     influence2 = fitted2.get_influence()
     return influence1, influence2
