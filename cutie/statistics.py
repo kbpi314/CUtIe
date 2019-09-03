@@ -633,7 +633,7 @@ def calculate_FP_sets(initial_corr, corrs, samp_var1, samp_var2, infln_metrics,
             reverse, exceeds, corr_values, pvalues_thresholds = infln_mapping[metric](
                 var1, var2, samp_var1, samp_var2, influence1, influence2,
                 threshold, fold, fold_value)
-            if var1, var2 == (133, 14):
+            if pair == (133, 14):
                 print(reverse, exceeds, corr_values, pvalues_thresholds)
 
             # if exceeds == 0 then it is a TP
