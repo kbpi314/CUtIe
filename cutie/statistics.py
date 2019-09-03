@@ -100,8 +100,11 @@ def initial_stats(samp_var1, samp_var2, corr_func, paired):
                 var1_values, var2_values = utils.remove_nans(samp_var1[:, var1],
                                                              samp_var2[:, var2])
 
-                corrs[var1][var2], pvalues[var1][var2] = corr_func(var1_values,
+                try:
+                    corrs[var1][var2], pvalues[var1][var2] = corr_func(var1_values,
                                                                    var2_values)
+                except ValueError:
+                    corrs[var1][var2], pvalues[var1][var2] = np.nan, np.nan
 
     return corrs, pvalues
 
