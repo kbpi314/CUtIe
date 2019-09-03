@@ -182,8 +182,7 @@ def parse_config(defaults_fp, config_fp):
     fix_axis = Config.getboolean('graph', 'fix_axis')
 
     return (label, samp_var1_fp, delimiter1, samp_var2_fp, delimiter2, f1type,
-            f2type, minep_fp, pskip, mine_delimiter, working_dir, skip1,
-            skip2, startcol1, endcol1, startcol2, endcol2, statistic,
-            corr_compare, resample_k, paired, overwrite, alpha, mc, fold,
-            fold_value, log_transform1, log_transform2,
-            sim, corr_path, graph_bound, log_dir, fix_axis)
+            f2type, working_dir, skip1, skip2, startcol1, endcol1, startcol2,
+            endcol2, statistic, corr_compare, resample_k, paired, overwrite,
+            alpha, mc, fold, fold_value, log_transform1, log_transform2, sim,
+            corr_path, graph_bound, log_dir, fix_axis)
