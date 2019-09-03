@@ -631,7 +631,7 @@ def calculate_FP_sets(initial_corr, corrs, samp_var1, samp_var2, infln_metrics,
         influence = return_influence(var1, var2, samp_var1, samp_var2)
         for metric in infln_metrics:
             reverse, exceeds, corr_values, pvalues_thresholds = infln_mapping[metric](
-                var1, var2, samp_var1, samp_var2, influence1, influence2,
+                var1, var2, samp_var1, samp_var2, influence,
                 threshold, fold, fold_value)
             if pair == (133, 14):
                 print(reverse, exceeds, corr_values, pvalues_thresholds)
