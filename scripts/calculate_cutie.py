@@ -10,7 +10,6 @@ from cutie import __version__
 import matplotlib
 matplotlib.use('Agg')
 
-import minepy
 import time
 import click
 import os
@@ -50,11 +49,10 @@ def calculate_cutie(defaults_fp, config_fp):
     """
     # unpack config variables
     (label, samp_var1_fp, delimiter1, samp_var2_fp, delimiter2, f1type, f2type,
-    minep_fp, pskip, mine_delimiter, working_dir, skip1, skip2,
-    startcol1, endcol1, startcol2, endcol2, statistic, corr_compare, resample_k,
-    paired, overwrite, alpha, mc, fold, fold_value, n_replicates, log_transform1,
-    log_transform2, CI_method, sim, corr_path, graph_bound,
-    log_dir, fix_axis) = parse.parse_config(defaults_fp, config_fp)
+     working_dir, skip1, skip2, startcol1, endcol1, startcol2, endcol2, statistic,
+     corr_compare, resample_k, paired, overwrite, alpha, mc, fold, fold_value,
+     log_transform1, log_transform2, sim, corr_path, graph_bound,
+     log_dir, fix_axis) = parse.parse_config(defaults_fp, config_fp)
 
     # create subfolder to hold data analysis files
     if os.path.exists(working_dir) is not True:
@@ -78,21 +76,16 @@ def calculate_cutie(defaults_fp, config_fp):
     ###
 
     # define possible stats
-    forward_stats = ['kpc', 'jkp', 'bsp', 'ksc', 'jks', 'bss',
-                     'kkc', 'jkk', 'bsk', 'mine', 'jkm', 'bsm']
-    reverse_stats = ['rpc', 'rjkp', 'rbsp', 'rsc', 'rjks', 'rbss',
-                     'rkc', 'rjkk', 'rbsk', 'rmine', 'rjkm', 'rbsm']
+    forward_stats = ['kpc',  'ksc', 'kkc']
+    reverse_stats = ['rpc', 'rsc', 'rkc']
     all_stats = forward_stats + reverse_stats
-    pearson_stats = ['kpc', 'jkp' , 'bsp', 'rpc', 'rjkp', 'rbsp']
-    spearman_stats = ['ksc', 'jks','bss', 'rsc', 'rjks', 'rbss']
-    kendall_stats = ['kkc', 'jkk', 'bsk', 'rkc', 'rjkk', 'rbsk']
-    mine_stats = ['mine', 'jkm', 'bsm', 'rmine', 'rjkm', 'rbsm']
+    pearson_stats = ['kpc', 'rpc']
+    spearman_stats = ['ksc', 'rsc']
+    kendall_stats = ['kkc', 'rkc']
     if statistic not in all_stats:
         raise ValueError('Invalid statistic: %s chosen' % statistic)
     if corr_compare and resample_k != 1:
         raise ValueError('Resample_k must be 1 for pointwise stats')
-    if CI_method not in ['log','cbrt','none']:
-        raise ValueError('Invalid CI method chosen: ' + CI_method)
 
     # file handling and parsing decisions
     # file 1 is the 'dominant' file type and should always contain the OTU file
@@ -139,22 +132,12 @@ def calculate_cutie(defaults_fp, config_fp):
         output.write_log('Variable 2 was log-transformed')
 
     ###
-    # Pearson, Spearman, Kendall, and MIC
+    # Pearson, Spearman, Kendall
     ###
-    # pull mine-specific data
-    if statistic in mine_stats:
-        # obtain p_value bins
-        with open(minep_fp, 'r') as f:
-            mine_bins, pvalue_bins = parse.parse_minep(f, mine_delimiter, pskip)
-    else:
-        # placeholder variables
-        mine_bins = np.nan
-        pvalue_bins = np.nan
-
     # initial output
     pvalues, logpvals, corrs, r2vals = statistics.assign_statistics(samp_var1,
         samp_var2, statistic, pearson_stats, spearman_stats, kendall_stats,
-        mine_stats, mine_bins, pvalue_bins, paired)
+        paired)
 
     # determine significance threshold and number of correlations
     output.write_log('The type of mc correction used was ' + mc, log_fp)
@@ -182,8 +165,7 @@ def calculate_cutie(defaults_fp, config_fp):
     corr_extrema_r, samp_counter, var1_counter,
     var2_counter, exceeds_points, rev_points) = statistics.update_cutiek_true_corr(
         initial_corr, samp_var1, samp_var2, pvalues, corrs, threshold, paired,
-        statistic, forward_stats, reverse_stats, resample_k, fold,
-        fold_value, n_replicates, CI_method, pvalue_bins, mine_bins)
+        statistic, forward_stats, reverse_stats, resample_k, fold, fold_value)
 
     # if interested in evaluating dffits, dsr, etc.
     region_sets = []
@@ -305,7 +287,7 @@ def calculate_cutie(defaults_fp, config_fp):
                               false_comb_to_rev, resample_key, log_fp)
 
         output.print_true_false_corr(initial_corr, true_corr, working_dir,
-            statistic, resample_k, CI_method)
+            statistic, resample_k)
 
     ###
     # Graphing

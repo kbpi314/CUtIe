@@ -123,49 +123,6 @@ def process_df(samp_var_df, samp_ids):
     return samp_var, avg_var, var_var
 
 ###
-# MINE parsing
-###
-
-def parse_minep(pvalue_fp, delimiter=',', pskip=13):
-    """
-    Parses MINE downloaded pvalue file e.g. from http://www.exploredata.net/
-    that contains table of pvalue-MIC_strength relationship provided by MINE
-    developers. Choose file depending on sample size!
-    ----------------------------------------------------------------------------
-    INPUTS
-    pvalue_fp   - File object. Points to pvalue file.
-    delimiter   - String. Default is ',' as MINE uses csv files by default.
-    pskip       - Integer. Number of rows to skip in the pvalue table (default
-                  is 13, to bypass various comments)
-
-    OUTPUTS
-    MINE_bins   - 1D Array. Entry is MIC_str corresponding to pvalue of
-                  pvalue_bins.
-    pvalue_bins - 1D Array. Sorted list of pvalues from greatest to least used
-                  by MINE to bin the MIC_str.
-    """
-    MINE_bins = []
-    pvalue_bins = []
-    # skip comments
-    for i in range(pskip):
-        pvalue_fp.readline()
-    # parse file
-    for line in pvalue_fp.readlines():
-        # example line: 1.000000,0.000000256,0.000000181
-        # corresonding to [MIC_str, pvalue, stderr of pvalue]
-        split_line = line.strip().split(delimiter)
-        # make sure line is valid; last line is 'xla'
-        if len(split_line) > 1:
-            row = [float(x) for x in split_line]
-            MINE_bins.append(row[0])
-            pvalue_bins.append(row[1])
-
-    # convert list to array
-    MINE_bins = np.array(MINE_bins)
-
-    return MINE_bins, pvalue_bins
-
-###
 # Config parsing
 ###
 def parse_config(defaults_fp, config_fp):
@@ -195,9 +152,6 @@ def parse_config(defaults_fp, config_fp):
     f2type = Config.get('input', 'f2type')
     skip1 = Config.getint('input', 'skip1')
     skip2 = Config.getint('input', 'skip2')
-    minep_fp = Config.get('input', 'minep_fp')
-    pskip = Config.getint('input', 'pskip')
-    mine_delimiter = Config.get('input', 'mine_delimiter')
     startcol1 = Config.getint('input', 'startcol1')
     endcol1 = Config.getint('input', 'endcol1')
     startcol2 = Config.getint('input', 'startcol2')
@@ -217,10 +171,8 @@ def parse_config(defaults_fp, config_fp):
     mc = Config.get('stats', 'mc')
     fold = Config.getboolean('stats', 'fold')
     fold_value = Config.getfloat('stats', 'fold_value')
-    n_replicates = Config.getint('stats', 'n_replicates')
     log_transform1 = Config.getboolean('stats', 'log_transform1')
     log_transform2 = Config.getboolean('stats', 'log_transform2')
-    CI_method = Config.get('stats', 'ci_method')
     sim = Config.getboolean('stats', 'sim')
     corr_path = Config.get('stats', 'corr_path')
     corr_compare = Config.getboolean('stats', 'corr_compare')
@@ -233,5 +185,5 @@ def parse_config(defaults_fp, config_fp):
             f2type, minep_fp, pskip, mine_delimiter, working_dir, skip1,
             skip2, startcol1, endcol1, startcol2, endcol2, statistic,
             corr_compare, resample_k, paired, overwrite, alpha, mc, fold,
-            fold_value, n_replicates, log_transform1, log_transform2, CI_method,
+            fold_value, log_transform1, log_transform2,
             sim, corr_path, graph_bound, log_dir, fix_axis)

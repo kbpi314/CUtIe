@@ -23,7 +23,7 @@ from cutie import utils
 ###
 
 def print_true_false_corr(initial_corr, true_corr, working_dir, statistic,
-                          resample_k, method):
+                          resample_k):
     """
     Prints simplified 2-column table of variable pairs classified as true and
     false correlations for each k in {1...resample_k}
@@ -39,9 +39,6 @@ def print_true_false_corr(initial_corr, true_corr, working_dir, statistic,
     working_dir  - String. File path of working directory specified by user.
     statistic    - String. Analysis being performed.
     resample_k   - Integer. Number of points being resampled by CUtIe.
-    method       - String. 'log', 'cbrt' or 'none' depending on method used for
-                   evaluating confidence interval (bootstrapping and jackknifing
-                   only)
     """
     # function for printing matrix of ses
     def print_sig(corr_set, output_fp):
@@ -56,10 +53,10 @@ def print_true_false_corr(initial_corr, true_corr, working_dir, statistic,
     # iterates through each resampling index
     for k in range(resample_k):
         false_corr = set(initial_corr).difference(set(true_corr[str(k+1)]))
-        output_fp = working_dir + 'data_processing/' + statistic + method + \
+        output_fp = working_dir + 'data_processing/' + statistic + \
             str(k+1) + '_falsesig.txt'
         print_sig(false_corr, output_fp)
-        output_fp = working_dir + 'data_processing/' + statistic + method + \
+        output_fp = working_dir + 'data_processing/' + statistic + \
             str(k+1) + '_truesig.txt'
         print_sig(true_corr[str(k+1)], output_fp)
 
