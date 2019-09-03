@@ -159,14 +159,6 @@ def calculate_cutie(defaults_fp, config_fp):
     output.write_log('The length of initial_corr is ' + str(len(initial_corr)),
         log_fp)
 
-    # return sets of interest; some of these will be empty dicts depending
-    # on the statistic
-    (true_corr, true_comb_to_rev, false_comb_to_rev, corr_extrema_p,
-    corr_extrema_r, samp_counter, var1_counter,
-    var2_counter, exceeds_points, rev_points) = statistics.update_cutiek_true_corr(
-        initial_corr, samp_var1, samp_var2, pvalues, corrs, threshold, paired,
-        statistic, forward_stats, reverse_stats, resample_k, fold, fold_value)
-
     # if interested in evaluating dffits, dsr, etc.
     region_sets = []
     if corr_compare:
@@ -197,6 +189,14 @@ def calculate_cutie(defaults_fp, config_fp):
             output.write_log('The number of true correlations according to ' +
                              metric + ' is ' + str(len(initial_corr) - len(metric_FP)),
                              log_fp)
+
+    # return sets of interest; some of these will be empty dicts depending
+    # on the statistic
+    (true_corr, true_comb_to_rev, false_comb_to_rev, corr_extrema_p,
+    corr_extrema_r, samp_counter, var1_counter,
+    var2_counter, exceeds_points, rev_points) = statistics.update_cutiek_true_corr(
+        initial_corr, samp_var1, samp_var2, pvalues, corrs, threshold, paired,
+        statistic, forward_stats, reverse_stats, resample_k, fold, fold_value)
 
     ###
     # Determine indicator matrix of significance
