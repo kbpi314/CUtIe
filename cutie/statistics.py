@@ -1120,11 +1120,10 @@ def resamplek_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
             # fold change p-value restraint
             if fold:
                 if (p_value < threshold and
-                    p_value < pvalues[var1_index][var2_index] / fold_value) or \
-                        np.isnan(p_value):
+                    p_value < pvalues[var1_index][var2_index] / fold_value):
                     for i in indices:
                         exceeds[i] += 1
-            elif p_value < threshold or np.isnan(p_value):
+            elif p_value < threshold:
                 for i in indices:
                     exceeds[i] += 1
 
