@@ -42,6 +42,8 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
       X = data[, 1]  # standard normal (mu=0, sd=1)
       Y = data[, 2]  # standard normal (mu=0, sd=1)
       S = seq(1:n_samp)
+      X = X + 10
+      Y = Y + 10
       X = log(X)
       Y = log(Y)
       mat = cbind(S,X,Y)
@@ -65,6 +67,8 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
       Y = data[, 2]  # standard normal (mu=0, sd=1)
       X <- c(X, 3)
       Y <- c(Y, -3)
+      X = X + 10
+      Y = Y + 10
       X = log(X)
       Y = log(Y)
       S = seq(1:n_samp)
@@ -94,6 +98,8 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
         }
       }
       S = seq(1:n_samp)
+      x1 = x1 + 10
+      x2 = x2 + 10
       x1 = log(x1)
       x2 = log(x2)
       mat = cbind(S,x1,x2)
@@ -110,6 +116,8 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
       X <- c(X,7*sin(theta))
       Y <- c(Y,7*cos(theta))
       S = seq(1:n_samp)
+      X = X + 10
+      Y = Y + 10
       X = log(X)
       Y = log(Y)
       mat = cbind(S,X,Y)
