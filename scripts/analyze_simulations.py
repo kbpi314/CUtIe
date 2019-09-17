@@ -156,6 +156,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
         'results': results})
 
     # combined plot
+    '''
     for mc in multi_corr.split(','):
         for fv in fold_value.split(','):
             for cc in ['False']:
@@ -183,6 +184,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                 plt.close()
                             except:
                                 print(mc, fv, cc, c, samp, cor)
+    '''
 
     # indiv plots
     for mc in multi_corr.split(','):
@@ -251,7 +253,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                     title = 'True_corr as a function of corr in ' + c
                                     plt.figure(figsize=(4,4))
                                     sns.set_style("white")
-                                    colors = ['#4F81BD','#C0504D','#9BBB59']
+                                    colors = ['#4F81BD','#9BBB59','#C0504D']
                                     ax = sns.pointplot(x="cors", y="results", hue='new_stat',data=df, ci=95,
                                         palette=sns.color_palette(colors))
                                     ax.set_title(title, fontsize=15)
