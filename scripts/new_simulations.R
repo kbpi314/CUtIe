@@ -42,7 +42,7 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
       X = data[, 1]  # standard normal (mu=0, sd=1)
       Y = data[, 2]  # standard normal (mu=0, sd=1)
       S = seq(1:n_samp)
-      mat = cbind(S,X,Y)
+      mat = cbind(S,Y,X)
       #png(filename=paste("Desktop/clemente_lab/CUTIE/plots/P_", cv,'_', cor(X,Y),"_plot.png", sep=''))
       #pairs(cbind(X,Y))
       write.table(mat, file=paste(output, nseed,'_NP_',n_samp,'_',cv,'.txt',sep=''), row.names=sprintf("s%s",seq(1:n_samp)), col.names=TRUE, sep='\t')
@@ -64,7 +64,7 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
       X <- c(X, 3)
       Y <- c(Y, -3)
       S = seq(1:n_samp)
-      mat = cbind(S,X,Y)
+      mat = cbind(S,Y,X)
       write.table(mat, file=paste(output, nseed,'_FN_',n_samp,'_',cv,'.txt',sep=''), row.names=sprintf("s%s",seq(1:n_samp)), col.names=TRUE, sep='\t')
       #png(filename=paste("Desktop/clemente_lab/CUTIE/plots/FN_", cv,'_', cor(X,Y),"_plot.png", sep=''))
       #pairs(cbind(X,Y))
@@ -82,15 +82,17 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
       # empirically determine correlation within error
       eps = 0.01
       for (i in exp(seq(from=-4,to=10,by=0.01))){
-        x1 <- c(X, i)
-        x2 <- c(Y, 20)
+        x1 <- c(X, 20)
+        x2 <- c(Y, i)
         corr <- cor(x1,x2)
         if (abs(corr-cv) < eps) {
           break
         }
       }
+      X <- x1
+      Y <- x2
       S = seq(1:n_samp)
-      mat = cbind(S,x1,x2)
+      mat = cbind(S,Y,X)
       write.table(mat, file=paste(output, nseed,'_FP_',n_samp,'_',cv,'.txt',sep=''), row.names=sprintf("s%s",seq(1:n_samp)), col.names=TRUE, sep='\t')
     }
     
@@ -101,10 +103,10 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
       X = data[, 1]  # standard normal (mu=0, sd=1)
       Y = data[, 2]  # standard normal (mu=0, sd=1)
       theta = atan(cv) + atan(1/2)
-      X <- c(X,7*sin(theta))
-      Y <- c(Y,7*cos(theta))
+      X <- c(X,7*cos(theta))
+      Y <- c(Y,7*sin(theta))
       S = seq(1:n_samp)
-      mat = cbind(S,X,Y)
+      mat = cbind(S,Y,X)
       # pairs(cbind(X,Y))
       write.table(mat, file=paste(output, nseed,'_CD_',n_samp,'_',cv,'.txt',sep=''), row.names=sprintf("s%s",seq(1:n_samp)), col.names=TRUE, sep='\t')
       # dev.off()
