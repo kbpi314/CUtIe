@@ -1,12 +1,7 @@
 #!/usr/bin/env python
-from __future__ import division
-
-import numpy as np
 from collections import defaultdict
 import itertools
-
-from cutie import output
-
+import numpy as np
 
 def indicator(n_var1, n_var2, initial_corr, true_corr):
     """
@@ -73,7 +68,7 @@ def init_var_indicators(var1_index, var2_index, samp_var1, samp_var2, forward):
     var2      - 1D array. Values for specified variable (from var_index2) from
                 file 2.
     """
-    n_var1, n_var2, n_samp = get_param(samp_var1, samp_var2)
+    n_samp = samp_var1.shape[0]
 
     exceeds = np.zeros(n_samp)
     reverse = np.zeros(n_samp)
@@ -223,7 +218,7 @@ def calculate_intersection(names, sets):
     return region_sets, region_combs
 
 
-def read_taxa(taxa, delim = ';'):
+def read_taxa(taxa, delim=';'):
     """
     Converts string of OTU names (e.g. from QIIME) to shortened form.
     ----------------------------------------------------------------------------
@@ -239,9 +234,9 @@ def read_taxa(taxa, delim = ';'):
     parts = taxa.split(delim) # set as param with default
     while parts:
         if not parts[-1].endswith('__'):
-            t1 = parts[-2].split('__')[1]
-            t2 = parts[-1].split('__')[1]
-            return t1 + ' ' + t2
+            taxastr1 = parts[-2].split('__')[1]
+            taxastr2 = parts[-1].split('__')[1]
+            return taxastr1 + ' ' + taxastr2
         else:
             parts.pop()
 

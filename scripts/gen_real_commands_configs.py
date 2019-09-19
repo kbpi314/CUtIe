@@ -27,8 +27,8 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
         'hdac': {
             'samp_var1_fp': '/sc/hydra/work/buk02/HDAC_data/GSE15222_series_matrix_x100.txt',
             'samp_var2_fp': '/sc/hydra/work/buk02/HDAC_data/GSE15222_series_matrix_x100.txt',
-            'f1type': 'otu',
-            'f2type': 'otu',
+            'f1type': 'untidy',
+            'f2type': 'untidy',
             'skip1': '62',
             'skip2': '62',
             'startcol1': '-1',
@@ -39,8 +39,8 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
         'lungc': {
             'samp_var1_fp': '/sc/hydra/work/buk02/pre_sparcc_MSQ/otu_table.MSQ34_L6.txt',
             'samp_var2_fp': '/sc/hydra/work/buk02/pre_sparcc_MSQ/otu_table.MSQ34_L6.txt',
-            'f1type': 'otu',
-            'f2type': 'otu',
+            'f1type': 'untidy',
+            'f2type': 'untidy',
             'skip1': '1',
             'skip2': '1',
             'startcol1': '-1',
@@ -51,8 +51,8 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
         'lungpt': {
             'samp_var1_fp': '/sc/hydra/work/buk02/lungpt_data/otu_table_MultiO_merged___L6.txt',
             'samp_var2_fp': '/sc/hydra/work/buk02/lungpt_data/Mapping.Pneumotype.Multiomics.RL.NYU.w_metabolites.w_inflamm.txt',
-            'f1type': 'otu',
-            'f2type': 'map',
+            'f1type': 'untidy',
+            'f2type': 'tidy',
             'skip1': '1',
             'skip2': '0',
             'startcol1': '-1',
@@ -63,8 +63,8 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
         'who': {
             'samp_var1_fp': '/sc/hydra/work/buk02/MINE_data/WHOfix.txt',
             'samp_var2_fp': '/sc/hydra/work/buk02/MINE_data/WHOfix.txt',
-            'f1type': 'map',
-            'f2type': 'map',
+            'f1type': 'tidy',
+            'f2type': 'tidy',
             'skip1': '0',
             'skip2': '0',
             'startcol1': '3',
@@ -129,11 +129,7 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
             f.write('\n')
             f.write('[output]')
             f.write('\n')
-            f.write('label: L6')
-            f.write('\n')
             f.write('working_dir: ' + working_outdir)
-            f.write('\n')
-            f.write('log_dir: ' + working_outdir)
             f.write('\n')
             f.write('\n')
             f.write('[stats]')
@@ -150,15 +146,7 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
             f.write('\n')
             f.write('fold_value: ' + fv)
             f.write('\n')
-            f.write('log_transform1: False')
-            f.write('\n')
-            f.write('log_transform2: False')
-            f.write('\n')
-            f.write('sim: False')
-            f.write('\n')
             f.write('corr_compare: ' + corr_compare)
-            f.write('\n')
-            f.write('corr_path: NA')
             f.write('\n')
             f.write('\n')
             f.write('[graph]')

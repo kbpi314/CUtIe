@@ -189,8 +189,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
     # indiv plots
     for mc in multi_corr.split(','):
         for fv in fold_value.split(','):
-            for stat in [ ['kpc','rpc'], ['ksc','rsc'], ['kkc', 'rkc'] ]: #, ['mine','rmine'] ]:
-                for cc in ['False']:
+            for stat in [ ['pearson','rpearson'], ['spearman','rspearman'], ['kendall', 'rkendall'] ]:                for cc in ['False']:
                     for c in classes.split(','):
                         for samp in n_samp.split(','):
                             for cor in ['{0:g}'.format(float(str(x))) for x in np.arange(start, stop+step, step)]:
@@ -201,8 +200,6 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                     df = df[df['cc'] == cc]
                                     df = df[df['class'] == c]
                                     df = df[df['samps'] == samp]
-                                    # try:
-                                        #cmap = sns.cubehelix_palette(as_cmap=True)
                                     title = 'True_corr as a function of corr in ' + c
                                     plt.figure(figsize=(4,4))
                                     sns.set_style("white")
@@ -222,11 +219,11 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                     print(stat)
     def new_label(row):
         '''
-        Will map True kpc -> kpc_cookd
-        Will map False kpc -> kpc and False rpc -> rpc
+        Will map True pearson -> pearson_cookd
+        Will map False pearson -> pearson and False rpearson -> rpearson
         '''
         if row['cc'] == 'True':
-            if row['stat'] != 'kpc':
+            if row['stat'] != 'pearson':
                 return 'exclude'
             else:
                 return row['stat'] + '_cookd'
@@ -237,7 +234,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
     if 'True' in corr_compare.split(','):
         for mc in multi_corr.split(','):
             for fv in fold_value.split(','):
-                for stat in [ ['kpc','rpc'] ]:
+                for stat in [ ['pearson','rpearson'] ]:
                     for c in classes.split(','):
                         for samp in n_samp.split(','):
                             for cor in ['{0:g}'.format(float(str(x))) for x in np.arange(start, stop+step, step)]:
