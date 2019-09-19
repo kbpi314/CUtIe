@@ -115,10 +115,10 @@ def print_summary_df(n_var1, n_var2,
 ###
 
 def graph_subsets(working_dir, var1_names, var2_names, f1type, f2type, summary_df,
-                  statistic, forward_stats, resample_k, initial_corr,
-                  true_corr, true_corr_to_rev, false_corr_to_rev, graph_bound,
-                  samp_var1, samp_var2, all_pairs, region_sets,
-                  corr_compare, exceeds_points, rev_points, fix_axis):
+                  statistic, forward_stats, resample_k, initial_corr, true_corr,
+                  true_corr_to_rev, false_corr_to_rev, graph_bound, samp_var1,
+                  samp_var2, all_pairs, region_sets, corr_compare, exceeds_points,
+                  rev_points, fix_axis):
     """
     Creates folders and plots corresponding to particular sets of variable
     pairs. Pairwise correlation scatterplots are plotted as well as fold p value
@@ -184,10 +184,15 @@ def graph_subsets(working_dir, var1_names, var2_names, f1type, f2type, summary_d
         false_corr_to_rev, summary_df, resample_k, region_sets, corr_compare,
         all_pairs)
 
+    if statistic in forward_stats:
+        forward = True
+    else:
+        forward = False
+
     # plotting below taking in dfs
-    plot_dfs(graph_bound, working_dir, f1type, f2type, var1_names,
-             var2_names, samp_var1, samp_var2, dfs, initial_insig_corr,
-             initial_sig_corr, summary_df, exceeds_points, rev_points, fix_axis)
+    plot_dfs(graph_bound, working_dir, f1type, f2type, var1_names, var2_names,
+             samp_var1, samp_var2, dfs, initial_insig_corr, initial_sig_corr,
+             summary_df, exceeds_points, rev_points, fix_axis, forward)
 
 def generate_dfs(statistic, forward_stats, initial_corr, true_corr,
                  true_corr_to_rev, false_corr_to_rev, summary_df, resample_k,
@@ -304,9 +309,9 @@ def generate_dfs(statistic, forward_stats, initial_corr, true_corr,
     return dfs, initial_insig_corr, initial_sig_corr
 
 
-def plot_dfs(graph_bound, working_dir, f1type, f2type, var1_names,
-             var2_names, samp_var1, samp_var2, dfs, initial_insig_corr,
-             initial_sig_corr, summary_df, exceeds_points, rev_points, fix_axis):
+def plot_dfs(graph_bound, working_dir, f1type, f2type, var1_names, var2_names,
+             samp_var1, samp_var2, dfs, initial_insig_corr, initial_sig_corr,
+             summary_df, exceeds_points, rev_points, fix_axis, forward):
     """
     Plot correlations and distribution of pvalues for each dataframe set.
     ----------------------------------------------------------------------------
@@ -351,6 +356,8 @@ def plot_dfs(graph_bound, working_dir, f1type, f2type, var1_names,
                         resampling values (from 0 to k) in which that point
                         induces a sign change.
     fix_axis          - Boolean. True if axes are fixed (max and min for vars).
+    forward           - Boolean. True if CUTIE is run in the forward direction, False if
+                        reverse.
     """
 
     # obtain global max and min for fixed axes
@@ -363,7 +370,7 @@ def plot_dfs(graph_bound, working_dir, f1type, f2type, var1_names,
         plot_corr_sets(graph_bound, df, working_dir, f1type, f2type, var1_names,
                        var2_names, samp_var1, samp_var2, exceeds_points,
                        rev_points, fix_axis, var1_max, var1_min, var2_max,
-                       var2_min)
+                       var2_min, forward)
 
         # this section plots pvalue and fold pvalue change distributions
         plot_pdist(df, working_dir)
@@ -463,9 +470,9 @@ def plot_pdist(df, working_dir):
             plt.savefig(dist_fp)
             plt.close('all')
 
-def plot_corr(row, df_folder_fp, var1_names, var2_names,
-              samp_var1, samp_var2, resample_k, exceeds_points, rev_points,
-              fix_axis, var1_max, var1_min, var2_max, var2_min):
+def plot_corr(row, df_folder_fp, var1_names, var2_names, samp_var1, samp_var2,
+              resample_k, exceeds_points, rev_points, fix_axis, var1_max,
+              var1_min, var2_max, var2_min, forward):
     """
     Helper function for plot_corr_sets(). Plots pairwise correlations within each
     set of correlations as defined by df.
@@ -496,6 +503,8 @@ def plot_corr(row, df_folder_fp, var1_names, var2_names,
     var1_min          - Float. Smallest value in var1 to use as upper bound.
     var2_max          - Float. Largest value in var2 to use as upper bound.
     var2_min          - Float. Smallest value in var2 to use as upper bound.
+    forward           - Boolean. True if CUTIE is run in the forward direction, False if
+                        reverse.
     """
     var1, var2 = int(row['var1_index']), int(row['var2_index'])
 
@@ -522,13 +531,18 @@ def plot_corr(row, df_folder_fp, var1_names, var2_names,
     # consolidate variables into pd dataframe
     # example:
     # let cutie = np.array([0,0,0,1,1])
-    # let reverse = np.array([0,0,1,0,1])
-    # want [0, 0, 0, 1, 2]
+    # this indicates that samples 4 and 5 were contributing to either FP or FN status
+    # if forward is true, then we want to investigate TP with sign changes
+    # so we take cutie = 1 - cutie, obtaining [1, 1, 1, 0 ,0]
+    # let reverse = np.array([1,0,1,0,1])
+    # want [2, 1, 2, 0, 0]
     # take c*(c+r)
     # it matters if it is forward or backward; need correct corr
     pair = var1, var2
     cutie = exceeds_points[str(resample_k)][str(pair)]
     cutie = np.array([1 if z > 0 else 0 for z in cutie])
+    if forward:
+        cutie = 1 - cutie
     reverse = rev_points[str(resample_k)][str(pair)]
     reverse = np.array([1 if z > 0 else 0 for z in reverse])
 
@@ -558,8 +572,8 @@ def plot_corr(row, df_folder_fp, var1_names, var2_names,
     plt.close('all')
 
 def plot_corr_sets(graph_bound, df, working_dir, f1type, f2type, var1_names,
-                   var2_names, samp_var1, samp_var2, exceeds_points,
-                   rev_points, fix_axis, var1_max, var1_min, var2_max, var2_min):
+                   var2_names, samp_var1, samp_var2, exceeds_points, rev_points,
+                   fix_axis, var1_max, var1_min, var2_max, var2_min, forward):
     """
     Helper function for graph_subsets(). Plots pairwise correlations within each
     set of correlations as defined by df.
@@ -593,6 +607,8 @@ def plot_corr_sets(graph_bound, df, working_dir, f1type, f2type, var1_names,
     var1_min          - Float. Smallest value in var1 to use as upper bound.
     var2_max          - Float. Largest value in var2 to use as upper bound.
     var2_min          - Float. Smallest value in var2 to use as upper bound.
+    forward           - Boolean. True if CUTIE is run in the forward direction, False if
+                        reverse.
     """
     # decide var pairs to plot
     np.random.seed(0)
@@ -614,7 +630,8 @@ def plot_corr_sets(graph_bound, df, working_dir, f1type, f2type, var1_names,
     for index, row in df_forplot.iterrows():
         plot_corr(row, df_folder_fp, var1_names,
                   var2_names, samp_var1, samp_var2, df.k, exceeds_points,
-                  rev_points, fix_axis, var1_max, var1_min, var2_max, var2_min)
+                  rev_points, fix_axis, var1_max, var1_min, var2_max, var2_min,
+                  forward)
 
 ###
 # Diagnostic plot handling
