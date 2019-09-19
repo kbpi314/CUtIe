@@ -232,7 +232,7 @@ def generate_dfs(statistic, forward_stats, initial_corr, true_corr,
     # create class for each set of plots
     class dfSet:
         # Initializer / Instance Attributes
-        def __init__(self, name, pairs, quadrant, rev_sign, rm_subset, k):
+        def __init__(self, name, pairs, quadrant, rev_sign, sm_subset, k):
             # name is a unique identifier for that set of graphs
             self.name = name
             # pairs is a list of tuples of var pairs in that set
@@ -242,8 +242,8 @@ def generate_dfs(statistic, forward_stats, initial_corr, true_corr,
             # rev sign is a boolean determining whether the DF is tracking
             # reversed sign correlations or not
             self.rev_sign = rev_sign
-            # rm_subset is subset of R matrix relevant to that set
-            self.rm_subset = rm_subset
+            # sm_subset is subset of summary matrix relevant to that set
+            self.sm_subset = sm_subset
             # k is number of resampled points
             self.k = k
 
@@ -370,8 +370,8 @@ def plot_dfs(graph_bound, working_dir, f1type, f2type, var1_names,
 
     for df in [initial_insig_corr, initial_sig_corr] + dfs:
         # plot actual sample values
-        if len(df.rm_subset['correlations']) > 1:
-            corr_vals = df.rm_subset['correlations']
+        if len(df.sm_subset['correlations']) > 1:
+            corr_vals = df.sm_subset['correlations']
             corr_vals_fp = working_dir + 'graphs/sample_corr_' + df.name + \
                            '_' + df.quadrant + '_' + str(df.k) + '.png'
             title = "Sample correlation coefficients among %s correlations" \
@@ -420,8 +420,8 @@ def plot_pdist(df, working_dir):
     """
     # pvalues can be nan
     # fold pvalues can be -Inf/Inf
-    pvalues = df.rm_subset['pvalues']
-    fold_pvalues = df.rm_subset['p_ratio']
+    pvalues = df.sm_subset['pvalues']
+    fold_pvalues = df.sm_subset['p_ratio']
 
     # compute number of infinity and nan entries
     n_infinite = len(fold_pvalues[~np.isfinite(fold_pvalues)])
@@ -434,7 +434,7 @@ def plot_pdist(df, working_dir):
     pvalue_df = pd.DataFrame({
         'pvalues': pvalues,
         'fold_pvalues': fold_pvalues,
-        'log_pvalues': df.rm_subset['logpvals'],
+        'log_pvalues': np.log(pvalues),
         'log_fold_pvalues': np.log(fold_pvalues)})
 
     dists = ['pvalues', 'fold_pvalues', 'log_pvalues', 'log_fold_pvalues']
@@ -596,12 +596,12 @@ def plot_corr_sets(graph_bound, df, working_dir, f1type, f2type, var1_names,
     """
     # decide var pairs to plot
     np.random.seed(0)
-    if graph_bound <= len(df.rm_subset):
+    if graph_bound <= len(df.sm_subset):
         # samples without replacement
-        df_forplot = df.rm_subset.sample(n=graph_bound, replace=False,
+        df_forplot = df.sm_subset.sample(n=graph_bound, replace=False,
                                          weights=None, random_state=42, axis=0)
     else:
-        df_forplot = df.rm_subset
+        df_forplot = df.sm_subset
     # name and create folder
     df_folder_fp = working_dir + 'graphs/' + df.name + '_' + df.quadrant + '_' \
         + str(df.k) + '_' + str(len(df.pairs))
@@ -612,7 +612,7 @@ def plot_corr_sets(graph_bound, df, working_dir, f1type, f2type, var1_names,
 
     # plot representative plots
     for index, row in df_forplot.iterrows():
-        plot_corr(row, df_folder_fp, f1type, f2type, var1_names,
+        plot_corr(row, df_folder_fp, var1_names,
                   var2_names, samp_var1, samp_var2, df.k, exceeds_points,
                   rev_points, fix_axis, var1_max, var1_min, var2_max, var2_min)
 

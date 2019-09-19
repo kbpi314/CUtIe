@@ -29,9 +29,9 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.version_option(version=__version__)
 
-@click.option('-i', '--config_fp', required=False,
+@click.option('-i', '--input_config_fp', required=False,
               type=click.Path(exists=True),
-              help='Input  config file path')
+              help='Input config file path')
 
 
 def calculate_cutie(input_config_fp):
@@ -109,11 +109,13 @@ def calculate_cutie(input_config_fp):
     # printing of samp and var names for reference
     output.write_log('There are ' + str(len(samp_ids)) + ' samples', log_fp)
     output.write_log('The first 3 samples are ' + str(samp_ids[0:3]), log_fp)
-    if len(var1_names) >= 3 and len(var2_names) >= 3:
+    if len(var1_names) >= 3:
         output.write_log('The first 3 var1 are ' + str(var1_names[0:3]), log_fp)
-        output.write_log('The first 3 var2 are ' + str(var2_names[0:3]), log_fp)
     else:
         output.write_log('Var1 was ' + str(var1_names), log_fp)
+    if len(var2_names) >= 3:
+        output.write_log('The first 3 var2 are ' + str(var2_names[0:3]), log_fp)
+    else:
         output.write_log('Var2 was ' + str(var2_names), log_fp)
 
     ###
@@ -243,7 +245,7 @@ def calculate_cutie(input_config_fp):
                 variables, working_dir, resample_key, n_corr, paired)
 
         output.report_results(initial_corr, true_corr, true_corr_to_rev,
-                              fakse_corr_to_rev, resample_key, log_fp)
+                              false_corr_to_rev, resample_key, log_fp)
 
     ###
     # Graphing
@@ -260,7 +262,7 @@ def calculate_cutie(input_config_fp):
         rev_points, fix_axis)
 
     output.diag_plots(samp_counter, var1_counter, var2_counter, resample_k,
-        working_dir, paired, samp_var1, samp_var2, n_samp)
+        working_dir)
 
     # write log file
     output.write_log('The runtime was ' + str(time.process_time() - start_time), log_fp)

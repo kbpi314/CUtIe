@@ -50,7 +50,7 @@ def parse_input(ftype, fp, startcol, endcol, delimiter, skip):
     # cols, else subset
     if startcol != -1 and endcol != -1:
         df = df.iloc[:, (startcol-1):(endcol-1)]
-    else:
+    elif not (startcol == -1 and endcol == -1):
         raise ValueError('Both startcol and endcol must be specified')
     # obtain list of sample ids, variable names, number of var, and number of
     # samples
