@@ -194,30 +194,28 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                     for c in classes.split(','):
                         for samp in n_samp.split(','):
                             for cor in ['{0:g}'.format(float(str(x))) for x in np.arange(start, stop+step, step)]:
-                                try:
-                                    df = results_df[results_df['mc'] == mc]
-                                    df = df[df['fv'] == fv]
-                                    df = df[df['stat'].isin(stat)]
-                                    df = df[df['cc'] == cc]
-                                    df = df[df['class'] == c]
-                                    df = df[df['samps'] == samp]
-                                    title = 'True_corr as a function of corr in ' + c
-                                    plt.figure(figsize=(4,4))
-                                    sns.set_style("white")
-                                    colors = ['#4F81BD','#C0504D']
-                                    ax = sns.pointplot(x="cors", y="results", hue='stat',
-                                        data=df, ci=95, palette=sns.color_palette(colors))
-                                    ax.set_title(title, fontsize=15)
-                                    plt.setp(ax.collections, alpha=.3) #for the markers
-                                    plt.setp(ax.lines, alpha=.3)
-                                    # plt.xlim(-0.1,1.1)
-                                    plt.ylim(-0.2, 1.2)
-                                    plt.tick_params(axis='both', which='both', top=False, right=False)
-                                    sns.despine()
-                                    plt.savefig(output_dir + mc + '_' + fv + '_' + str(stat) + '_' + cc + '_' + c + '_' + samp + '.pdf')
-                                    plt.close()
-                                except:
-                                    print(stat)
+                                df = results_df[results_df['mc'] == mc]
+                                df = df[df['fv'] == fv]
+                                df = df[df['stat'].isin(stat)]
+                                df = df[df['cc'] == cc]
+                                df = df[df['class'] == c]
+                                df = df[df['samps'] == samp]
+                                title = 'True_corr as a function of corr in ' + c
+                                plt.figure(figsize=(4,4))
+                                sns.set_style("white")
+                                colors = ['#4F81BD','#C0504D']
+                                ax = sns.pointplot(x="cors", y="results", hue='stat',
+                                    data=df, ci=95, palette=sns.color_palette(colors))
+                                ax.set_title(title, fontsize=15)
+                                plt.setp(ax.collections, alpha=.3) #for the markers
+                                plt.setp(ax.lines, alpha=.3)
+                                # plt.xlim(-0.1,1.1)
+                                plt.ylim(-0.2, 1.2)
+                                plt.tick_params(axis='both', which='both', top=False, right=False)
+                                sns.despine()
+                                plt.savefig(output_dir + mc + '_' + fv + '_' + str(stat) + '_' + cc + '_' + c + '_' + samp + '.pdf')
+                                plt.close()
+
     def new_label(row):
         '''
         Will map True pearson -> pearson_cookd
