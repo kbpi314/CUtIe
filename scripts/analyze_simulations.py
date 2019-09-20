@@ -107,7 +107,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
         subset_files.sort()
         # grab the most recent txt (log) file
         fn = subset_files[-1]
-        with open(fn,'r') as rf:
+        with open(fn, 'r') as rf:
             label = f.split('/')[-1]
             try:
                 mc, fv, stat, cc, seed, c, samp, cor = label.split('_')
@@ -152,8 +152,8 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                             results.append(d[0])
 
     results_df = pd.DataFrame({'mc': mcs, 'fv': fvs, 'stat': stats, 'cc': ccs,
-        'seeds': seeds, 'class': class_labs, 'samps': nsamps, 'cors': cors,
-        'results': results})
+                               'seeds': seeds, 'class': class_labs,
+                               'samps': nsamps, 'cors': cors, 'results': results})
 
     # combined plot
     '''
@@ -189,7 +189,8 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
     # indiv plots
     for mc in multi_corr.split(','):
         for fv in fold_value.split(','):
-            for stat in [ ['pearson','rpearson'], ['spearman','rspearman'], ['kendall', 'rkendall'] ]:                for cc in ['False']:
+            for stat in [['pearson','rpearson'], ['spearman','rspearman'], ['kendall', 'rkendall']]:
+                for cc in ['False']:
                     for c in classes.split(','):
                         for samp in n_samp.split(','):
                             for cor in ['{0:g}'.format(float(str(x))) for x in np.arange(start, stop+step, step)]:
@@ -204,13 +205,13 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                     plt.figure(figsize=(4,4))
                                     sns.set_style("white")
                                     colors = ['#4F81BD','#C0504D']
-                                    ax = sns.pointplot(x="cors", y="results", hue='stat',data=df, ci=95,
-                                        palette=sns.color_palette(colors))
+                                    ax = sns.pointplot(x="cors", y="results", hue='stat',
+                                        data=df, ci=95, palette=sns.color_palette(colors))
                                     ax.set_title(title, fontsize=15)
                                     plt.setp(ax.collections, alpha=.3) #for the markers
                                     plt.setp(ax.lines, alpha=.3)
                                     # plt.xlim(-0.1,1.1)
-                                    plt.ylim(-0.2,1.2)
+                                    plt.ylim(-0.2, 1.2)
                                     plt.tick_params(axis='both', which='both', top=False, right=False)
                                     sns.despine()
                                     plt.savefig(output_dir + mc + '_' + fv + '_' + str(stat) + '_' + cc + '_' + c + '_' + samp + '.pdf')
