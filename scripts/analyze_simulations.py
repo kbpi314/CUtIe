@@ -42,12 +42,9 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
 
     def parse_log(f, cookd):
         lines = [l.strip() for l in f.readlines()]
-        defaulted = False
         if cookd == 'True':
             for l in lines:
-                if "defaulted" in l:
-                    defaulted = True
-                elif "initial_corr" in l:
+                if "initial_corr" in l:
                     initial_corr = float(l.split(' ')[-1])
                 elif "false correlations according to cookd" in l:
                     false_corr = float(l.split(' ')[-1])
@@ -61,9 +58,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
         else:
             # check if FDR correction defaulted
             for l in lines:
-                if "defaulted" in l:
-                    defaulted = True
-                elif "initial_corr" in l:
+                if "initial_corr" in l:
                     initial_corr = float(l.split(' ')[-1])
                 elif "false correlations" in l:
                     false_corr = float(l.split(' ')[-1])
@@ -76,7 +71,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                 elif "runtime" in l:
                     runtime = float(l.split(' ')[-1])
 
-        return defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime
+        return initial_corr, false_corr, true_corr, rs_false, rs_true, runtime
 
     start, stop, step = [float(x) for x in rangestr.split(',')]
     df_dict = {}
@@ -111,7 +106,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
             label = f.split('/')[-1]
             try:
                 mc, fv, stat, cc, seed, c, samp, cor = label.split('_')
-                defaulted, initial_corr, false_corr, true_corr, rs_false, rs_true, runtime = parse_log(rf, cookd=cc)
+                initial_corr, false_corr, true_corr, rs_false, rs_true, runtime = parse_log(rf, cookd=cc)
                 df_dict[mc][fv][stat][cc][seed][c][samp][cor] = (true_corr, initial_corr)
                 done.append(f)
             except:

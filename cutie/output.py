@@ -48,12 +48,12 @@ def report_results(initial_corr, true_corr,
 
         # check if reverse sign TP/FN is empty
         if correct_to_rev != {}:
-            write_log('The number of reversed correlations for TP/TN' + str(i+1)
+            write_log('The number of reversed correlations for TP/FN' + str(i+1)
                       + ' is ' + str(len(correct_to_rev[str(i+1)])), log_fp)
 
         # check if reverse sign FP/TN set is empty
         if incorrect_to_rev != {}:
-            write_log('The number of reversed correlations for FP/FN' + str(i+1)
+            write_log('The number of reversed correlations for FP/TN' + str(i+1)
                       + ' is ' + str(len(incorrect_to_rev[str(i+1)])), log_fp)
 
 def print_summary_df(n_var1, n_var2,
