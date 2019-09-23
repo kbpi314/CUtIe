@@ -145,7 +145,7 @@ def set_threshold(pvalues, alpha, multi_corr, paired=False):
                                * alpha / constant_n for k in range(len(pvalues))])
         compare = np.where(pvalues <= thresholds)[0]
         # if no pvalues are below the cut off, the script uses no correction
-        if not compare:
+        if compare.size == 0:
             threshold = alpha
         else:
             threshold = thresholds[max(compare)]
