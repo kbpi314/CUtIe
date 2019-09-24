@@ -97,6 +97,17 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
     missing = []
     done = []
     failed = []
+
+    # troubleshooting
+    for f in file_dirs:
+        subset_files = glob.glob(f + '/*.txt')
+        subset_files.sort()
+        try:
+            # grab the most recent txt (log) file
+            fn = subset_files[-1]
+        except:
+            print(f)
+
     for f in file_dirs:
         subset_files = glob.glob(f + '/*.txt')
         subset_files.sort()
