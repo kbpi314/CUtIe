@@ -25,8 +25,8 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
                          working_dir, output_dir):
     data_to_params = {
         'hdac': {
-            'samp_var1_fp': '/sc/hydra/work/buk02/HDAC_data/GSE15222_series_matrix_x100.txt',
-            'samp_var2_fp': '/sc/hydra/work/buk02/HDAC_data/GSE15222_series_matrix_x100.txt',
+            'samp_var1_fp': '/sc/hydra/work/buk02/HDAC_data/GSE15222_series_matrix_x1000.txt',
+            'samp_var2_fp': '/sc/hydra/work/buk02/HDAC_data/GSE15222_series_matrix_x1000.txt',
             'f1type': 'untidy',
             'f2type': 'untidy',
             'skip1': '62',

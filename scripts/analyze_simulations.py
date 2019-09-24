@@ -39,6 +39,9 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes,
     n_seed, n_samp, rangestr, input_dir, output_dir):
+    '''
+    Script for analysis of simulated data by CUTIE
+    '''
 
     def parse_log(f, cookd):
         lines = [l.strip() for l in f.readlines()]
