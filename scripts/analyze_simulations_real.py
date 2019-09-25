@@ -366,15 +366,15 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
         new_df = new_df.rename_axis('Statistic')
         new_dfs.append(new_df)
 
-    # new_dfs[6].to_csv('/Users/KevinBu/Desktop/clemente_lab/Submissions/CUtIe/final_data_fixed/real_tpfp.csv', index = True)
-    # new_dfs[7].to_csv('/Users/KevinBu/Desktop/clemente_lab/Submissions/CUtIe/final_data_fixed/real_tnfn.csv', index = True)
+    new_dfs[6].to_csv(output_dir + 'real_tpfp.csv', index = True)
+    new_dfs[7].to_csv(output_dir + 'real_tnfn.csv', index = True)
 
     # df_real_tpfp = pd.read_csv('/Users/KevinBu/Desktop/clemente_lab/Submissions/CUtIe/final_data_fixed/real_tpfp.csv', sep = ',')
     df_real_tpfp = new_dfs[6]
-    df_real_tpfp = df_real_tpfp.iloc[0:16].set_index('Statistic')
+    # df_real_tpfp = df_real_tpfp.iloc[0:16].set_index('Statistic')
     # df_real_tnfn = pd.read_csv('/Users/KevinBu/Desktop/clemente_lab/Submissions/CUtIe/final_data_fixed/real_tnfn.csv', sep = ',')
     df_real_tnfn = new_dfs[7]
-    df_real_tnfn = df_real_tnfn.iloc[0:16].set_index('Statistic')
+    # df_real_tnfn = df_real_tnfn.iloc[0:16].set_index('Statistic')
     df_real_tnfn = df_real_tnfn.apply(pd.to_numeric).round(2)
     df_real_tpfp = df_real_tpfp.apply(pd.to_numeric).round(2)
 
