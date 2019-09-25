@@ -88,24 +88,8 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
         'runtime'
     ]
 
-    df_dict = {}
     for_df = pd.DataFrame()
-    for mc in multi_corr.split(','):
-        df_dict[mc] = {}
-        for fv in fold_value.split(','):
-            df_dict[mc][fv] = {}
-            for stat in statistic.split(','):
-                df_dict[mc][fv][stat] = {}
-                for cc in corr_compare.split(','):
-                    df_dict[mc][fv][stat][cc] = {}
-                    for seed in [str(x) for x in range(int(n_seed))]:
-                        df_dict[mc][fv][stat][cc][seed] = {}
-                        for c in classes.split(','):
-                            df_dict[mc][fv][stat][cc][seed][c] = {}
-                            for samp in n_samp.split(','):
-                                df_dict[mc][fv][stat][cc][seed][c][samp] = {}
-                                for cor in ['{0:g}'.format(float(str(x))) for x in np.arange(start, stop+step, step)]:
-                                    df_dict[mc][fv][stat][cc][seed][c][samp][cor] = (np.nan, np.nan)
+
     mcs = multi_corr.split(',')
     fvs = fold_value.split(',')
     stats = statistic.split(',')
