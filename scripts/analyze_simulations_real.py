@@ -4,6 +4,7 @@ import glob
 np.random.seed(0)
 import seaborn as sns; sns.set()
 import matplotlib.pyplot as plt
+import click
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
