@@ -88,7 +88,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
         'runtime'
     ]
 
-
+    df_dict = {}
     for_df = pd.DataFrame()
     for mc in multi_corr.split(','):
         df_dict[mc] = {}
