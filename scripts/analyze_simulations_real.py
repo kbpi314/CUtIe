@@ -293,10 +293,8 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
     fv_to_in_for = {}
     fv_to_id_rev = {}
     fv_to_in_rev = {}
-    fvs = [1, 2, 3, 5, 10]
+    fvs = fold_value.split(',')
     for f in fvs:
-        f = str(f)
-
         index_x = [
             'Pearson_fv' + f + '_fdr',
             '% initial sig',
@@ -379,20 +377,16 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
     df_real_tpfp = df_real_tpfp.apply(pd.to_numeric).round(2)
 
     colnames = df_real_tpfp.columns.values
-    print(colnames)
 
     # TN FN TP FP combined no micrometa no cd no rs
     fv_to_df_for = {}
     fv_to_df_rev = {}
 
     for i, fv in enumerate(fvs):
-        fv = str(fv)
         fv_to_df_for[fv] = new_dfs[8:][2*i]
         fv_to_df_rev[fv] = new_dfs[8:][2*i+1]
 
     for i, fv in enumerate(fvs):
-        fv = str(fv)
-
         df = fv_to_df_for[fv].drop(['Micrometa'],axis=1)
         current_colnames = colnames[1::]
         vals = list(df.index.values)
@@ -434,7 +428,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                 N = dd[val]['initial_insig'][d]
                 sizes = [TP * P, (1-TP)*P, FN * N, (1-FN)*N]
                 # print(sizes,sum(sizes))
-                print(sizes)
+
                 # plt.subplot(len(new_vals),len(colnames),i)
                 # fig1, ax1 = plt.g()
                 axs = axarr[v, d]
