@@ -82,6 +82,8 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
 
         # for fp in files:
         # fn = os.path.basename(fp)
+        if statistic != 'pearson':
+            corr_compare = 'False'
         f_id = multi_corr + '_' + fv + '_' + statistic + '_' + corr_compare + '_' + data
         # output_dir = '/sc/hydra/work/buk02/real_data_analysis/'
         out_dir = output_dir + f_id + '/'

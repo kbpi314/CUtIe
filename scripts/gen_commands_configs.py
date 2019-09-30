@@ -29,6 +29,8 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
     files = glob.glob(input_dir + '*.txt')
     for fp in files:
         fn = os.path.basename(fp)
+        if statistic != 'pearson':
+            corr_compare = 'False'
         f_id = multi_corr + '_' + fv + '_' + statistic + '_' + corr_compare + '_' + os.path.splitext(fn)[0]
         out_dir = output_dir + f_id + '/'
         if not os.path.isdir(out_dir):
