@@ -434,7 +434,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                 N = dd[val]['initial_insig'][d]
                 sizes = [TP * P, (1-TP)*P, FN * N, (1-FN)*N]
                 # print(sizes,sum(sizes))
-
+                print(sizes)
                 # plt.subplot(len(new_vals),len(colnames),i)
                 # fig1, ax1 = plt.g()
                 axs = axarr[v, d]
