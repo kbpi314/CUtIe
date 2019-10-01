@@ -278,6 +278,9 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
             v_to_cd['TP'] = rows[0]
             v_to_cd['initial_sig'] = rows[1]
 
+            # create figure
+            f, axarr = plt.subplots(len(new_vals) + 1,len(colnames))
+
             for d in range(len(colnames)):
                 labels = ['TP', 'FP', 'N']
                 colors = ['#66b3ff','#ff9999','#FFC000']#,'#ffcc99']
