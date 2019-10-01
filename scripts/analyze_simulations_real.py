@@ -188,7 +188,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
 
                 df_array.append(initial_sig_fracs)
 
-            pie_df = pd.DataFrame(data = df_array, index = index, columns = colnames)
+            pie_df = pd.DataFrame(data = df_array, index = indices, columns = colnames)
             pie_df = pie_df.rename_axis('Statistic')
             pie_df = pie_df.apply(pd.to_numeric).round(2)
 
@@ -226,7 +226,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
 
                 df_array.append(initial_sig_fracs)
 
-            rs_df = pd.DataFrame(data = df_array, index = index, columns = colnames)
+            rs_df = pd.DataFrame(data = df_array, index = rs_indices, columns = colnames)
             rs_df = rs_df.rename_axis('Statistic')
             rs_df = rs_df.apply(pd.to_numeric).round(2)
 
