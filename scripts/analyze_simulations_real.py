@@ -151,13 +151,13 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
         for mc in mcs:
             indices = []
             ids = []
-            indices.append('_'.join('pearson', 'cd', fv, mc))
+            indices.append('_'.join(['pearson', 'cd', fv, mc]))
             indices.append('Pct initial corr')
-            ids.append('_'.join(mc, fv, 'pearson', 'True'))
+            ids.append('_'.join([mc, fv, 'pearson', 'True']))
             for stat in stats:
-                indices.append('_'.join(stat, fv, mc))
+                indices.append('_'.join([stat, fv, mc]))
                 indices.append('Pct initial corr')
-                ids.append('_'.join(mc, fv, stat, 'False'))
+                ids.append('_'.join([mc, fv, stat, 'False']))
 
             # populate  df
             df_array = []
@@ -280,7 +280,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
 
             v_to_cd = {}
             # just get Cook's D
-            # should be '_'.join('pearson', 'cd', fv, mc)
+            # should be '_'.join(['pearson', 'cd', fv, mc])
             cd_val = list(pie_df.index.values)[0::2][0]
 
             # first two rows are cd
