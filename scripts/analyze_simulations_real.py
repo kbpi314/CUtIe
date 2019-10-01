@@ -161,33 +161,32 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
 
             # populate  df
             df_array = []
-            for i, (iden, index) in enumerate(zip(ids, indices)):
-                for idstring in iden:
-                    row_fracs = []
-                    mc, fv, s, cd = idstring.split('_')
-                    for dist in dists:
-                        row = results_df[(results_df['distribution'] == dist) & (results_df['statistic'] == s) \
-                                     & (results_df['mc_used'] == mc) & (results_df['fold_value'] == fv) & (results_df['pointwise'] == cd)]
-                        try:
-                            row_fracs.append(float(row['true_corr(TP_FN)'] /row['initial_corr'].values)) # correctly id tp
-                        except:
-                            row_fracs.append(np.nan)
-                            print('nan in row fracs')
-                            print(dist, idstring)
+            for i, (idstring, index) in enumerate(zip(ids, indices)):
+                row_fracs = []
+                mc, fv, s, cd = idstring.split('_')
+                for dist in dists:
+                    row = results_df[(results_df['distribution'] == dist) & (results_df['statistic'] == s) \
+                                 & (results_df['mc_used'] == mc) & (results_df['fold_value'] == fv) & (results_df['pointwise'] == cd)]
+                    try:
+                        row_fracs.append(float(row['true_corr(TP_FN)'] /row['initial_corr'].values)) # correctly id tp
+                    except:
+                        row_fracs.append(np.nan)
+                        print('nan in row fracs')
+                        print(dist, idstring)
 
-                    df_array.append(row_fracs)
+                df_array.append(row_fracs)
 
-                    initial_sig_fracs = []
-                    for dist in dists:
-                        row = results_df[(results_df['distribution'] == dist) & (results_df['statistic'] == s) \
-                                     & (results_df['mc_used'] == mc) & (results_df['fold_value'] == fv) & (results_df['pointwise'] == cd)]
-                        # change number 249500 to n_corr depending on dataset
-                        try:
-                            initial_sig_fracs.append(float(row['initial_corr'] / dist_to_corr[dist]))
-                        except:
-                            initial_sig_fracs.append(np.nan)
+                initial_sig_fracs = []
+                for dist in dists:
+                    row = results_df[(results_df['distribution'] == dist) & (results_df['statistic'] == s) \
+                                 & (results_df['mc_used'] == mc) & (results_df['fold_value'] == fv) & (results_df['pointwise'] == cd)]
+                    # change number 249500 to n_corr depending on dataset
+                    try:
+                        initial_sig_fracs.append(float(row['initial_corr'] / dist_to_corr[dist]))
+                    except:
+                        initial_sig_fracs.append(np.nan)
 
-                    df_array.append(initial_sig_fracs)
+                df_array.append(initial_sig_fracs)
 
             pie_df = pd.DataFrame(data = df_array, index = index, columns = colnames)
             pie_df = pie_df.rename_axis('Statistic')
@@ -199,46 +198,37 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
             # cut out the cookd parts
             rs_ids = ids[-len(stats):]
             rs_indices = indices[-2*len(stats):]
-            for i, (iden, index) in enumerate(zip(rs_ids, rs_indices)):
-                for idstring in iden:
-                    # stat = 'Pearson'
-                    row_fracs = []
-                    mc, fv, s, cd = idstring.split('_')
-                    for dist in dists:
-                        row = results_df[(results_df['distribution'] == dist) & (results_df['statistic'] == s) \
-                                     & (results_df['mc_used'] == mc) & (results_df['fold_value'] == fv) & (results_df['pointwise'] == 'False')]
-                        try:
-                            row_fracs.append(float(row['rs_true_corr_TP_FN'] /row['initial_corr'].values)) # correctly id tp
-                        except:
-                            row_fracs.append(np.nan)
-                            print('failed to parse rs')
-                            print(dist, idstring)
+            for i, (idstring, index) in enumerate(zip(rs_ids, rs_indices)):
+                # stat = 'Pearson'
+                row_fracs = []
+                mc, fv, s, cd = idstring.split('_')
+                for dist in dists:
+                    row = results_df[(results_df['distribution'] == dist) & (results_df['statistic'] == s) \
+                                 & (results_df['mc_used'] == mc) & (results_df['fold_value'] == fv) & (results_df['pointwise'] == 'False')]
+                    try:
+                        row_fracs.append(float(row['rs_true_corr_TP_FN'] /row['initial_corr'].values)) # correctly id tp
+                    except:
+                        row_fracs.append(np.nan)
+                        print('failed to parse rs')
+                        print(dist, idstring)
 
-                    df_array.append(row_fracs)
+                df_array.append(row_fracs)
 
-                    initial_sig_fracs = []
-                    for dist in dists:
-                        row = results_df[(results_df['distribution'] == dist) & (results_df['statistic'] == s) \
-                                     & (results_df['mc_used'] == mc) & (results_df['fold_value'] == fv) & (results_df['pointwise'] == 'False')]
-                        # change number 249500 to n_corr depending on dataset
-                        try:
-                            initial_sig_fracs.append(float(row['initial_corr'] / dist_to_corr[dist]))
-                        except:
-                            initial_sig_fracs.append(np.nan)
+                initial_sig_fracs = []
+                for dist in dists:
+                    row = results_df[(results_df['distribution'] == dist) & (results_df['statistic'] == s) \
+                                 & (results_df['mc_used'] == mc) & (results_df['fold_value'] == fv) & (results_df['pointwise'] == 'False')]
+                    # change number 249500 to n_corr depending on dataset
+                    try:
+                        initial_sig_fracs.append(float(row['initial_corr'] / dist_to_corr[dist]))
+                    except:
+                        initial_sig_fracs.append(np.nan)
 
-                    df_array.append(initial_sig_fracs)
+                df_array.append(initial_sig_fracs)
 
-                rs_df = pd.DataFrame(data = df_array, index = index, columns = colnames)
-                rs_df = rs_df.rename_axis('Statistic')
-                rs_df = rs_df.apply(pd.to_numeric).round(2)
-
-
-            rs_for_df = rs_dfs[0]
-            rs_rev_df = rs_dfs[1]
-
-            # Reverse sign no micrometa
-            fv_to_df_rsfor = {}
-            fv_to_df_rsrev = {}
+            rs_df = pd.DataFrame(data = df_array, index = index, columns = colnames)
+            rs_df = rs_df.rename_axis('Statistic')
+            rs_df = rs_df.apply(pd.to_numeric).round(2)
 
             # currently the four dfs are
             # pie_df and rs_df
