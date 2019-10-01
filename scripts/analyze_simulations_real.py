@@ -271,18 +271,18 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
             v_to_cd = {}
             # just get Cook's D
             # should be '_'.join(['pearson', 'cd', fv, mc])
-            cd_val = list(pie_df.index.values)[0::2][0]
+            # cd_val = list(pie_df.index.values)[0::2][0]
 
             # first two rows are cd
             rows = pie_df.iloc[0:2,:].values
-            v_to_cd[cd_val]['TP'] = rows[0]
-            v_to_cd[cd_val]['initial_sig'] = rows[1]
+            v_to_cd['TP'] = rows[0]
+            v_to_cd['initial_sig'] = rows[1]
 
             for d in range(len(colnames)):
                 labels = ['TP', 'FP', 'N']
                 colors = ['#66b3ff','#ff9999','#FFC000']#,'#ffcc99']
-                TP = v_to_cd[cd_val]['TP'][d]
-                P = v_to_cd[cd_val]['initial_sig'][d]
+                TP = v_to_cd['TP'][d]
+                P = v_to_cd['initial_sig'][d]
                 sizes = [TP * P, (1-TP)*P,1-P]
 
                 axs = axarr[0, d]
