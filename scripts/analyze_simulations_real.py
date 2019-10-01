@@ -334,10 +334,8 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                     N = dd[val]['initial_insig'][d]
                     # sizes = [(TP - rsTP) * P, rsTP * P,(1-TP)*P, (FN - rsFN) * N, rsFN * N, (1-FN)*N]
                     sizes = [(TP - rsTP) * P, rsTP * P,(1-TP)*P, FN * N, (1-FN)*N]
-                    # print(sizes,sum(sizes))
 
                     # plt.subplot(len(new_vals),len(colnames),i)
-                    # fig1, ax1 = plt.g()
                     axs = axarr[v, d]
                     # title = colnames[d] + ', ' + val.split('_')[0] + '\n' + str(int(dist_to_corr[colnames[d]]))
                     # axs.set_title(title)
@@ -345,12 +343,8 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                     # def draw_pie(sizes, colors):
                     patches, texts, autotexts = axs.pie(sizes, colors = colors, labels=None, autopct='%1.1f%%', startangle=0,
                                                        labeldistance = 1, pctdistance = 1.2)
-                    #plt.legend(patches, autotexts, loc='center left', bbox_to_anchor=(-0.1, 1.),fontsize=8)
                     fs = 12
                     ts = 12
-                    #patches[0].set_fontsize(fs)
-                    #patches[1].set_fontsize(fs)
-                    #patches[2].set_fontsize(fs)
                     texts[0].set_fontsize(fs)
                     texts[1].set_fontsize(fs)
                     texts[2].set_fontsize(fs)
@@ -371,7 +365,6 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                     # Equal aspect ratio ensures that pie is drawn as a circle
                     axs.axis('equal')
                     plt.tight_layout()
-                    #plt.show()
 
             f.savefig(output_dir + 'pieplots_dfreal_combined.pdf')
             plt.close(fig)
