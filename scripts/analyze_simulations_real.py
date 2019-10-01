@@ -130,6 +130,13 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
 
     colnames = ['Micrometa', 'Microbiome', 'Gene Expression', 'WHO']
 
+    col_to_corr = {
+        'Micrometa': 83 * 897,
+        'Microbiome': 748 * 747 / 2,
+        'Gene Expression': 100 * 99 / 2,
+        'WHO': 354 * 353 / 2
+    }
+
     dists = ['lungpt', 'lungc', 'hdac', 'who']
 
     dist_to_corr = {
@@ -290,7 +297,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
 
                 axs = axarr[0, d]
                 # note colnames = ['Micrometa', 'Microbiome', 'Gene Expression', 'WHO']
-                title = colnames[d] + ', ' + 'Cook\'s D' + '\n' + str(int(dist_to_corr[colnames[d]]))
+                title = colnames[d] + ', ' + 'Cook\'s D' + '\n' + str(int(col_to_corr[colnames[d]]))
                 axs.set_title(title)
                 patches, texts, autotexts = axs.pie(sizes, colors = colors, labels=None, autopct='%1.1f%%', startangle=0,
                                                    labeldistance = 1, pctdistance = 1.2)
