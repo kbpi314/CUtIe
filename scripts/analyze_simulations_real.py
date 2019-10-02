@@ -326,7 +326,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                     # for rs case
                     # reverse sign but still true FP is non reverse sign
                     colors = ['#66b3ff','#ADD8E6','#ff9999','#99ff99','#8064A2']
-                    TP = ß[val]['TP'][d]
+                    TP = dd[val]['TP'][d]
                     rsTP = dd[val]['rsTP'][d]
                     P = dd[val]['initial_sig'][d]
                     FN = dd[val]['FN'][d]
