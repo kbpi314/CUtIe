@@ -121,6 +121,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
 
                                 results_df = results_df.append(new_row)
                         except:
+                            print(analysis_id)
                             print('Failed parsing')
                             if cd == 'True':
                                 if s == 'pearson':
