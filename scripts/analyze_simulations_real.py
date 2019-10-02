@@ -280,6 +280,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
 
             # create figure
             f, axarr = plt.subplots(len(new_vals) + 1,len(colnames))
+            print(dd)
 
             for d in range(len(colnames)):
                 labels = ['TP', 'FP', 'N']
