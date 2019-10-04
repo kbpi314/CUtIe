@@ -195,10 +195,15 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                 print(mc, fv, cc, c, samp, cor)
     '''
 
+    # grab statistics
+    stat_pairs = []
+    for v, w in zip(statistic[::2], statistic[1::2]):
+        stat_pairs.append([v, w])
+
     # indiv plots
     for mc in multi_corr.split(','):
         for fv in fold_value.split(','):
-            for stat in [['pearson','rpearson'], ['spearman','rspearman'], ['kendall', 'rkendall']]:
+            for stat in stat_pairs:
                 for cc in ['False']:
                     for c in classes.split(','):
                         for samp in n_samp.split(','):
