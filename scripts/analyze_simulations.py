@@ -200,6 +200,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
     for v, w in zip(statistic[::2], statistic[1::2]):
         stat_pairs.append([v, w])
 
+    print(results_df.head())
     # indiv plots
     for mc in multi_corr.split(','):
         for fv in fold_value.split(','):
@@ -209,10 +210,15 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                         for samp in n_samp.split(','):
                             for cor in ['{0:g}'.format(float(str(x))) for x in np.arange(start, stop+step, step)]:
                                 df = results_df[results_df['mc'] == mc]
+                                print(df.head())
                                 df = df[df['fv'] == fv]
+                                print(df.head())
                                 df = df[df['stat'].isin(stat)]
+                                print(df.head())
                                 df = df[df['cc'] == cc]
+                                print(df.head())
                                 df = df[df['class'] == c]
+                                print(df.head())
                                 df = df[df['samps'] == samp]
                                 title = 'True_corr as a function of corr in ' + c
                                 plt.figure(figsize=(4,4))
