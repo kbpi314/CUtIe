@@ -213,6 +213,8 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                 print(df.head())
                                 df = df[df['fv'] == fv]
                                 print(df.head())
+                                print(stat)
+                                print(stat_pairs)
                                 df = df[df['stat'].isin(stat)]
                                 print(df.head())
                                 df = df[df['cc'] == cc]
