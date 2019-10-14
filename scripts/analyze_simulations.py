@@ -218,6 +218,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                 plt.figure(figsize=(4,4))
                                 sns.set_style("white")
                                 colors = ['#4F81BD','#C0504D']
+                                print(df)
                                 ax = sns.pointplot(x="cors", y="results", hue='stat',
                                     data=df, ci=95, palette=sns.color_palette(colors))
                                 ax.set_title(title, fontsize=15)
