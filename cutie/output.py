@@ -655,10 +655,18 @@ def diag_plots(samp_counter, var1_counter, var2_counter, resample_k, working_dir
     resample_k   - Integer. Number of points being resampled by CUtIe.
     working_dir  - String. Path of working directory specified by user.
     """
-    diag_stats = ['samp', 'var1', 'var2']
-    stats_mapping = {'samp': samp_counter,
-                     'var1': var1_counter,
-                     'var2': var2_counter}
+    if paired:
+        diag_stats = ['samp', 'var']
+        var_counter = {}
+        for i in range(resample_k):
+            var_counter[str(i+1)] = var1_counter[str(i+1)] + var2_counter[str(i+1)]
+        stats_mapping = {'samp': samp_counter,
+                         'var': var_counter}
+    else:
+        diag_stats = ['samp', 'var1', 'var2']
+        stats_mapping = {'samp': samp_counter,
+                         'var1': var1_counter,
+                         'var2': var2_counter}
 
     # for each diagnostic quantity
     for stats in diag_stats:

@@ -200,7 +200,6 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
     for v, w in zip(statistic.split(',')[::2], statistic.split(',')[1::2]):
         stat_pairs.append([v, w])
 
-    print(stat_pairs)
     # indiv plots
     for mc in multi_corr.split(','):
         for fv in fold_value.split(','):
