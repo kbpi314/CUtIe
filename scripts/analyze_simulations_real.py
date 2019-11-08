@@ -134,7 +134,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
     col_to_corr = {
         'Micrometa': 83 * 897,
         'Microbiome': 748 * 747 / 2,
-        'Gene Expression': 100 * 99 / 2,
+        'Gene Expression': 1000 * 999 / 2,
         'WHO': 354 * 353 / 2
     }
 
@@ -143,7 +143,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
     dist_to_corr = {
         'lungpt': 83 * 897,
         'lungc': 748 * 747 / 2,
-        'hdac': 100 * 99 / 2,
+        'hdac': 1000 * 999 / 2,
         'who': 354 * 353 / 2
     }
 
