@@ -402,40 +402,28 @@ def dsr(var1_index, var2_index, samp_var1, samp_var2,
     return reverse, exceeds, np.array(new_dsr), np.array(new_dsr)
 
 
-def return_influence(var1, var2, samp_var1, samp_var2):
+def return_influence(var1_values, var2_values):
     """
     Compute and return influence objects holding regression diagnostics
     ----------------------------------------------------------------------------
     INPUTS
-    var1       - Integer. Index of variable in file 1.
-    var2       - Integer. Index of variable in file 2.
-    samp_var1  - 2D array. Each value in row i col j is the level of
-                 variable j corresponding to sample i in the order that the
-                 samples are presented in samp_ids.
-    samp_var2  - 2D array. Same as samp_var1 but for file 2.
+    var1_values  - 1D array. Values of variable 1.
+    var2_values  - 1D array. Values of variable 2.
 
     OUTPUTS
-    influence1 - sm.OLS object. Not relevant to Pearson/Spearman but needed as a
-                 placeholder argument (for Cook's D, etc.)
-    influence2 - sm.OLS object. Same remarks as for influence1.
-
+    influence1   - sm.OLS object. Not relevant to Pearson/Spearman but needed as a
+                   placeholder argument (for Cook's D, etc.)
     """
-    x_old = samp_var1[:, var1]
-    y_old = samp_var2[:, var2]
-
-    # remove nan for influence calculation
-    new_x, new_y = utils.remove_nans(x_old, y_old)
-
     # add constant for constant term in regression
-    x = sm.add_constant(new_x)
-    y = sm.add_constant(new_y)
+    x = sm.add_constant(var1_values)
+    y = sm.add_constant(var2_values)
     # compute models with x and y as independent vars, respectively
-    model1 = sm.OLS(new_y, x, missing='drop')
+    model1 = sm.OLS(var2_values, x, missing='drop')
     fitted1 = model1.fit()
     influence1 = fitted1.get_influence()
     # only influence1 is used in subsequent calculations but one can theorize
     # about using influence2 as a criterion as well
-    model2 = sm.OLS(new_x, y, missing='drop')
+    model2 = sm.OLS(var1_values, y, missing='drop')
     fitted2 = model2.fit()
     influence2 = fitted2.get_influence()
     return influence1
@@ -480,15 +468,22 @@ def calculate_FP_sets(initial_corr, samp_var1, samp_var2, infln_metrics,
     # determine if each initial_corr correlation belongs in each metric FP set
     for pair in initial_corr:
         var1, var2 = pair
-        influence = return_influence(var1, var2, samp_var1, samp_var2)
-        for metric in infln_metrics:
-            reverse, exceeds, corr_values, pvalues_thresholds = infln_mapping[metric](
-                var1, var2, samp_var1, samp_var2, influence,
-                threshold, fold, fold_value)
 
-            # if exceeds == 0 then it is a TP
-            if exceeds.sum() != 0:
-                FP_infln_sets[metric].add(pair)
+        x_old = samp_var1[:, var1]
+        y_old = samp_var2[:, var2]
+
+        # remove nan for influence calculation
+        var1_values, var2_values = utils.remove_nans(x_old, y_old)
+        if len(var1_values) > 0 and len(var2_values) > 0:
+            influence = return_influence(var1_values, var2_values)
+            for metric in infln_metrics:
+                reverse, exceeds, corr_values, pvalues_thresholds = infln_mapping[metric](
+                    var1, var2, samp_var1, samp_var2, influence,
+                    threshold, fold, fold_value)
+
+                # if exceeds == 0 then it is a TP
+                if exceeds.sum() != 0:
+                    FP_infln_sets[metric].add(pair)
 
     return FP_infln_sets
 
