@@ -637,7 +637,8 @@ def plot_corr_sets(graph_bound, df, working_dir, f1type, f2type, var1_names,
 # Diagnostic plot handling
 ###
 
-def diag_plots(samp_counter, var1_counter, var2_counter, resample_k, working_dir):
+def diag_plots(samp_counter, var1_counter, var2_counter, resample_k, working_dir,
+               paired):
     """
     Create diagnostic plots i.e. creates histograms of number of times each
     sample or variable appears in CUtIe's
@@ -654,6 +655,7 @@ def diag_plots(samp_counter, var1_counter, var2_counter, resample_k, working_dir
     var2_counter - Same as var1_counter except for var2.
     resample_k   - Integer. Number of points being resampled by CUtIe.
     working_dir  - String. Path of working directory specified by user.
+    paired       - Boolean. True if variables are paired (same in both files).
     """
     if paired:
         diag_stats = ['samp', 'var']
