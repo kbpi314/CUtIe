@@ -416,14 +416,8 @@ def return_influence(var1_values, var2_values):
                    placeholder argument (for Cook's D, etc.)
     """
     # add constant for constant term in regression
-    try:
-        x = sm.add_constant(var1_values)
-        y = sm.add_constant(var2_values)
-    except:
-        print(var1_values)
-        print(var2_values)
-        x = sm.add_constant(var1_values)
-        y = sm.add_constant(var2_values)
+    x = sm.add_constant(var1_values)
+    y = sm.add_constant(var2_values)
 
     # compute models with x and y as independent vars, respectively
     model1 = sm.OLS(var2_values, x, missing='drop')
@@ -482,6 +476,8 @@ def calculate_FP_sets(initial_corr, samp_var1, samp_var2, infln_metrics,
 
         # remove nan for influence calculation
         var1_values, var2_values = utils.remove_nans(x_old, y_old)
+        print(var1_values)
+        print(var2_values)
         if len(var1_values) > 0 and len(var2_values) > 0:
             influence = return_influence(var1_values, var2_values)
             for metric in infln_metrics:
