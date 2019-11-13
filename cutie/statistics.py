@@ -281,6 +281,7 @@ def cookd(var1_index, var2_index, samp_var1, samp_var2,
         new_cooksp[non_nan_indices[i]] = p[i]
 
     for i, ele in enumerate(new_cooksd):
+        # if ele > 1 or np.isnan(ele) or ele == 0.0:
         if ele > 1/fold_value or np.isnan(ele) or ele == 0.0:
             exceeds[i] = 1
 
@@ -415,8 +416,15 @@ def return_influence(var1_values, var2_values):
                    placeholder argument (for Cook's D, etc.)
     """
     # add constant for constant term in regression
-    x = sm.add_constant(var1_values)
-    y = sm.add_constant(var2_values)
+    try:
+        x = sm.add_constant(var1_values)
+        y = sm.add_constant(var2_values)
+    except:
+        print(var1_values)
+        print(var2_values)
+        x = sm.add_constant(var1_values)
+        y = sm.add_constant(var2_values)
+
     # compute models with x and y as independent vars, respectively
     model1 = sm.OLS(var2_values, x, missing='drop')
     fitted1 = model1.fit()
