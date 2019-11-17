@@ -322,6 +322,11 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
 
                 for v in range(len(new_vals)):
                     val = new_vals[v]
+
+                    print(val)
+                    print(colnames)
+                    print(new_vals)
+
                     # labels = ['TP', 'rsTP', 'FP', 'FN', 'rsFN', 'TN']
                     labels = ['TP', 'rsTP', 'FP', 'FN', 'TN']
                     # TP is blue FP is red FN is green TN is purple
