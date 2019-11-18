@@ -269,6 +269,8 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                     dd[v]['FN'] = rows[0]
                     dd[v]['initial_insig'] = rows[1]
 
+
+            for_vals = new_vals[::2]
             v_to_cd = {}
             # just get Cook's D
             # should be '_'.join(['pearson', 'cd', fv, mc])
@@ -280,9 +282,10 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
             v_to_cd['initial_sig'] = rows[1]
 
             # create figure
-            f, axarr = plt.subplots(len(new_vals) + 1,len(colnames))
+            f, axarr = plt.subplots(len(for_vals) + 1,len(colnames))
             print(dd)
 
+            # iterate over dataset
             for d in range(len(colnames)):
                 labels = ['TP', 'FP', 'N']
                 colors = ['#66b3ff','#ff9999','#FFC000']#,'#ffcc99']
@@ -320,12 +323,14 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                 plt.tight_layout()
                 #plt.show()
 
-                for v in range(len(new_vals)):
-                    val = new_vals[v]
+                # iterate over statistic
+                for v in range(len(for_vals)):
+                    val = for_vals[v]
 
                     print(val)
                     print(colnames)
                     print(new_vals)
+                    print(for_vals)
 
                     # labels = ['TP', 'rsTP', 'FP', 'FN', 'rsFN', 'TN']
                     labels = ['TP', 'rsTP', 'FP', 'FN', 'TN']
@@ -336,9 +341,9 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                     TP = dd[val]['TP'][d]
                     rsTP = dd[val]['rsTP'][d]
                     P = dd[val]['initial_sig'][d]
-                    FN = dd[val]['FN'][d]
-                    rsFN = dd[val]['rsFN'][d]
-                    N = dd[val]['initial_insig'][d]
+                    FN = dd['r' + val]['FN'][d]
+                    rsFN = dd['r' + val]['rsFN'][d]
+                    N = dd['r' + val]['initial_insig'][d]
                     # sizes = [(TP - rsTP) * P, rsTP * P,(1-TP)*P, (FN - rsFN) * N, rsFN * N, (1-FN)*N]
                     sizes = [(TP - rsTP) * P, rsTP * P,(1-TP)*P, FN * N, (1-FN)*N]
 
