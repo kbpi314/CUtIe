@@ -329,11 +329,6 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                 for v in range(len(for_vals)):
                     val = for_vals[v]
 
-                    print(val)
-                    print(sub_colnames)
-                    print(new_vals)
-                    print(for_vals)
-
                     # labels = ['TP', 'rsTP', 'FP', 'FN', 'rsFN', 'TN']
                     labels = ['TP', 'rsTP', 'FP', 'FN', 'TN']
                     # TP is blue FP is red FN is green TN is purple
@@ -348,6 +343,10 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                     N = dd['r' + val]['initial_insig'][d]
                     # sizes = [(TP - rsTP) * P, rsTP * P,(1-TP)*P, (FN - rsFN) * N, rsFN * N, (1-FN)*N]
                     sizes = [(TP - rsTP) * P, rsTP * P,(1-TP)*P, FN * N, (1-FN)*N]
+                    print(sub_colnames[d])
+                    print(val)
+                    print(labels)
+                    print(sizes)
 
                     # plt.subplot(len(new_vals),len(colnames),i)
                     axs = axarr[v + 1, d]
