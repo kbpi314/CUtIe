@@ -200,6 +200,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
     for v, w in zip(statistic.split(',')[::2], statistic.split(',')[1::2]):
         stat_pairs.append([v, w])
 
+    corr_ticks = [0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95]
     # indiv plots
     for mc in multi_corr.split(','):
         for fv in fold_value.split(','):
@@ -226,8 +227,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                     plt.setp(ax.lines, alpha=.3)
                                     # plt.xlim(-0.1,1.1)
                                     # plt.ylim(-0.2, 1.2)
-                                    print(df['cors'])
-                                    ax.set_xticklabels(df['cors'].values,rotation=45)
+                                    ax.set_xticklabels(corr_ticks,rotation=45)
                                     plt.tick_params(axis='both', which='both', top=False, right=False)
                                     sns.despine()
                                     plt.savefig(output_dir + mc + '_' + fv + '_' + str(stat) + '_' + cc + '_' + c + '_' + samp + '.pdf')
@@ -277,8 +277,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                     plt.setp(ax.lines, alpha=.3)
                                     # plt.xlim(-0.1,1.1)
                                     # plt.ylim(-0.2,1.2)
-                                    print(df['cors'])
-                                    ax.set_xticklabels(df['cors'].values,rotation=45)
+                                    ax.set_xticklabels(corr_ticks, rotation=45)
                                     plt.tick_params(axis='both', which='both', top=False, right=False)
                                     sns.despine()
                                     plt.savefig(output_dir + mc + '_' + fv + '_' + str(stat) + '_cookdcompare_' + c + '_' + samp + '.pdf')
