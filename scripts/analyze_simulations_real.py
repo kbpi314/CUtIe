@@ -146,6 +146,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
         'hdac': 1000 * 999 / 2,
         'who': 354 * 353 / 2
     }
+    results_df.to_csv(output_dir + 'real_df.txt', sep='\t')
 
     # populate indices and ids for the dfs
     for fv in fvs:
