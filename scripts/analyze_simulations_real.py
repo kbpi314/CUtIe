@@ -349,7 +349,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                     sizes = [(TP - rsTP) * P, rsTP * P,(1-TP)*P, FN * N, (1-FN)*N]
 
                     # plt.subplot(len(new_vals),len(colnames),i)
-                    axs = axarr[v, d]
+                    axs = axarr[v + 1, d]
                     # title = colnames[d] + ', ' + val.split('_')[0] + '\n' + str(int(dist_to_corr[colnames[d]]))
                     # axs.set_title(title)
 
