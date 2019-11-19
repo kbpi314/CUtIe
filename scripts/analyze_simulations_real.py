@@ -243,6 +243,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
             pie_df = pie_df.drop(['Micrometa'],axis=1)
             nocd_pie_df = pie_df.iloc[2:,:]
             rs_df = rs_df.drop(['Micrometa'],axis=1)
+            colnames = ['Microbiome', 'Gene Expression', 'WHO']
 
             # obtain indices without cook's D
             vals = list(nocd_pie_df.index.values)
