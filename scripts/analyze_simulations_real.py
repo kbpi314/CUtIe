@@ -380,7 +380,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                     axs.axis('equal')
                     plt.tight_layout()
 
-            f.savefig(output_dir + 'pieplots_dfreal_combined_' + mc + '_' + 'fv' + '.pdf')
+            f.savefig(output_dir + 'pieplots_dfreal_combined_' + mc + '_' + fv + '.pdf')
             plt.close(fig)
 
 
