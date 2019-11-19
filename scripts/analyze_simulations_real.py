@@ -243,7 +243,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
             pie_df = pie_df.drop(['Micrometa'],axis=1)
             nocd_pie_df = pie_df.iloc[2:,:]
             rs_df = rs_df.drop(['Micrometa'],axis=1)
-            colnames = ['Microbiome', 'Gene Expression', 'WHO']
+            sub_colnames = ['Microbiome', 'Gene Expression', 'WHO']
 
             # obtain indices without cook's D
             vals = list(nocd_pie_df.index.values)
@@ -283,11 +283,11 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
             v_to_cd['initial_sig'] = rows[1]
 
             # create figure
-            f, axarr = plt.subplots(len(for_vals) + 1,len(colnames))
+            f, axarr = plt.subplots(len(for_vals) + 1,len(sub_colnames))
             print(dd)
 
             # iterate over dataset
-            for d in range(len(colnames)):
+            for d in range(len(sub_colnames)):
                 labels = ['TP', 'FP', 'N']
                 colors = ['#66b3ff','#ff9999','#FFC000']#,'#ffcc99']
                 TP = v_to_cd['TP'][d]
@@ -296,7 +296,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
 
                 axs = axarr[0, d]
                 # note colnames = ['Micrometa', 'Microbiome', 'Gene Expression', 'WHO']
-                title = colnames[d] + ', ' + 'Cook\'s D' + '\n' + str(int(col_to_corr[colnames[d]]))
+                title = sub_colnames[d] + ', ' + 'Cook\'s D' + '\n' + str(int(col_to_corr[sub_colnames[d]]))
                 axs.set_title(title)
                 patches, texts, autotexts = axs.pie(sizes, colors = colors, labels=None, autopct='%1.1f%%', startangle=0,
                                                    labeldistance = 1, pctdistance = 1.2)
@@ -329,7 +329,7 @@ def analyze_simulations_real(fold_value, statistic, multi_corr, corr_compare,
                     val = for_vals[v]
 
                     print(val)
-                    print(colnames)
+                    print(sub_colnames)
                     print(new_vals)
                     print(for_vals)
 
