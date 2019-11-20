@@ -226,7 +226,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                     plt.setp(ax.collections, alpha=.3) #for the markers
                                     plt.setp(ax.lines, alpha=.3)
                                     # plt.xlim(-0.1,1.1)
-                                    # plt.ylim(-0.2, 1.2)
+                                    plt.ylim(-0.2, 1.2)
                                     ax.set_xticklabels(corr_ticks,rotation=45)
                                     plt.tick_params(axis='both', which='both', top=False, right=False)
                                     sns.despine()
@@ -276,7 +276,7 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                     plt.setp(ax.collections, alpha=.3) #for the markers
                                     plt.setp(ax.lines, alpha=.3)
                                     # plt.xlim(-0.1,1.1)
-                                    # plt.ylim(-0.2,1.2)
+                                    plt.ylim(-0.2,1.2)
                                     ax.set_xticklabels(corr_ticks, rotation=45)
                                     plt.tick_params(axis='both', which='both', top=False, right=False)
                                     sns.despine()
