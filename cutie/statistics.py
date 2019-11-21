@@ -282,7 +282,8 @@ def cookd(var1_index, var2_index, samp_var1, samp_var2,
 
     for i, ele in enumerate(new_cooksd):
         # if ele > 1 or np.isnan(ele) or ele == 0.0:
-        if ele > 1*fold_value or np.isnan(ele) or ele == 0.0:
+        # if ele > 1*fold_value or np.isnan(ele) or ele == 0.0:
+        if ele > 1 or np.isnan(ele) or ele == 0.0:
             exceeds[i] = 1
 
     return reverse, exceeds, new_cooksd, new_cooksp
