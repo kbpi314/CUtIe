@@ -55,7 +55,7 @@ def parse_input(ftype, fp, startcol, endcol, delimiter, skip):
     # obtain list of sample ids, variable names, number of var, and number of
     # samples
     samp_ids = df.index.values
-    var_names = list(df)
+    var_names = [str(x) for x in list(df)]
     n_var = len(list(df))
     n_samp = len(df)
 
