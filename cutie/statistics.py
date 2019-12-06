@@ -477,8 +477,6 @@ def calculate_FP_sets(initial_corr, samp_var1, samp_var2, infln_metrics,
 
         # remove nan for influence calculation
         var1_values, var2_values = utils.remove_nans(x_old, y_old)
-        print(var1_values)
-        print(var2_values)
         if len(var1_values) > 1 and len(var2_values) > 1:
             influence = return_influence(var1_values, var2_values)
             for metric in infln_metrics:
