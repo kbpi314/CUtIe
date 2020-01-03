@@ -11,12 +11,16 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 # Required arguments
 @click.option('-s', '--max_seed', type=int,
               help='max int seed number')
+@click.option('-w', '--working_dir', type=click.Path(exists=True),
+              help='working dir to put batch jobs')
+@click.option('-i', '--input_dir', type=click.Path(exists=True),
+              help='input dir with configs')
 
-def gen_batch(max_seed):
-    dirs = glob.glob('/sc/hydra/work/buk02/new_configs/*')
+def gen_batch(max_seed, working_dir, input_dir):
+    dirs = glob.glob(input_dir + '*')
 
-    if not os.path.exists('/sc/hydra/work/buk02/new_commands/batch_jobs/'):
-        os.makedirs('/sc/hydra/work/buk02/new_commands/batch_jobs/')
+    if not os.path.exists(working_dir + 'batch_jobs/'):
+        os.makedirs(working_dir + 'batch_jobs/')
 
     seed_to_dirs = defaultdict(list)
 
@@ -28,9 +32,9 @@ def gen_batch(max_seed):
             line = f.readline()
             command = line.split('&&')[-1]
             seed_to_dirs[seed].append(command)
-            
+
     for s in range(max_seed):
-        with open('/sc/hydra/work/buk02/new_commands/batch_jobs/batch_' + str(s) + '.txt', 'w') as f:
+        with open(working_dir + 'batch_jobs/batch_' + str(s) + '.txt', 'w') as f:
             f.write('export PYTHONPATH=$PYTHONPATH:/hpc/users/buk02/tools/sandbox/lib/python3.7/site-packages/')
             for c in seed_to_dirs[str(s)]:
                 f.write(' && ')
