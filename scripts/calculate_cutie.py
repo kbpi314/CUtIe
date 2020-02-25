@@ -44,7 +44,7 @@ def calculate_cutie(input_config_fp):
     """
     # unpack config variables
     (samp_var1_fp, delimiter1, samp_var2_fp, delimiter2, f1type, f2type,
-     working_dir, skip1, skip2, startcol1, endcol1, startcol2, endcol2,
+     working_dir, skip1, skip2, startcol1, endcol1, startcol2, endcol2, param,
      statistic, corr_compare, resample_k, paired, overwrite, alpha, multi_corr,
      fold, fold_value, graph_bound, fix_axis) = parse.parse_config(input_config_fp)
 
