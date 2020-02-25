@@ -91,6 +91,12 @@ for (n_samp in strsplit(n_sampvec,split=',')[[1]]){
       }
       X <- x1
       Y <- x2
+      if (cv == 1){
+        X <- numeric(n_samp-1)
+        Y <- numeric(n_samp-1)
+        X <- c(X, 20)
+        Y <- c(X, 20)
+      }
       S = seq(1:n_samp)
       mat = cbind(S,Y,X)
       write.table(mat, file=paste(output, nseed,'_FP_',n_samp,'_',cv,'.txt',sep=''), row.names=sprintf("s%s",seq(1:n_samp)), col.names=TRUE, sep='\t')
