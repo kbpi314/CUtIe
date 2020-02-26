@@ -127,11 +127,11 @@ def calculate_cutie(input_config_fp):
         paired)
 
     # determine parameter (either r or p)
-    output.write_log('The parametere chosen was ' + param)
+    output.write_log('The parameter chosen was ' + param)
 
     # determine significance threshold and number of correlations
     output.write_log('The type of mc correction used was ' + multi_corr, log_fp)
-    threshold, n_corr, minp = statistics.set_threshold(pvalues, alpha,
+    threshold, n_corr, minp = statistics.set_threshold(pvalues, param, alpha,
                                                        multi_corr, paired)
     output.write_log('The threshold value was ' + str(threshold), log_fp)
 
