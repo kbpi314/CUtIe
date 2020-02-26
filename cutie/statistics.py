@@ -541,7 +541,7 @@ def pointwise_comparison(infln_metrics, infln_mapping, samp_var1, samp_var2,
     return FP_infln_sets, region_combs, region_sets
 
 
-def get_initial_corr(n_var1, n_var2, pvalues, threshold, paired):
+def get_initial_corr(n_var1, n_var2, pvalues, corrs, threshold, param, paired):
     """
     Determine list of initially candidate correlations for screening (either sig
     or nonsig, if performing CUTIE or reverse-CUTIE respectively).
@@ -550,8 +550,13 @@ def get_initial_corr(n_var1, n_var2, pvalues, threshold, paired):
     n_var1       - Integer. Number of variables in file 1.
     n_var2       - Integer. Number of variables in file 2.
     pvalues      - 2D array. Contains pvalue between var i and var j.
+    corrs        - 2D array. Contains corr value between var i and var j.
     threshold    - Float. Level of significance testing (after adjusting for
                    multiple comparisons)
+    param        - String. Either 'r' or 'p' depending on whether r value or p
+                   value will be used to filter correlations.
+    paired       - Boolean. True if variables are paired (i.e. file 1 and file
+                   2 are the same), False otherwise.
 
     OUTPUTS
     initial_corr - Set of tuples. Variable pairs for screening.
@@ -568,8 +573,12 @@ def get_initial_corr(n_var1, n_var2, pvalues, threshold, paired):
             # then don't compute corr(i,j) for i <= j
             if not (paired and (var1 <= var2)):
                 all_pairs.append(pair)
-                if pvalues[var1][var2] < threshold:
-                    initial_corr.append(pair)
+                if param == 'p':
+                    if pvalues[var1][var2] < threshold:
+                        initial_corr.append(pair)
+                elif param == 'r':
+                    if np.abs(corrs[var1][var2]) > threshold:
+                        initial_corr.append(pair)
 
     return initial_corr, all_pairs
 
