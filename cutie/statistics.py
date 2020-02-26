@@ -101,13 +101,15 @@ def initial_stats(samp_var1, samp_var2, corr_func, paired):
     return corrs, pvalues
 
 
-def set_threshold(pvalues, alpha, multi_corr, paired=False):
+def set_threshold(pvalues, param, alpha, multi_corr, paired=False):
     """
     Computes p-value threshold for alpha according to FDR, Bonferroni, or FWER.
     ----------------------------------------------------------------------------
     INPUTS
     pvalues    - 2D array. Entry row i, col j represents p value of correlation
                  between i-th var1 and j-th var2.
+    param      - String. Either 'r' or 'p' depending on whether r value or p
+                 value will be used to filter correlations.
     alpha      - Float. Original cut-off for alpha (0.05).
     multi_corr - String. Form of multiple corrections to use (nomc: none,
                  bonferroni: bonferroni, fwer: family-wise error rate,
@@ -116,14 +118,14 @@ def set_threshold(pvalues, alpha, multi_corr, paired=False):
                  2 are the same), False otherwise.
 
     OUTPUTS
-    threshold - Float. Cutoff of pvalues.
+    threshold - Float. Cutoff for specified parameter.
     n_corr    - Integer. Number of correlations.
     defaulted - Boolean. True if FDR correction could not be obtained.
     """
     if paired:
         # fill the upper diagonal with nan as to not double count pvalues in FDR
         pvalues[np.triu_indices(pvalues.shape[1], 0)] = np.nan
-        # currently computing all pairs double counting
+        # to avoid double counting
         n_corr = np.size(pvalues, 1) * (np.size(pvalues, 1) - 1)//2
     else:
         n_corr = np.size(pvalues, 0) * np.size(pvalues, 1)
@@ -132,7 +134,8 @@ def set_threshold(pvalues, alpha, multi_corr, paired=False):
     pvalues = np.sort(pvalues.flatten())
     pvalues = pvalues[~np.isnan(pvalues)]
     minp = min(pvalues)
-    if multi_corr == 'nomc':
+
+    if (multi_corr == 'nomc') or (param == 'r'):
         threshold = alpha
     elif multi_corr == 'bonferroni':
         threshold = alpha / pvalues.size
@@ -149,6 +152,7 @@ def set_threshold(pvalues, alpha, multi_corr, paired=False):
             threshold = alpha
         else:
             threshold = thresholds[max(compare)]
+
     return threshold, n_corr, minp
 
 
