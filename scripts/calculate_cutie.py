@@ -126,6 +126,9 @@ def calculate_cutie(input_config_fp):
         samp_var2, statistic, pearson_stats, spearman_stats, kendall_stats,
         paired)
 
+    # determine parameter (either r or p)
+    output.write_log('The parametere chosen was ' + param)
+
     # determine significance threshold and number of correlations
     output.write_log('The type of mc correction used was ' + multi_corr, log_fp)
     threshold, n_corr, minp = statistics.set_threshold(pvalues, alpha,
