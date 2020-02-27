@@ -161,8 +161,7 @@ def set_threshold(pvalues, param, alpha, multi_corr, paired=False):
 ###
 
 
-def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, influence,
-                       threshold, fold, fold_value):
+def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, **kwargs):
     """
     Takes a given var1 and var2 by indices and recomputes Pearson correlation
     by removing 1 out of n (sample_size) points from samp_ids.
@@ -174,8 +173,7 @@ def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, influence,
                  corresponding to sample i in the order that the samples are
                  presented in samp_ids.
     samp_var2  - 2D array. Same as samp_var1 but for file 2.
-    influence  - sm.OLS object. Not relevant to Pearson/Spearman but needed as a
-                 placeholder argument (for Cook's D, etc.)
+    **kwargs:
     threshold  - Float. Level of significance testing (after adjusting for
                  multiple comparisons).
     fold       - Boolean. Determines whether you require the new P value to be a
@@ -218,11 +216,12 @@ def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, influence,
         reverse, maxp, minr = update_rev_extrema_rp(0, r_value, p_value,
                                                     [s], reverse, maxp, minr,
                                                     True)
-        if fold:
-            if (p_value > threshold and p_value > original_p * fold_value) or \
+        if kwargs['fold']:
+            if (p_value > kwargs['threshold'] and \
+                p_value > original_p * kwargs['fold_value']) or \
                 np.isnan(p_value):
                 exceeds[s] += 1
-        elif p_value > threshold or np.isnan(p_value):
+        elif p_value > kwargs['threshold'] or np.isnan(p_value):
             exceeds[s] += 1
 
         corrs[s] = r_value
@@ -230,8 +229,7 @@ def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, influence,
 
     return reverse, exceeds, corrs, p_values
 
-def cookd(var1_index, var2_index, samp_var1, samp_var2,
-          influence, threshold, fold, fold_value):
+def cookd(var1_index, var2_index, samp_var1, samp_var2, **kwargs):
     """
     Takes a given var1 and var2 by indices and recomputes Cook's D for each i-th
     sample.
@@ -243,15 +241,9 @@ def cookd(var1_index, var2_index, samp_var1, samp_var2,
                  corresponding to sample i in the order that the samples are
                  presented in samp_ids.
     samp_var2  - 2D array. Same as samp_var1 but for file 2.
+    **kwargs:
     influence  - sm.OLS object. Not relevant to Pearson/Spearman but needed as a
                  placeholder argument (for Cook's D, etc.)
-    threshold  - Float. Level of significance testing (after adjusting for
-                 multiple comparisons)
-    fold       - Boolean. Determines whether you require the new P value to be a
-                 certain fold greater to be classified as a CUTIE.
-    fold_value - Float. Determines fold difference constraint imposed on the
-                 resampled p-value needed for a correlation to be classified as
-                 a CUTIE.
 
     OUTPUTS
     reverse    - 1D array. Index i is 1 if the correlation changes sign upon
@@ -259,9 +251,8 @@ def cookd(var1_index, var2_index, samp_var1, samp_var2,
     exceeds    - 1D array. Index i is 1 if removing that sample causes the
                  correlation to become insignificant in at least 1 different
                  pairwise correlations
-    corrs      - 1D array. Contains values of correlation strength with sample i
-                 removed.
-    p_values   - 1D array. Contains values of pvalues with sample i removed.
+    new_cooksd - 1D array. Contains value of Cook's D for each point i.
+    new_cooksp - 1D array. Contains p value associated with Cook's D for point i.
     """
     n_samp = np.size(samp_var1, 0)
     # reverse is 0 because sign never changes
@@ -293,8 +284,7 @@ def cookd(var1_index, var2_index, samp_var1, samp_var2,
     return reverse, exceeds, new_cooksd, new_cooksp
 
 
-def dffits(var1_index, var2_index, samp_var1, samp_var2,
-           influence, threshold, fold, fold_value):
+def dffits(var1_index, var2_index, samp_var1, samp_var2, **kwargs):
     """
     Takes a given var1 and var2 by indices and recomputes DFFITS for each i-th
     sample.
@@ -322,13 +312,13 @@ def dffits(var1_index, var2_index, samp_var1, samp_var2,
     exceeds    - 1D array. Index i is 1 if removing that sample causes the
                  correlation to become insignificant in at least 1 different
                  pairwise correlations
-    dffits_    - 1D array of value of dffits strength with index i removed
-    placehold  - List. Placeholder representing threshold used.
+    []         - 1D array of value of dffits strength with index i removed
+    []         - 1D array. Placeholder representing threshold used.
     """
     n_samp = np.size(samp_var1, 0)
     reverse = np.zeros(n_samp)
     exceeds = np.zeros(n_samp)
-    dffits_, dffits_threshold = influence.dffits
+    dffits_, dffits_threshold = kwargs['influence'].dffits
 
     var1 = samp_var1[:, var1_index]
     var2 = samp_var2[:, var2_index]
@@ -350,8 +340,7 @@ def dffits(var1_index, var2_index, samp_var1, samp_var2,
     return reverse, exceeds, np.array(new_dffits), np.array([dffits_threshold] * n_samp)
 
 
-def dsr(var1_index, var2_index, samp_var1, samp_var2,
-        influence, threshold, fold, fold_value):
+def dsr(var1_index, var2_index, samp_var1, samp_var2, **kwargs):
     """
     Takes a given var1 and var2 by indices and recomputes DFFITS for each i-th
     sample.
@@ -363,15 +352,9 @@ def dsr(var1_index, var2_index, samp_var1, samp_var2,
                  corresponding to sample i in the order that the samples are
                  presented in samp_ids.
     samp_var2  - 2D array. Same as samp_var1 but for file 2.
+    **kwargs:
     influence  - sm.OLS object. Not relevant to Pearson/Spearman but needed as a
                  placeholder argument (for Cook's D, etc.)
-    threshold  - Float. Level of significance testing (after adjusting for
-                 multiple comparisons)
-    fold       - Boolean. Determines whether you require the new P value to be a
-                 certain fold greater to be classified as a CUTIE.
-    fold_value - Float. Determines fold difference constraint imposed on the
-                 resampled p-value needed for a correlation to be classified as
-                 a CUTIE.
 
     OUTPUTS
     reverse    - 1D array. Index i is 1 if the correlation changes sign upon
@@ -386,7 +369,7 @@ def dsr(var1_index, var2_index, samp_var1, samp_var2,
     n_samp = np.size(samp_var1, 0)
     reverse = np.zeros(n_samp)
     exceeds = np.zeros(n_samp)
-    dsr_ = influence.resid_studentized_external
+    dsr_ = kwargs['influence'].resid_studentized_external
 
     var1 = samp_var1[:, var1_index]
     var2 = samp_var2[:, var2_index]
@@ -485,8 +468,8 @@ def calculate_FP_sets(initial_corr, samp_var1, samp_var2, infln_metrics,
             influence = return_influence(var1_values, var2_values)
             for metric in infln_metrics:
                 reverse, exceeds, corr_values, pvalues_thresholds = infln_mapping[metric](
-                    var1, var2, samp_var1, samp_var2, influence,
-                    threshold, fold, fold_value)
+                    var1, var2, samp_var1, samp_var2, influence=influence,
+                    threshold=threshold, fold=fold, fold_value=fold_value)
 
                 # if exceeds == 0 then it is a TP
                 if exceeds.sum() != 0:
