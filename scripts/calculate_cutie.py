@@ -127,17 +127,18 @@ def calculate_cutie(input_config_fp):
         paired)
 
     # determine parameter (either r or p)
-    output.write_log('The parameter chosen was ' + param)
+    output.write_log('The parameter chosen was ' + param, log_fp)
 
     # determine significance threshold and number of correlations
-    output.write_log('The type of mc correction used was ' + multi_corr, log_fp)
+    if param == 'p':
+        output.write_log('The type of mc correction used was ' + multi_corr, log_fp)
     threshold, n_corr, minp = statistics.set_threshold(pvalues, param, alpha,
                                                        multi_corr, paired)
     output.write_log('The threshold value was ' + str(threshold), log_fp)
 
     # calculate initial sig candidates
     initial_corr, all_pairs = statistics.get_initial_corr(n_var1, n_var2,
-        pvalues, threshold, paired)
+        pvalues, threshold, param, paired)
 
     # change initial_corr if doing rCUtIe
     if statistic in reverse_stats:
