@@ -87,7 +87,7 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
             if param == 'p':
                 f.write('\n')
                 f.write('alpha: 0.05')
-            elif param == 'p':
+            elif param == 'r':
                 f.write('\n')
                 f.write('alpha: 0.50')
             f.write('\n')
