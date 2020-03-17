@@ -10,6 +10,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 # Required arguments
 @click.option('-fv', '--fold_value', type=str,
               help='fold value for criterion for p value change')
+@click.option('-p', '--param', type=str,
+              help='string denoting type of param used')
 @click.option('-s', '--statistic', type=str,
               help='string denoting type of analysis')
 @click.option('-m', '--multi_corr', type=str,
@@ -31,7 +33,7 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
         fn = os.path.basename(fp)
         if statistic != 'pearson':
             corr_compare = 'False'
-        f_id = multi_corr + '_' + fv + '_' + statistic + '_' + corr_compare + '_' + os.path.splitext(fn)[0]
+        f_id = param + '_' + multi_corr + '_' + fv + '_' + statistic + '_' + corr_compare + '_' + os.path.splitext(fn)[0]
         out_dir = output_dir + f_id + '/'
         if not os.path.isdir(out_dir):
             os.mkdir(out_dir)
@@ -77,11 +79,17 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
             f.write('\n')
             f.write('[stats]')
             f.write('\n')
+            f.write('param: ' + param)
+            f.write('\n')
             f.write('statistic: ' + statistic)
             f.write('\n')
             f.write('resample_k: 1')
-            f.write('\n')
-            f.write('alpha: 0.05')
+            if param == 'p':
+                f.write('\n')
+                f.write('alpha: 0.05')
+            elif param == 'r':
+                f.write('\n')
+                f.write('alpha: 0.50')
             f.write('\n')
             f.write('mc: ' + multi_corr)
             f.write('\n')

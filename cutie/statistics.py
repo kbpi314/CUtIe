@@ -101,13 +101,15 @@ def initial_stats(samp_var1, samp_var2, corr_func, paired):
     return corrs, pvalues
 
 
-def set_threshold(pvalues, alpha, multi_corr, paired=False):
+def set_threshold(pvalues, param, alpha, multi_corr, paired=False):
     """
     Computes p-value threshold for alpha according to FDR, Bonferroni, or FWER.
     ----------------------------------------------------------------------------
     INPUTS
     pvalues    - 2D array. Entry row i, col j represents p value of correlation
                  between i-th var1 and j-th var2.
+    param      - String. Either 'r' or 'p' depending on whether r value or p
+                 value will be used to filter correlations.
     alpha      - Float. Original cut-off for alpha (0.05).
     multi_corr - String. Form of multiple corrections to use (nomc: none,
                  bonferroni: bonferroni, fwer: family-wise error rate,
@@ -116,14 +118,14 @@ def set_threshold(pvalues, alpha, multi_corr, paired=False):
                  2 are the same), False otherwise.
 
     OUTPUTS
-    threshold - Float. Cutoff of pvalues.
+    threshold - Float. Cutoff for specified parameter.
     n_corr    - Integer. Number of correlations.
     defaulted - Boolean. True if FDR correction could not be obtained.
     """
     if paired:
         # fill the upper diagonal with nan as to not double count pvalues in FDR
         pvalues[np.triu_indices(pvalues.shape[1], 0)] = np.nan
-        # currently computing all pairs double counting
+        # to avoid double counting
         n_corr = np.size(pvalues, 1) * (np.size(pvalues, 1) - 1)//2
     else:
         n_corr = np.size(pvalues, 0) * np.size(pvalues, 1)
@@ -132,7 +134,8 @@ def set_threshold(pvalues, alpha, multi_corr, paired=False):
     pvalues = np.sort(pvalues.flatten())
     pvalues = pvalues[~np.isnan(pvalues)]
     minp = min(pvalues)
-    if multi_corr == 'nomc':
+
+    if (multi_corr == 'nomc') or (param == 'r'):
         threshold = alpha
     elif multi_corr == 'bonferroni':
         threshold = alpha / pvalues.size
@@ -149,6 +152,7 @@ def set_threshold(pvalues, alpha, multi_corr, paired=False):
             threshold = alpha
         else:
             threshold = thresholds[max(compare)]
+
     return threshold, n_corr, minp
 
 
@@ -157,8 +161,7 @@ def set_threshold(pvalues, alpha, multi_corr, paired=False):
 ###
 
 
-def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, influence,
-                       threshold, fold, fold_value):
+def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, **kwargs):
     """
     Takes a given var1 and var2 by indices and recomputes Pearson correlation
     by removing 1 out of n (sample_size) points from samp_ids.
@@ -170,8 +173,7 @@ def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, influence,
                  corresponding to sample i in the order that the samples are
                  presented in samp_ids.
     samp_var2  - 2D array. Same as samp_var1 but for file 2.
-    influence  - sm.OLS object. Not relevant to Pearson/Spearman but needed as a
-                 placeholder argument (for Cook's D, etc.)
+    **kwargs:
     threshold  - Float. Level of significance testing (after adjusting for
                  multiple comparisons).
     fold       - Boolean. Determines whether you require the new P value to be a
@@ -214,11 +216,12 @@ def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, influence,
         reverse, maxp, minr = update_rev_extrema_rp(0, r_value, p_value,
                                                     [s], reverse, maxp, minr,
                                                     True)
-        if fold:
-            if (p_value > threshold and p_value > original_p * fold_value) or \
+        if kwargs['fold']:
+            if (p_value > kwargs['threshold'] and \
+                p_value > original_p * kwargs['fold_value']) or \
                 np.isnan(p_value):
                 exceeds[s] += 1
-        elif p_value > threshold or np.isnan(p_value):
+        elif p_value > kwargs['threshold'] or np.isnan(p_value):
             exceeds[s] += 1
 
         corrs[s] = r_value
@@ -226,8 +229,7 @@ def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, influence,
 
     return reverse, exceeds, corrs, p_values
 
-def cookd(var1_index, var2_index, samp_var1, samp_var2,
-          influence, threshold, fold, fold_value):
+def cookd(var1_index, var2_index, samp_var1, samp_var2, **kwargs):
     """
     Takes a given var1 and var2 by indices and recomputes Cook's D for each i-th
     sample.
@@ -239,15 +241,9 @@ def cookd(var1_index, var2_index, samp_var1, samp_var2,
                  corresponding to sample i in the order that the samples are
                  presented in samp_ids.
     samp_var2  - 2D array. Same as samp_var1 but for file 2.
+    **kwargs:
     influence  - sm.OLS object. Not relevant to Pearson/Spearman but needed as a
                  placeholder argument (for Cook's D, etc.)
-    threshold  - Float. Level of significance testing (after adjusting for
-                 multiple comparisons)
-    fold       - Boolean. Determines whether you require the new P value to be a
-                 certain fold greater to be classified as a CUTIE.
-    fold_value - Float. Determines fold difference constraint imposed on the
-                 resampled p-value needed for a correlation to be classified as
-                 a CUTIE.
 
     OUTPUTS
     reverse    - 1D array. Index i is 1 if the correlation changes sign upon
@@ -255,16 +251,15 @@ def cookd(var1_index, var2_index, samp_var1, samp_var2,
     exceeds    - 1D array. Index i is 1 if removing that sample causes the
                  correlation to become insignificant in at least 1 different
                  pairwise correlations
-    corrs      - 1D array. Contains values of correlation strength with sample i
-                 removed.
-    p_values   - 1D array. Contains values of pvalues with sample i removed.
+    new_cooksd - 1D array. Contains value of Cook's D for each point i.
+    new_cooksp - 1D array. Contains p value associated with Cook's D for point i.
     """
     n_samp = np.size(samp_var1, 0)
     # reverse is 0 because sign never changes
     reverse = np.zeros(n_samp)
     exceeds = np.zeros(n_samp)
     # c is the distance and p is p-value
-    (c, p) = influence.cooks_distance
+    (c, p) = kwargs['influence'].cooks_distance
 
     var1 = samp_var1[:, var1_index]
     var2 = samp_var2[:, var2_index]
@@ -289,8 +284,7 @@ def cookd(var1_index, var2_index, samp_var1, samp_var2,
     return reverse, exceeds, new_cooksd, new_cooksp
 
 
-def dffits(var1_index, var2_index, samp_var1, samp_var2,
-           influence, threshold, fold, fold_value):
+def dffits(var1_index, var2_index, samp_var1, samp_var2, **kwargs):
     """
     Takes a given var1 and var2 by indices and recomputes DFFITS for each i-th
     sample.
@@ -318,13 +312,13 @@ def dffits(var1_index, var2_index, samp_var1, samp_var2,
     exceeds    - 1D array. Index i is 1 if removing that sample causes the
                  correlation to become insignificant in at least 1 different
                  pairwise correlations
-    dffits_    - 1D array of value of dffits strength with index i removed
-    placehold  - List. Placeholder representing threshold used.
+    []         - 1D array of value of dffits strength with index i removed
+    []         - 1D array. Placeholder representing threshold used.
     """
     n_samp = np.size(samp_var1, 0)
     reverse = np.zeros(n_samp)
     exceeds = np.zeros(n_samp)
-    dffits_, dffits_threshold = influence.dffits
+    dffits_, dffits_threshold = kwargs['influence'].dffits
 
     var1 = samp_var1[:, var1_index]
     var2 = samp_var2[:, var2_index]
@@ -346,8 +340,7 @@ def dffits(var1_index, var2_index, samp_var1, samp_var2,
     return reverse, exceeds, np.array(new_dffits), np.array([dffits_threshold] * n_samp)
 
 
-def dsr(var1_index, var2_index, samp_var1, samp_var2,
-        influence, threshold, fold, fold_value):
+def dsr(var1_index, var2_index, samp_var1, samp_var2, **kwargs):
     """
     Takes a given var1 and var2 by indices and recomputes DFFITS for each i-th
     sample.
@@ -359,15 +352,9 @@ def dsr(var1_index, var2_index, samp_var1, samp_var2,
                  corresponding to sample i in the order that the samples are
                  presented in samp_ids.
     samp_var2  - 2D array. Same as samp_var1 but for file 2.
+    **kwargs:
     influence  - sm.OLS object. Not relevant to Pearson/Spearman but needed as a
                  placeholder argument (for Cook's D, etc.)
-    threshold  - Float. Level of significance testing (after adjusting for
-                 multiple comparisons)
-    fold       - Boolean. Determines whether you require the new P value to be a
-                 certain fold greater to be classified as a CUTIE.
-    fold_value - Float. Determines fold difference constraint imposed on the
-                 resampled p-value needed for a correlation to be classified as
-                 a CUTIE.
 
     OUTPUTS
     reverse    - 1D array. Index i is 1 if the correlation changes sign upon
@@ -382,7 +369,7 @@ def dsr(var1_index, var2_index, samp_var1, samp_var2,
     n_samp = np.size(samp_var1, 0)
     reverse = np.zeros(n_samp)
     exceeds = np.zeros(n_samp)
-    dsr_ = influence.resid_studentized_external
+    dsr_ = kwargs['influence'].resid_studentized_external
 
     var1 = samp_var1[:, var1_index]
     var2 = samp_var2[:, var2_index]
@@ -481,8 +468,8 @@ def calculate_FP_sets(initial_corr, samp_var1, samp_var2, infln_metrics,
             influence = return_influence(var1_values, var2_values)
             for metric in infln_metrics:
                 reverse, exceeds, corr_values, pvalues_thresholds = infln_mapping[metric](
-                    var1, var2, samp_var1, samp_var2, influence,
-                    threshold, fold, fold_value)
+                    var1, var2, samp_var1, samp_var2, influence=influence,
+                    threshold=threshold, fold=fold, fold_value=fold_value)
 
                 # if exceeds == 0 then it is a TP
                 if exceeds.sum() != 0:
@@ -492,8 +479,7 @@ def calculate_FP_sets(initial_corr, samp_var1, samp_var2, infln_metrics,
 
 
 def pointwise_comparison(infln_metrics, infln_mapping, samp_var1, samp_var2,
-                         initial_corr,
-                         threshold, fold_value, fold):
+                         initial_corr, threshold, fold_value, fold):
     """
     Perform pointwise analysis of each correlation, comparing between CUTIE,
     Cook's D, DFFITS (and optionally DSR). Logs number of correlations belonging
@@ -537,7 +523,7 @@ def pointwise_comparison(infln_metrics, infln_mapping, samp_var1, samp_var2,
     return FP_infln_sets, region_combs, region_sets
 
 
-def get_initial_corr(n_var1, n_var2, pvalues, threshold, paired):
+def get_initial_corr(n_var1, n_var2, pvalues, corrs, threshold, param, paired):
     """
     Determine list of initially candidate correlations for screening (either sig
     or nonsig, if performing CUTIE or reverse-CUTIE respectively).
@@ -546,8 +532,13 @@ def get_initial_corr(n_var1, n_var2, pvalues, threshold, paired):
     n_var1       - Integer. Number of variables in file 1.
     n_var2       - Integer. Number of variables in file 2.
     pvalues      - 2D array. Contains pvalue between var i and var j.
+    corrs        - 2D array. Contains corr value between var i and var j.
     threshold    - Float. Level of significance testing (after adjusting for
                    multiple comparisons)
+    param        - String. Either 'r' or 'p' depending on whether r value or p
+                   value will be used to filter correlations.
+    paired       - Boolean. True if variables are paired (i.e. file 1 and file
+                   2 are the same), False otherwise.
 
     OUTPUTS
     initial_corr - Set of tuples. Variable pairs for screening.
@@ -564,8 +555,12 @@ def get_initial_corr(n_var1, n_var2, pvalues, threshold, paired):
             # then don't compute corr(i,j) for i <= j
             if not (paired and (var1 <= var2)):
                 all_pairs.append(pair)
-                if pvalues[var1][var2] < threshold:
-                    initial_corr.append(pair)
+                if param == 'p':
+                    if pvalues[var1][var2] < threshold:
+                        initial_corr.append(pair)
+                elif param == 'r':
+                    if np.abs(corrs[var1][var2]) > threshold:
+                        initial_corr.append(pair)
 
     return initial_corr, all_pairs
 
@@ -574,8 +569,8 @@ def get_initial_corr(n_var1, n_var2, pvalues, threshold, paired):
 ###
 
 def update_cutiek_true_corr(initial_corr, samp_var1, samp_var2, pvalues, corrs,
-                            threshold, statistic, forward_stats,
-                            reverse_stats, resample_k, fold, fold_value):
+                            threshold, statistic, forward_stats, reverse_stats,
+                            resample_k, fold, fold_value, param):
 
     """
     Determine true correlations via resampling of k points.
@@ -607,6 +602,8 @@ def update_cutiek_true_corr(initial_corr, samp_var1, samp_var2, pvalues, corrs,
     fold_value        - Float. Determines fold difference constraint imposed on
                         the resampled p-value needed for a correlation to be
                         classified as a CUTIE.
+    param             - String. Either 'r' or 'p' depending on whether r value or p
+                        value will be used to filter correlations.
 
     OUTPUTS
     initial_corr      - Set of integer tuples. Contains variable pairs initially
@@ -706,8 +703,8 @@ def update_cutiek_true_corr(initial_corr, samp_var1, samp_var2, pvalues, corrs,
         for i in range(resample_k):
             # corrs is MINE_str
             new_rev_corr, new_truths, extrema_p, extrema_r = evaluate_correlation_k(
-                var1, var2, n_samp, samp_var1, samp_var2, pvalues, threshold,
-                statistic, i, sign, fold, fold_value, forward)
+                var1, var2, n_samp, samp_var1, samp_var2, pvalues, corrs, threshold,
+                statistic, i, sign, fold, fold_value, forward, param)
 
             # update the insig-indicators for the k-th resample iteration
             truths = np.add(truths, new_truths)
@@ -760,8 +757,8 @@ def update_cutiek_true_corr(initial_corr, samp_var1, samp_var2, pvalues, corrs,
 
 
 def evaluate_correlation_k(var1, var2, n_samp, samp_var1, samp_var2, pvalues,
-                           threshold, statistic, index, sign, fold, fold_value,
-                           forward):
+                           corrs, threshold, statistic, index, sign, fold,
+                           fold_value, forward, param):
     """
     Helper function for cutiek_true_corr(). Evaluates a given var1, var2
     correlation at the resample_k = i level.
@@ -776,6 +773,8 @@ def evaluate_correlation_k(var1, var2, n_samp, samp_var1, samp_var2, pvalues,
     samp_var2         - 2D array. Same as samp_var1 but for file 2.
     pvalues           - 2D array. Entry row i, col j represents p value of
                         correlation between i-th var1 and j-th var2.
+    corrs             - 2D array. Contains values of correlation strength
+                        between var i and var j.
     threshold         - Float. Level of significance testing (after adjusting
                         for multiple comparisons)
     statistic         - String. Describes analysis being performed.
@@ -789,6 +788,8 @@ def evaluate_correlation_k(var1, var2, n_samp, samp_var1, samp_var2, pvalues,
                         classified as a CUTIE.
     forward           - Boolean. True if CUTIE is run in the forward direction,
                         False if reverse.
+    param             - String. Either 'r' or 'p' depending on whether r value or p
+                        value will be used to filter correlations.
 
     OUTPUTS
     new_rev_corr      - Indicator array of length n_samp indicating whether that
@@ -807,8 +808,8 @@ def evaluate_correlation_k(var1, var2, n_samp, samp_var1, samp_var2, pvalues,
     """
     # CUTIE
     new_rev_corr, new_truths, extrema_p, extrema_r = resamplek_cutie(
-        var1, var2, n_samp, samp_var1, samp_var2, pvalues, threshold,
-        index + 1, sign, forward, statistic, fold, fold_value)
+        var1, var2, n_samp, samp_var1, samp_var2, pvalues, corrs, threshold,
+        index + 1, sign, forward, statistic, fold, fold_value, param)
 
     # obtain most extreme p and R-sq values
     if forward:
@@ -911,20 +912,20 @@ def update_rev_extrema_rp(sign, r_value, p_value, indices, reverse, extrema_p,
         for i in indices:
             if p_value > extrema_p[i]:
                 extrema_p[i] = p_value
-            if np.absolute(r_value) < np.absolute(extrema_r[i]):
+            if np.abs(r_value) < np.abs(extrema_r[i]):
                 extrema_r[i] = r_value
     elif forward is False:
         for i in indices:
             if p_value < extrema_p[i]:
                 extrema_p[i] = p_value
-            if np.absolute(r_value) > np.absolute(extrema_r[i]):
+            if np.abs(r_value) > np.abs(extrema_r[i]):
                 extrema_r[i] = r_value
 
     return reverse, extrema_p, extrema_r
 
 def resamplek_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
-                    pvalues, threshold, resample_k, sign, forward, statistic,
-                    fold, fold_value):
+                    pvalues, corrs, threshold, resample_k, sign, forward, statistic,
+                    fold, fold_value, param):
     """
     Perform CUTIE resampling on a given pair of variables and test CUTIE status.
     ----------------------------------------------------------------------------
@@ -938,6 +939,8 @@ def resamplek_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
     samp_var2         - 2D array. Same as samp_var1 but for file 2.
     pvalues           - 2D array. Entry row i, col j represents p value of
                         correlation between i-th var1 and j-th var2.
+    corrs             - 2D array. Contains values of correlation strength
+                        between var i and var j.
     threshold         - Float. Level of significance testing (after adjusting
                         for multiple comparisons)
     sign              - Integer. -1 or 1, depending on original sign of
@@ -950,7 +953,8 @@ def resamplek_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
     fold_value        - Float. Determines fold difference constraint imposed on
                         the resampled p-value needed for a correlation to be
                         classified as a CUTIE.
-
+    param             - String. Either 'r' or 'p' depending on whether r value or p
+                        value will be used to filter correlations.
     OUTPUTS
     reverse           - 1D array. Index i is 1 if the correlation changes sign
                         upon removing sample i.
@@ -997,26 +1001,50 @@ def resamplek_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
                 reverse[i] += 1
 
         if forward is True:
-            # fold change p-value restraint
-            if fold:
-                if (p_value > threshold and
-                    p_value > pvalues[var1_index][var2_index] * fold_value) or \
-                        np.isnan(p_value):
+            if param == 'p':
+                # fold change p-value restraint
+                if fold:
+                    if (p_value > threshold and
+                        p_value > pvalues[var1_index][var2_index] * fold_value) or \
+                            np.isnan(p_value):
+                        for i in indices:
+                            exceeds[i] += 1
+                elif p_value > threshold or np.isnan(p_value):
                     for i in indices:
                         exceeds[i] += 1
-            elif p_value > threshold or np.isnan(p_value):
-                for i in indices:
-                    exceeds[i] += 1
+            elif param == 'r':
+                # fold change r-value restraint
+                if fold:
+                    if (np.abs(r_value) < threshold and
+                        np.abs(r_value) < corrs[var1_index][var2_index] * fold_value) or \
+                            np.isnan(r_value):
+                        for i in indices:
+                            exceeds[i] += 1
+                elif np.abs(r_value) < threshold or np.isnan(r_value):
+                    for i in indices:
+                        exceeds[i] += 1
 
         elif forward is False:
-            # fold change p-value restraint
-            if fold:
-                if (p_value < threshold and
-                    p_value < pvalues[var1_index][var2_index] / fold_value):
+            if param == 'p':
+                # fold change p-value restraint
+                if fold:
+                    if (p_value < threshold and
+                        p_value < pvalues[var1_index][var2_index] / fold_value):
+                        for i in indices:
+                            exceeds[i] += 1
+                elif p_value < threshold:
                     for i in indices:
                         exceeds[i] += 1
-            elif p_value < threshold:
-                for i in indices:
-                    exceeds[i] += 1
+            elif param == 'r':
+                # fold change p-value restraint
+                if fold:
+                    if (np.abs(r_value) < threshold and
+                        np.abs(r_value) < corrs[var1_index][var2_index] * fold_value) or \
+                            np.isnan(r_value):
+                        for i in indices:
+                            exceeds[i] += 1
+                elif np.abs(r_value) < threshold or np.isnan(r_value):
+                    for i in indices:
+                        exceeds[i] += 1
 
     return reverse, exceeds, extrema_p, extrema_r

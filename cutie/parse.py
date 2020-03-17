@@ -147,6 +147,7 @@ def parse_config(input_config_fp):
     working_dir = Config.get('output', 'working_dir')
 
     # [stats]
+    param = Config.get('stats', 'param')
     statistic = Config.get('stats', 'statistic')
     resample_k = Config.getint('stats', 'resample_k')
     alpha = Config.getfloat('stats', 'alpha')
@@ -161,8 +162,8 @@ def parse_config(input_config_fp):
 
     return (samp_var1_fp, delimiter1, samp_var2_fp, delimiter2, f1type,
             f2type, working_dir, skip1, skip2, startcol1, endcol1, startcol2,
-            endcol2, statistic, corr_compare, resample_k, paired, overwrite,
-            alpha, multi_corr, fold, fold_value, graph_bound, fix_axis)
+            endcol2, param, statistic, corr_compare, resample_k, paired,
+            overwrite, alpha, multi_corr, fold, fold_value, graph_bound, fix_axis)
 
 def md5_checksum(fp):
     """

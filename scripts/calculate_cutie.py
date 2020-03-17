@@ -44,7 +44,7 @@ def calculate_cutie(input_config_fp):
     """
     # unpack config variables
     (samp_var1_fp, delimiter1, samp_var2_fp, delimiter2, f1type, f2type,
-     working_dir, skip1, skip2, startcol1, endcol1, startcol2, endcol2,
+     working_dir, skip1, skip2, startcol1, endcol1, startcol2, endcol2, param,
      statistic, corr_compare, resample_k, paired, overwrite, alpha, multi_corr,
      fold, fold_value, graph_bound, fix_axis) = parse.parse_config(input_config_fp)
 
@@ -126,15 +126,19 @@ def calculate_cutie(input_config_fp):
         samp_var2, statistic, pearson_stats, spearman_stats, kendall_stats,
         paired)
 
+    # determine parameter (either r or p)
+    output.write_log('The parameter chosen was ' + param, log_fp)
+
     # determine significance threshold and number of correlations
-    output.write_log('The type of mc correction used was ' + multi_corr, log_fp)
-    threshold, n_corr, minp = statistics.set_threshold(pvalues, alpha,
+    if param == 'p':
+        output.write_log('The type of mc correction used was ' + multi_corr, log_fp)
+    threshold, n_corr, minp = statistics.set_threshold(pvalues, param, alpha,
                                                        multi_corr, paired)
     output.write_log('The threshold value was ' + str(threshold), log_fp)
 
     # calculate initial sig candidates
     initial_corr, all_pairs = statistics.get_initial_corr(n_var1, n_var2,
-        pvalues, threshold, paired)
+        pvalues, corrs, threshold, param, paired)
 
     # change initial_corr if doing rCUtIe
     if statistic in reverse_stats:
@@ -177,7 +181,7 @@ def calculate_cutie(input_config_fp):
     corr_extrema_r, samp_counter, var1_counter,
     var2_counter, exceeds_points, rev_points) = statistics.update_cutiek_true_corr(
         initial_corr, samp_var1, samp_var2, pvalues, corrs, threshold,
-        statistic, forward_stats, reverse_stats, resample_k, fold, fold_value)
+        statistic, forward_stats, reverse_stats, resample_k, fold, fold_value, param)
 
     ###
     # Determine indicator matrices
