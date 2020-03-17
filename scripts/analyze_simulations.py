@@ -155,6 +155,8 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                 for samp in n_samp.split(','):
                                     for cor in ['{0:g}'.format(float(str(x))) for x in np.arange(start, stop+step, step)]:
                                         d = df_dict[p][mc][fv][stat][cc][seed][c][samp][cor]
+                                        # d = true corr, initial corr
+                                        # if initial corr is 0, we don't add it to df
                                         if not np.isnan(d[0]):
                                             if d[1] == 1:
                                                 ps.append(p)
@@ -226,24 +228,26 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                         df = df[df['cc'] == cc]
                                         df = df[df['class'] == c]
                                         df = df[df['samps'] == samp]
-                                        title = 'True_corr as a function of corr in ' + c
-                                        plt.figure(figsize=(4,4))
+                                        # title = 'True_corr as a function of corr in ' + c
+                                        plt.figure(figsize=(6,6))
                                         sns.set_style("white")
                                         colors = ['#4F81BD','#C0504D']
                                         ax = sns.pointplot(x="cors", y="results", hue='stat',
                                             data=df, ci=95, palette=sns.color_palette(colors))
-                                        ax.set_title(title, fontsize=15)
+                                        # ax.set_title(title, fontsize=15)
                                         plt.setp(ax.collections, alpha=.3) #for the markers
                                         plt.setp(ax.lines, alpha=.3)
                                         # plt.xlim(-0.1,1.1)
                                         plt.ylim(-0.2, 1.2)
+                                        ax.set_ylabel('Proportion of Correlations classified as True using CUTIE')
+                                        ax.set_xlabel('Correlation Strength')
                                         ax.set_xticklabels(corr_ticks,rotation=45)
+                                        ax.set_yticklabels(['',0,0.2,0.4,0.6,0.8,1])
                                         plt.tick_params(axis='both', which='both', top=False, right=False)
                                         sns.despine()
                                         plt.savefig(output_dir + p + '_' + mc + '_' + fv + '_' + str(stat) + '_' + cc + '_' + c + '_' + samp + '.pdf')
                                         plt.close()
                                     except:
-                                        print(df)
                                         print(p, mc, fv, stat, cc, c, samp)
 
     def new_label(row):
@@ -278,8 +282,8 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                         df['new_stat'] = df.apply(lambda row: new_label(row),axis=1)
                                         df = df[df['new_stat'] != 'exclude']
                                         df = df.drop(['stat'], axis=1)
-                                        title = 'True_corr as a function of corr in ' + c
-                                        plt.figure(figsize=(4,4))
+                                        # title = 'True_corr as a function of corr in ' + c
+                                        plt.figure(figsize=(6,6))
                                         sns.set_style("white")
                                         colors = ['#4F81BD','#9BBB59','#C0504D']
                                         ax = sns.pointplot(x="cors", y="results", hue='new_stat',data=df, ci=95,
@@ -290,6 +294,9 @@ def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes
                                         # plt.xlim(-0.1,1.1)
                                         plt.ylim(-0.2,1.2)
                                         ax.set_xticklabels(corr_ticks, rotation=45)
+                                        ax.set_yticklabels(['',0,0.2,0.4,0.6,0.8,1])
+                                        ax.set_ylabel('Proportion of Correlations classified as True')
+                                        ax.set_xlabel('Correlation Strength')
                                         plt.tick_params(axis='both', which='both', top=False, right=False)
                                         sns.despine()
                                         plt.savefig(output_dir + p + '_' + mc + '_' + fv + '_' + str(stat) + '_cookdcompare_' + c + '_' + samp + '.pdf')

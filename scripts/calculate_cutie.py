@@ -138,7 +138,7 @@ def calculate_cutie(input_config_fp):
 
     # calculate initial sig candidates
     initial_corr, all_pairs = statistics.get_initial_corr(n_var1, n_var2,
-        pvalues, threshold, param, paired)
+        pvalues, corrs, threshold, param, paired)
 
     # change initial_corr if doing rCUtIe
     if statistic in reverse_stats:
@@ -181,7 +181,7 @@ def calculate_cutie(input_config_fp):
     corr_extrema_r, samp_counter, var1_counter,
     var2_counter, exceeds_points, rev_points) = statistics.update_cutiek_true_corr(
         initial_corr, samp_var1, samp_var2, pvalues, corrs, threshold,
-        statistic, forward_stats, reverse_stats, resample_k, fold, fold_value)
+        statistic, forward_stats, reverse_stats, resample_k, fold, fold_value, param)
 
     ###
     # Determine indicator matrices

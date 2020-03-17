@@ -259,7 +259,7 @@ def cookd(var1_index, var2_index, samp_var1, samp_var2, **kwargs):
     reverse = np.zeros(n_samp)
     exceeds = np.zeros(n_samp)
     # c is the distance and p is p-value
-    (c, p) = influence.cooks_distance
+    (c, p) = kwargs['influence'].cooks_distance
 
     var1 = samp_var1[:, var1_index]
     var2 = samp_var2[:, var2_index]
