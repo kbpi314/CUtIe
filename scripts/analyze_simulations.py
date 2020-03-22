@@ -39,8 +39,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
               help='output dir to put config files')
 
 
-def analyze_simulations(fold_value, statistic, multi_corr, corr_compare, classes,
-    n_seed, n_samp, rangestr, input_dir, output_dir):
+def analyze_simulations(fold_value, statistic, param, multi_corr, corr_compare,
+    classes, n_seed, n_samp, rangestr, input_dir, output_dir):
     '''
     Script for analysis of simulated data by CUTIE
     '''
