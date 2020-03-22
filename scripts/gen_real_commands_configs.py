@@ -16,6 +16,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
               help='string denoting type of multiple corrections')
 @click.option('-p', '--param', type=str,
               help='string denoting parameter used')
+@click.option('-d', '--datasets', type=str,
+              help='string denoting datasets used')
 @click.option('-c', '--corr_compare', type=str,
               help='boolean denoting whether performing cooksd or not')
 @click.option('-w', '--working_dir', type=click.Path(exists=True),
@@ -23,8 +25,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('-o', '--output_dir', type=click.Path(exists=True),
               help='output dir to put config files')
 
-def gen_commands_configs(fold_value, statistic, multi_corr, param, corr_compare,
-                         working_dir, output_dir):
+def gen_commands_configs(fold_value, statistic, multi_corr, param, datasets,
+                         corr_compare, working_dir, output_dir):
     data_to_params = {
         'hdac': {
             'samp_var1_fp': '/sc/hydra/work/buk02/HDAC_data/GSE15222_series_matrix_x1000.txt',
@@ -90,7 +92,7 @@ def gen_commands_configs(fold_value, statistic, multi_corr, param, corr_compare,
     fv = fold_value
     # files = glob.glob(input_dir + '*.txt')
 
-    datasets = ['hdac','lungc','lungpt','who','tx']
+    # datasets = ['hdac','lungc','lungpt','who','tx']
     for data in datasets:
         param_to_str = data_to_params[data]
 
