@@ -14,6 +14,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
               help='string denoting type of analysis')
 @click.option('-m', '--multi_corr', type=str,
               help='string denoting type of multiple corrections')
+@click.option('-p', '--param', type=str,
+              help='string denoting parameter used')
 @click.option('-c', '--corr_compare', type=str,
               help='boolean denoting whether performing cooksd or not')
 @click.option('-w', '--working_dir', type=click.Path(exists=True),
@@ -21,7 +23,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('-o', '--output_dir', type=click.Path(exists=True),
               help='output dir to put config files')
 
-def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
+def gen_commands_configs(fold_value, statistic, multi_corr, param, corr_compare,
                          working_dir, output_dir):
     data_to_params = {
         'hdac': {
@@ -36,6 +38,18 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
             'startcol2': '-1',
             'endcol2': '-1',
             'paired': 'True'},
+        'lungtx': {
+            'samp_var1_fp': '/sc/hydra/work/buk02/lungtx_data/otu_table_L6_filt1e3.txt',
+            'samp_var2_fp': '/sc/hydra/work/buk02/lungtx_data/Genes.KEGG.L3.add_counts.txt',
+            'f1type': 'untidy',
+            'f2type': 'untidy',
+            'skip1': '0',
+            'skip2': '0',
+            'startcol1': '-1',
+            'endcol1': '-1',
+            'startcol2': '-1',
+            'endcol2': '-1',
+            'paired': 'False'},
         'lungc': {
             'samp_var1_fp': '/sc/hydra/work/buk02/pre_sparcc_MSQ/otu_table.MSQ34_L6.txt',
             'samp_var2_fp': '/sc/hydra/work/buk02/pre_sparcc_MSQ/otu_table.MSQ34_L6.txt',
@@ -84,7 +98,7 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
         # fn = os.path.basename(fp)
         # if statistic != 'pearson':
         #    corr_compare = 'False'
-        f_id = multi_corr + '_' + fv + '_' + statistic + '_' + corr_compare + '_' + data
+        f_id = '_'.join([param, multi_corr, fv, statistic, corr_compare, data])
         # output_dir = '/sc/hydra/work/buk02/real_data_analysis/'
         out_dir = output_dir + f_id + '/'
         try:
@@ -135,6 +149,8 @@ def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
             f.write('\n')
             f.write('\n')
             f.write('[stats]')
+            f.write('\n')
+            f.write('param: ' + param)
             f.write('\n')
             f.write('statistic: ' + statistic)
             f.write('\n')
