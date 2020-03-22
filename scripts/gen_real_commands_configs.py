@@ -91,7 +91,7 @@ def gen_commands_configs(fold_value, statistic, multi_corr, param, datasets,
 
     fv = fold_value
     # files = glob.glob(input_dir + '*.txt')
-
+    datasets = datasets.split(',')
     # datasets = ['hdac','lungc','lungpt','who','tx']
     for data in datasets:
         param_to_str = data_to_params[data]
