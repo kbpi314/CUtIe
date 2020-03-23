@@ -210,7 +210,7 @@ def analyze_simulations(fold_value, statistic, param, multi_corr, corr_compare,
     for v, w in zip(statistic.split(',')[::2], statistic.split(',')[1::2]):
         stat_pairs.append([v, w])
 
-    corr_ticks = [0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95]
+    corr_ticks = [0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1]
     # indiv plots
     for p in param.split(','):
         for mc in multi_corr.split(','):
@@ -233,7 +233,7 @@ def analyze_simulations(fold_value, statistic, param, multi_corr, corr_compare,
                                         sns.set_style("white")
                                         colors = ['#4F81BD','#C0504D']
                                         ax = sns.pointplot(x="cors", y="results", hue='stat',
-                                            data=df, ci=95, palette=sns.color_palette(colors), legend=False)
+                                            data=df, ci=95, palette=sns.color_palette(colors))#, legend=False)
                                         # ax.set_title(title, fontsize=15)
                                         plt.setp(ax.collections, alpha=.3) #for the markers
                                         plt.setp(ax.lines, alpha=.3)
@@ -287,7 +287,7 @@ def analyze_simulations(fold_value, statistic, param, multi_corr, corr_compare,
                                         sns.set_style("white")
                                         colors = ['#4F81BD','#9BBB59','#C0504D']
                                         ax = sns.pointplot(x="cors", y="results", hue='new_stat',data=df, ci=95,
-                                            palette=sns.color_palette(colors), legend=False)
+                                            palette=sns.color_palette(colors))#, legend=False)
                                         # ax.set_title(title, fontsize=15)
                                         plt.setp(ax.collections, alpha=.3) #for the markers
                                         plt.setp(ax.lines, alpha=.3)
