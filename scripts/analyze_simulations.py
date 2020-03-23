@@ -288,7 +288,7 @@ def analyze_simulations(fold_value, statistic, param, multi_corr, corr_compare,
                                         colors = ['#4F81BD','#9BBB59','#C0504D']
                                         ax = sns.pointplot(x="cors", y="results", hue='new_stat',data=df, ci=95,
                                             palette=sns.color_palette(colors), legend=False)
-                                        ax.set_title(title, fontsize=15)
+                                        # ax.set_title(title, fontsize=15)
                                         plt.setp(ax.collections, alpha=.3) #for the markers
                                         plt.setp(ax.lines, alpha=.3)
                                         # plt.xlim(-0.1,1.1)
@@ -302,7 +302,8 @@ def analyze_simulations(fold_value, statistic, param, multi_corr, corr_compare,
                                         plt.savefig(output_dir + p + '_' + mc + '_' + fv + '_' + str(stat) + '_cookdcompare_' + c + '_' + samp + '.pdf')
                                         plt.close()
                                     except:
-                                        print(stat + 'cookd')
+                                        print(stat)
+                                        print('cookd')
 
 
     print(len(missing),len(done),len(failed))
