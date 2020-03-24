@@ -181,6 +181,8 @@ def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, **kwargs):
     fold_value - Float. Determines fold difference constraint imposed on the
                  resampled p-value needed for a correlation to be classified as
                  a CUTIE.
+    param      - String. Either 'r' or 'p' depending on whether r value or p
+                 value will be used to filter correlations.
 
     OUTPUTS
     reverse    - 1D array. Index i is 1 if the correlation changes sign upon
@@ -216,13 +218,23 @@ def resample1_cutie_pc(var1_index, var2_index, samp_var1, samp_var2, **kwargs):
         reverse, maxp, minr = update_rev_extrema_rp(0, r_value, p_value,
                                                     [s], reverse, maxp, minr,
                                                     True)
-        if kwargs['fold']:
-            if (p_value > kwargs['threshold'] and \
-                p_value > original_p * kwargs['fold_value']) or \
-                np.isnan(p_value):
+        if param == 'p':
+            if kwargs['fold']:
+                if (p_value > kwargs['threshold'] and \
+                    p_value > original_p * kwargs['fold_value']) or \
+                    np.isnan(p_value):
+                    exceeds[s] += 1
+            elif p_value > kwargs['threshold'] or np.isnan(p_value):
                 exceeds[s] += 1
-        elif p_value > kwargs['threshold'] or np.isnan(p_value):
-            exceeds[s] += 1
+
+        elif param == 'r':
+            if kwargs['fold']:
+                if (np.abs(r_value) < kwargs['threshold'] and \
+                    np.abs(r_value) < np.abs(original_r) * kwargs['fold_value']) or \
+                    np.isnan(r_value):
+                    exceeds[s] += 1
+            elif np.abs(r_value) < kwargs['threshold'] or np.isnan(r_value):
+                exceeds[s] += 1
 
         corrs[s] = r_value
         p_values[s] = p_value
@@ -420,7 +432,7 @@ def return_influence(var1_values, var2_values):
 
 
 def calculate_FP_sets(initial_corr, samp_var1, samp_var2, infln_metrics,
-                      infln_mapping, threshold, fold, fold_value):
+                      infln_mapping, threshold, fold, fold_value, param):
     """
     Determine which correlations (variable pairs) belong in which
     infln_metric_FP sets.
@@ -444,6 +456,8 @@ def calculate_FP_sets(initial_corr, samp_var1, samp_var2, infln_metrics,
     fold_value    - Float. Determines fold difference constraint imposed on the
                     resampled p-value needed for a correlation to be classified as
                     a CUTIE.
+    param        - String. Either 'r' or 'p' depending on whether r value or p
+                   value will be used to filter correlations.
 
     OUTPUTS
     FP_infln_sets - Dictionary. Key is particular outlier metric, entry is a set
@@ -469,7 +483,8 @@ def calculate_FP_sets(initial_corr, samp_var1, samp_var2, infln_metrics,
             for metric in infln_metrics:
                 reverse, exceeds, corr_values, pvalues_thresholds = infln_mapping[metric](
                     var1, var2, samp_var1, samp_var2, influence=influence,
-                    threshold=threshold, fold=fold, fold_value=fold_value)
+                    threshold=threshold, fold=fold, fold_value=fold_value,
+                    param=param)
 
                 # if exceeds == 0 then it is a TP
                 if exceeds.sum() != 0:
@@ -479,7 +494,7 @@ def calculate_FP_sets(initial_corr, samp_var1, samp_var2, infln_metrics,
 
 
 def pointwise_comparison(infln_metrics, infln_mapping, samp_var1, samp_var2,
-                         initial_corr, threshold, fold_value, fold):
+                         initial_corr, threshold, fold_value, fold, param):
     """
     Perform pointwise analysis of each correlation, comparing between CUTIE,
     Cook's D, DFFITS (and optionally DSR). Logs number of correlations belonging
@@ -504,13 +519,15 @@ def pointwise_comparison(infln_metrics, infln_mapping, samp_var1, samp_var2,
                    as a CUTIE.
     fold         - Boolean. Determines whether you require the new P value to
                    be a certain fold greater to be classified as a CUTIE.
+    param        - String. Either 'r' or 'p' depending on whether r value or p
+                   value will be used to filter correlations.
     """
     n_var1, n_var2, n_samp = utils.get_param(samp_var1, samp_var2)
 
     # key is metric, entry is set of points FP to that metric
     FP_infln_sets = calculate_FP_sets(initial_corr, samp_var1, samp_var2,
                                       infln_metrics, infln_mapping, threshold,
-                                      fold, fold_value)
+                                      fold, fold_value, param)
 
     # create list of sets
     FP_infln_sets_list = []
@@ -1016,7 +1033,7 @@ def resamplek_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
                 # fold change r-value restraint
                 if fold:
                     if (np.abs(r_value) < threshold and
-                        np.abs(r_value) < corrs[var1_index][var2_index] * fold_value) or \
+                        np.abs(r_value) < np.abs(corrs[var1_index][var2_index]) * fold_value) or \
                             np.isnan(r_value):
                         for i in indices:
                             exceeds[i] += 1
@@ -1038,12 +1055,12 @@ def resamplek_cutie(var1_index, var2_index, n_samp, samp_var1, samp_var2,
             elif param == 'r':
                 # fold change p-value restraint
                 if fold:
-                    if (np.abs(r_value) < threshold and
-                        np.abs(r_value) < corrs[var1_index][var2_index] * fold_value) or \
+                    if (np.abs(r_value) > threshold and
+                        np.abs(r_value) > np.abs(corrs[var1_index][var2_index]) * fold_value) or \
                             np.isnan(r_value):
                         for i in indices:
                             exceeds[i] += 1
-                elif np.abs(r_value) < threshold or np.isnan(r_value):
+                elif np.abs(r_value) > threshold or np.isnan(r_value):
                     for i in indices:
                         exceeds[i] += 1
 

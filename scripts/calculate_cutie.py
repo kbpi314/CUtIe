@@ -159,7 +159,7 @@ def calculate_cutie(input_config_fp):
         }
         (FP_infln_sets, region_combs, region_sets) = statistics.pointwise_comparison(
             infln_metrics, infln_mapping, samp_var1, samp_var2, initial_corr,
-            threshold, fold_value, fold)
+            threshold, fold_value, fold, param)
 
         for region in region_combs:
             output.write_log('The amount of unique elements in set ' +
