@@ -25,7 +25,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('-o', '--output_dir', type=click.Path(exists=True),
               help='output dir to put config files')
 
-def gen_commands_configs(fold_value, statistic, multi_corr, corr_compare,
+def gen_commands_configs(param, fold_value, statistic, multi_corr, corr_compare,
                          working_dir, input_dir, output_dir):
     fv = fold_value
     files = glob.glob(input_dir + '*.txt')
